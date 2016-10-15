@@ -1,0 +1,51 @@
+﻿Build started 28.05.2015 19:28:02.
+     1>Project "D:\wbox\libs\FreeImage3160\Source\LibOpenJPEG\LibOpenJPEG.2008.vcxproj" on node 4 (Build target(s)).
+       Project file contains ToolsVersion="12.0". This toolset may be unknown or missing, in which case you may be able to resolve this by installing the appropriate version of MSBuild, or the build may have been forced to a particular ToolsVersion for policy reasons. Treating the project as if it had ToolsVersion="4.0". For more information, please see http://go.microsoft.com/fwlink/?LinkId=291333.
+     1>ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\CL.exe /c /Zi /nologo /W3 /WX- /O2 /Ob2 /Oi /Ot /Oy /D WIN32 /D NDEBUG /D _LIB /D OPJ_STATIC /D _CRT_SECURE_NO_DEPRECATE /D _VC80_UPGRADE=0x0710 /D _MBCS /GF /Gm- /EHsc /MT /GS- /Gy- /fp:precise /Zc:wchar_t /Zc:forScope /Fo".\Release/" /Fd".\Release/vc110.pdb" /Gd /TC /analyze- /errorReport:prompt bio.c cio.c dwt.c event.c function_list.c image.c invert.c j2k.c jp2.c mct.c mqc.c openjpeg.c opj_clock.c pi.c raw.c t1.c t2.c tcd.c tgt.c
+         bio.c
+         cio.c
+         dwt.c
+         event.c
+         function_list.c
+         image.c
+         invert.c
+         j2k.c
+         jp2.c
+         mct.c
+         mqc.c
+         openjpeg.c
+         opj_clock.c
+         pi.c
+         raw.c
+         t1.c
+         t2.c
+         tcd.c
+         tgt.c
+         Создание кода...
+       Lib:
+         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\Lib.exe /OUT:".\Release\LibOpenJPEG.lib" /NOLOGO .\Release/bio.obj
+         .\Release/cio.obj
+         .\Release/dwt.obj
+         .\Release/event.obj
+         .\Release/function_list.obj
+         .\Release/image.obj
+         .\Release/invert.obj
+         .\Release/j2k.obj
+         .\Release/jp2.obj
+         .\Release/mct.obj
+         .\Release/mqc.obj
+         .\Release/openjpeg.obj
+         .\Release/opj_clock.obj
+         .\Release/pi.obj
+         .\Release/raw.obj
+         .\Release/t1.obj
+         .\Release/t2.obj
+         .\Release/tcd.obj
+         .\Release/tgt.obj
+         LibOpenJPEG.2008.vcxproj -> D:\wbox\libs\FreeImage3160\Source\LibOpenJPEG\.\Release\LibOpenJPEG.lib
+     1>Done Building Project "D:\wbox\libs\FreeImage3160\Source\LibOpenJPEG\LibOpenJPEG.2008.vcxproj" (Build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:03.43

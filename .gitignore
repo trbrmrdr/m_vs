@@ -1,0 +1,6 @@
+*.iml
+*.db
+bin/
+gen/
+objs/
+obj/

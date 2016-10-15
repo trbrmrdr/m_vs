@@ -1,0 +1,60 @@
+﻿Build started 04.06.2015 16:53:32.
+     1>Project "D:\wbox\libs\FreeImage3160\Source\LibJXR\LibJXR.2008.vcxproj" on node 4 (Rebuild target(s)).
+     1>ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /I./image/sys /I./jxrgluelib /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _LIB /D DISABLE_PERF_MEASUREMENT /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TC /analyze- /errorReport:prompt image\decode\decode.c image\decode\JXRTranscode.c image\decode\postprocess.c image\decode\segdec.c image\decode\strdec.c image\decode\strdec_x86.c image\decode\strInvTransform.c image\decode\strPredQuantDec.c image\encode\encode.c image\encode\segenc.c image\encode\strenc.c image\encode\strenc_x86.c image\encode\strFwdTransform.c image\encode\strPredQuantEnc.c image\sys\adapthuff.c image\sys\image.c image\sys\strcodec.c image\sys\strPredQuant.c image\sys\strTransform.c jxrgluelib\JXRGlue.c jxrgluelib\JXRGlueJxr.c jxrgluelib\JXRGluePFC.c jxrgluelib\JXRMeta.c
+         JXRMeta.c
+         JXRGluePFC.c
+         JXRGlueJxr.c
+         JXRGlue.c
+         strTransform.c
+         strPredQuant.c
+         strcodec.c
+         image.c
+         adapthuff.c
+         strPredQuantEnc.c
+         strFwdTransform.c
+         strenc_x86.c
+         strenc.c
+         segenc.c
+         encode.c
+         strPredQuantDec.c
+         strInvTransform.c
+         strdec_x86.c
+         strdec.c
+         segdec.c
+         Generating Code...
+         Compiling...
+         postprocess.c
+         JXRTranscode.c
+         decode.c
+         Generating Code...
+       Lib:
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\Lib.exe /OUT:"D:\wbox\libs\FreeImage3160\Debug\LibJXR.lib" /NOLOGO Debug\decode.obj
+         Debug\JXRTranscode.obj
+         Debug\postprocess.obj
+         Debug\segdec.obj
+         Debug\strdec.obj
+         Debug\strdec_x86.obj
+         Debug\strInvTransform.obj
+         Debug\strPredQuantDec.obj
+         Debug\encode.obj
+         Debug\segenc.obj
+         Debug\strenc.obj
+         Debug\strenc_x86.obj
+         Debug\strFwdTransform.obj
+         Debug\strPredQuantEnc.obj
+         Debug\adapthuff.obj
+         Debug\image.obj
+         Debug\strcodec.obj
+         Debug\strPredQuant.obj
+         Debug\strTransform.obj
+         Debug\JXRGlue.obj
+         Debug\JXRGlueJxr.obj
+         Debug\JXRGluePFC.obj
+         Debug\JXRMeta.obj
+         LibJXR.2008.vcxproj -> D:\wbox\libs\FreeImage3160\Debug\LibJXR.lib
+     1>Done Building Project "D:\wbox\libs\FreeImage3160\Source\LibJXR\LibJXR.2008.vcxproj" (Rebuild target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:07.18

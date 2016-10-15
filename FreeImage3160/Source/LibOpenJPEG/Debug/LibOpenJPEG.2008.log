@@ -1,0 +1,50 @@
+﻿Build started 04.06.2015 16:53:28.
+     1>Project "D:\wbox\libs\FreeImage3160\Source\LibOpenJPEG\LibOpenJPEG.2008.vcxproj" on node 4 (Rebuild target(s)).
+     1>ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _LIB /D OPJ_STATIC /D _CRT_SECURE_NO_DEPRECATE /D _VC80_UPGRADE=0x0710 /D _MBCS /GF /Gm- /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo".\Debug/" /Fd".\Debug/vc120.pdb" /Gd /TC /analyze- /errorReport:prompt bio.c cio.c dwt.c event.c function_list.c image.c invert.c j2k.c jp2.c mct.c mqc.c openjpeg.c opj_clock.c pi.c raw.c t1.c t2.c tcd.c tgt.c
+         bio.c
+         cio.c
+         dwt.c
+         event.c
+         function_list.c
+         image.c
+         invert.c
+         j2k.c
+         jp2.c
+         mct.c
+         mqc.c
+         openjpeg.c
+         opj_clock.c
+         pi.c
+         raw.c
+         t1.c
+         t2.c
+         tcd.c
+         tgt.c
+         Generating Code...
+       Lib:
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\Lib.exe /OUT:".\Debug\LibOpenJPEG.lib" /NOLOGO .\Debug/bio.obj
+         .\Debug/cio.obj
+         .\Debug/dwt.obj
+         .\Debug/event.obj
+         .\Debug/function_list.obj
+         .\Debug/image.obj
+         .\Debug/invert.obj
+         .\Debug/j2k.obj
+         .\Debug/jp2.obj
+         .\Debug/mct.obj
+         .\Debug/mqc.obj
+         .\Debug/openjpeg.obj
+         .\Debug/opj_clock.obj
+         .\Debug/pi.obj
+         .\Debug/raw.obj
+         .\Debug/t1.obj
+         .\Debug/t2.obj
+         .\Debug/tcd.obj
+         .\Debug/tgt.obj
+         LibOpenJPEG.2008.vcxproj -> D:\wbox\libs\FreeImage3160\Source\LibOpenJPEG\.\Debug\LibOpenJPEG.lib
+     1>Done Building Project "D:\wbox\libs\FreeImage3160\Source\LibOpenJPEG\LibOpenJPEG.2008.vcxproj" (Rebuild target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:03.03
