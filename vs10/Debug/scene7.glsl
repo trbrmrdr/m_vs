@@ -88,8 +88,31 @@ float scene(vec3 p)
 }
 
 void glow(float d,float br,vec3 color) {
-    if(d<.9)
-	gl_FragColor.rgb += color * br / d;
+    //gl_FragColor.rgb += color * br / d;
+    //return;
+    if(d>40.)
+        return;
+    if(d>30.)// && d<30.)
+    {
+        d-=30;
+        d = smoothstep(0.,1.,d);//11.1;//smoothstep(20.,30.,d);
+        //d *=0.4;
+        //d = cos(d)*10.;
+        //br = br*(d*10.);
+        
+        d=cos(d-.5)*100.;
+        //d = br+d;
+        
+    }
+    vec3 newC = color * br / d;
+    if(false){
+    if(newC.r<.1
+    || newC.g<.005
+    || newC.b<.005 
+    )
+    return;
+    }
+	gl_FragColor.rgb += newC;
 }
 
 void glow(float d) {
@@ -142,7 +165,8 @@ void point2(vec2 a) {
 	vec2 P = gl_FragCoord.xy;
 	float d = distance(P, a);
 	//glow(d);
-    glow(d,4.1,vec3(0.13, 0.15, 0.15));
+    //if(d<20.)
+    glow(d,20.1,vec3(0.13, 0.15, 0.15));
 }
 
 float rand(int seed) {
@@ -166,21 +190,26 @@ void main()
 	// Horizontal grid lines
 	float y = 0.0;
     float dT = 0.1;
-	for (int l=-3; l<3; l++) {
+	for (int l=-4; l<4; l++) {
 		y = -1.0/(0.6 * sin(time * dT) + float(l)*1.2) + 0.25;
 		line(vec2(-1.0, l * -0.25 ), vec2(1.0, l * -0.25) );
-		
+
+        {
+            float x = float(l) + fract(time * dT);
+            line(vec2(x * 0.25, 1.0), vec2(x * 0.25, -1.0));
+        }        
 	}
 	
 	
 	// Starfield
     float tmp = resolution.y/resolution.x;
-	for (int l=0; l<170; l++) {
+	for (int l=0; l<70; l++) {
 		float sx = (fract(rand(l+342) + time * (0.002 + 0.01*rand(l)))-0.5) * 3.0;
 		float sy = y + 0.4 * rand(l+324);
-        sx = mouse.x*resolution.x;//*2. - 1.;
-        sy = mouse.y*resolution.y;//;gl_FragCoord.y*tmp;
-        
+        if(false){
+            sx = mouse.x*resolution.x;//*2. - 1.;
+            sy = mouse.y*resolution.y;//;gl_FragCoord.y*tmp;
+        }
         
         sx = fract(rand(l+342) + time * (0.002 + 0.01*rand(l))) * 3000.0;
 		sy = rand(l)*resolution.y;
@@ -191,14 +220,7 @@ void main()
 		point2(vec2(sx,sy));
         //break;
 	}
-    
-	// Perpendicular grid lines
-    if(true){
-        for (int l=-4; l<4; l++) {
-            float x = float(l) + fract(time * dT);
-            line(vec2(x * 0.25, 1.0), vec2(x * 0.25, -1.0));
-        }
-    }
+   
 	
 	gl_FragColor += vec4(col.yyx,1.0);
 }
