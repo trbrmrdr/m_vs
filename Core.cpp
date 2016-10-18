@@ -73,6 +73,7 @@ namespace LiveCoder
 
 	void initHash()
 	{
+		hashEffectFileTable.clear();
 		for (int i = 0; i < 12; ++i)
 		{
 			const char* file = EffectFileTable[i];
@@ -86,8 +87,23 @@ namespace LiveCoder
 
 
 	// ‰Šú‰»
-	int Core::Initialize(std::string title_ = "Title", int width_ = DefaultWidth, int height_ = DefaultHeight, int SDLflags = SDL_OPENGL)
+	int Core::Initialize(std::string title_ = "Title", int width_ = DefaultWidth, int height_ = DefaultHeight, bool fullScreen_ = false)
 	{
+		fullScreen = fullScreen_;
+		title = title_;
+
+		width = width_;
+		height = height_;
+		return init();
+	}
+
+	int Core::init()
+	{
+		if (fullScreen)
+			SDLflags = SDL_OPENGL | SDL_FULLSCREEN;
+		else
+			SDLflags = SDL_OPENGL | SDL_RESIZABLE;
+
 		initHash();
 		sound_system.play_music();
 
@@ -100,10 +116,12 @@ namespace LiveCoder
 		}
 		Logger::Instance()->OutputString("SDL_Init succeeded");
 
-		title = title_;
+
 		SDL_WM_SetCaption(title.c_str(), NULL);
 
 		info = SDL_GetVideoInfo();
+		//widthM = info->current_w;
+		//heightM = info->current_h;
 
 		if (!info)
 		{
@@ -120,10 +138,8 @@ namespace LiveCoder
 		SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 16);
 		SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 
-		width = width_;
-		height = height_;
-
-		if (SDL_SetVideoMode(width, height, bpp, SDLflags) == 0)
+		mSDL_Surface = SDL_SetVideoMode(width, height, bpp, SDLflags);
+		if (NULL == mSDL_Surface)
 		{
 			Logger::Instance()->OutputString("Error: " + std::string(SDL_GetError()));
 			return -1;
@@ -143,6 +159,7 @@ namespace LiveCoder
 		// Option texture
 #if 1//FreeImage
 
+		optionTexture = 0;
 		FREE_IMAGE_FORMAT format = FreeImage_GetFileType(OPTION_TEXTURE, 0);
 		//F_IMA
 		FIBITMAP* bitmap = FreeImage_Load(format, OPTION_TEXTURE);
@@ -162,14 +179,14 @@ namespace LiveCoder
 			texels = (GLubyte*) calloc(nHeight*scanLineWidh, sizeof(GLubyte));
 			RGBQUAD rgbquad;
 			for (int x = 0; x < nWidth; x++)
-				for (int y = 0; y < nHeight; y++)
-				{
-					FreeImage_GetPixelColor(pImage, x, y, &rgbquad);
+			for (int y = 0; y < nHeight; y++)
+			{
+			FreeImage_GetPixelColor(pImage, x, y, &rgbquad);
 
-					texels[(y*scanLineWidh + 3 * x)] = ((GLubyte*) &rgbquad)[2];
-					texels[(y*scanLineWidh + 3 * x) + 1] = ((GLubyte*) &rgbquad)[1];
-					texels[(y*scanLineWidh + 3 * x) + 2] = ((GLubyte*) &rgbquad)[0];
-				}
+			texels[(y*scanLineWidh + 3 * x)] = ((GLubyte*) &rgbquad)[2];
+			texels[(y*scanLineWidh + 3 * x) + 1] = ((GLubyte*) &rgbquad)[1];
+			texels[(y*scanLineWidh + 3 * x) + 2] = ((GLubyte*) &rgbquad)[0];
+			}
 			/**/
 			texels = FreeImage_GetBits(pImage);
 			glGenTextures(1, &optionTexture);
@@ -272,7 +289,41 @@ namespace LiveCoder
 		return 0;
 	}
 
-	int Core::ProcessSDLEvents()
+	void Core::deinit()
+	{
+		BitmapFontGL::Instance()->Free();
+
+		for (int i = 0; i < EffectNum; ++i)
+			shaderGL[i].Free();
+		//delete audioAnalyzer;
+		if(NULL!= audio_spectr_l)
+		delete audio_spectr_l; audio_spectr_l = NULL;
+		if(NULL!= audio_spectr_r)
+		delete audio_spectr_r; audio_spectr_r = NULL;
+
+		if (audioTexture != 0)
+			glDeleteTextures(1, &audioTexture);
+
+		if (frameBuffer != 0)
+			glDeleteFramebuffers(1, &frameBuffer);
+		if (renderBuffer != 0)
+			glDeleteRenderbuffers(1, &renderBuffer);
+		if (renderTexture != 0)
+			glDeleteTextures(1, &renderTexture);
+		if (backTexture != 0)
+			glDeleteTextures(1, &backTexture);
+		if (optionTexture != 0)
+			glDeleteTextures(1, &optionTexture);
+
+		audioTexture = 0;
+		frameBuffer = 0;
+		renderBuffer = 0;
+		renderTexture = 0;
+		backTexture = 0;
+		optionTexture = 0;
+	}
+
+	int	Core::ProcessSDLEvents()
 	{
 
 		///check hash file
@@ -323,6 +374,7 @@ namespace LiveCoder
 						else if (ctrl)
 							nowEffect += 24;
 
+						std::cout << "curr Effect = " << nowEffect << std::endl;
 						shaderGL[nowEffect].CompileFromFile(EffectFileTable[nowEffect]);
 						textEditor.Load(EffectFileTable[nowEffect]);
 					}
@@ -344,6 +396,37 @@ namespace LiveCoder
 						static bool cursor = true;
 						cursor = !cursor;
 						SDL_ShowCursor(cursor);
+					}
+					if (eve.key.keysym.sym == SDLK_q)
+					{
+						saveFronBuf = true;
+					}
+
+					if (eve.key.keysym.sym == SDLK_RETURN && eve.key.keysym.mod & SDLK_LAST)
+					{
+						fullScreen = !fullScreen;
+						deinit();
+
+						width = 1200;
+						height = 720;
+						if (fullScreen)
+						{
+							width = 1920;
+							height = 1080;
+						}
+
+						init();
+
+						BitmapFontGL::Instance()->CreateTexture();
+						// precompile the effect for editor
+						shaderGL[POSTFxID].CompileFromFile(EffectFileTable[POSTFxID]);
+						textEditor.Load(EffectFileTable[0]);
+						glGenTextures(1, &audioTexture);
+						//*/
+						nowSource = "";
+						shaderGL[nowEffect].CompileFromFile(EffectFileTable[nowEffect]);
+						textEditor.Load(EffectFileTable[nowEffect]);
+
 					}
 
 				}
@@ -441,6 +524,7 @@ namespace LiveCoder
 	vec2 mMid(0, 0);
 	vec2 mHigh(0, 0);
 
+	int tmpFPS = 0;
 	void Core::Render()
 	{
 		// Swap render target
@@ -462,8 +546,17 @@ namespace LiveCoder
 		}
 
 		Uint32 nowTime = SDL_GetTicks();
-
 		float realSec = (nowTime - baseTime) / 1000.0f;
+
+		float delay = (nowTime - prevTime) / 1000.0f;
+		tmpFPS++;
+		if (delay >= .5f)
+		{
+			prevTime = nowTime;
+			fps = (int) ((float) tmpFPS / delay);
+			tmpFPS = 0;
+		}
+		//prevTime = nowTime;
 
 		float low = 0.0f;
 		float mid = 0.0f;
@@ -494,6 +587,7 @@ namespace LiveCoder
 
 			// Calculate low, mid, high freq.
 			if (audio_spectr_l != NULL)
+			//if (false)
 			{
 				if (lastSec == -1)
 					lastSec = realSec;
@@ -601,6 +695,44 @@ namespace LiveCoder
 		glBindTexture(GL_TEXTURE_2D, backTexture);
 		glCopyTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 0, 0, width, height, 0);
 		glBindTexture(GL_TEXTURE_2D, 0);
+
+		if (saveFronBuf)
+		{
+			int bitsPerPixel = 32;//24
+			int bytesPerPixel = (int) ceil(bitsPerPixel / 8.0);
+			unsigned char   *pixels = new unsigned char[(size_t) width*(size_t) height*(size_t) bitsPerPixel / 8];
+
+			glPushClientAttrib(GL_CLIENT_PIXEL_STORE_BIT);
+			glPixelStorei(GL_PACK_ALIGNMENT, 1);                                                        // set read non block aligned...
+			glReadPixels(0, 0, width, height, GL_BGRA, GL_UNSIGNED_BYTE, pixels);
+			glPopClientAttrib();
+
+			int sizeOfOneLineOfPixels = width * bytesPerPixel;
+			unsigned char * tempLineOfPix = new unsigned char[sizeOfOneLineOfPixels];
+			unsigned char * linea;
+			unsigned char * lineb;
+			for (int i = 0; i < height / 2; i++)
+			{
+				linea = pixels + i * sizeOfOneLineOfPixels;
+				lineb = pixels + (height - i - 1) * sizeOfOneLineOfPixels;
+				memcpy(tempLineOfPix, linea, sizeOfOneLineOfPixels);
+				memcpy(linea, lineb, sizeOfOneLineOfPixels);
+				memcpy(lineb, tempLineOfPix, sizeOfOneLineOfPixels);
+			}
+			delete[] tempLineOfPix;
+			//#############################
+			FIBITMAP *bmp = FreeImage_ConvertFromRawBits(pixels, width, height, width*bytesPerPixel, bitsPerPixel, 0, 0, 0, true);
+			std::string fileName = "test.png";
+			FREE_IMAGE_FORMAT fif = FIF_UNKNOWN;
+			fif = FreeImage_GetFileType(fileName.c_str(), 0);
+			if (fif == FIF_UNKNOWN)
+				fif = FreeImage_GetFIFFromFilename(fileName.c_str());
+			if ((fif != FIF_UNKNOWN) && FreeImage_FIFSupportsWriting(fif))
+				FreeImage_Save(fif, bmp, fileName.c_str(), 0);
+			if (bmp != NULL)
+				FreeImage_Unload(bmp);
+			saveFronBuf = false;
+		}
 
 		if (editMode)
 		{
@@ -715,6 +847,10 @@ namespace LiveCoder
 				BitmapFontGL::Instance()->DrawLine(EffectFileTable[nowEffect], aspect, width, textEditor.GetMaxLineNum(), 0.5f, 0.5f, 1.0f, 0.0f, 0.0f);
 
 			BitmapFontGL::Instance()->DrawLine("F1-F10: Change File  F11: Show/Hide code  F12: Edit PostFx", aspect, width, textEditor.GetMaxLineNum() + 1, 0.5f, 0.5f);
+			char tmp[100];
+			sprintf(tmp, "realSec = %f   FPS = %i", realSec, fps);
+			BitmapFontGL::Instance()->DrawLine(tmp, aspect, width, textEditor.GetMaxLineNum() + 2, 0.5f, 0.5f);
+
 
 			// render editor cursor
 			EditorCursor cursor = textEditor.GetCursorPosition();
@@ -801,12 +937,12 @@ namespace LiveCoder
 
 		BitmapFontGL::Instance()->CreateTexture();
 		baseTime = SDL_GetTicks();
-
+		prevTime = baseTime;
 		// precompile the effect for editor
 		shaderGL[POSTFxID].CompileFromFile(EffectFileTable[POSTFxID]);
 		textEditor.Load(EffectFileTable[0]);
-
 		glGenTextures(1, &audioTexture);
+
 		sound_system.update();
 		while (!end)
 		{
@@ -829,7 +965,9 @@ namespace LiveCoder
 		return 0;
 	}
 
-	Core::Core() : width(0), height(0), end(false), nowEffect(0), editMode(true), nowCompiled(false),
+	Core::Core() : width(0), height(0), end(false), nowEffect(0), editMode(true), nowCompiled(false), saveFronBuf(false),
+		fullScreen(false),
+		SDLflags(SDL_OPENGL),
 		sound_system("Anuch-Metro.mp3")
 	{
 
@@ -840,18 +978,7 @@ namespace LiveCoder
 
 	Core::~Core()
 	{
-		//delete audioAnalyzer;
-		delete audio_spectr_l;
-		delete audio_spectr_r;
-
-		if (frameBuffer != 0)
-			glDeleteFramebuffers(1, &frameBuffer);
-		if (renderBuffer != 0)
-			glDeleteRenderbuffers(1, &renderBuffer);
-		if (renderTexture != 0)
-			glDeleteTextures(1, &renderTexture);
-		if (backTexture != 0)
-			glDeleteTextures(1, &backTexture);
+		deinit();
 	}
 
 };

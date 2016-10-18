@@ -26,8 +26,10 @@ inline void fmod_errorcheck(const FMOD_RESULT result)
 }
 
 FMOD_DSP *m_dsp_fft;
-sound_system_c::sound_system_c(const char *song_name)
+sound_system_c::sound_system_c(const char *song_name):
+	isPlaying(false)
 {
+	
 	// Init FMOD
 	fmod_errorcheck(FMOD_System_Create(&fmod_system));
 
@@ -66,9 +68,11 @@ sound_system_c::~sound_system_c()
 
 void sound_system_c::play_music()
 {
+	if(!isPlaying)
 	//x fmod_errorcheck(FMOD_System_PlaySound(fmod_system,  music, FMOD_CHANNEL_FREE, false, &channel));
 	fmod_errorcheck(FMOD_System_PlaySound(fmod_system, music, 0, false, &channel));
 
+	isPlaying = true;
 }
 
 #include <ctime>

@@ -30,6 +30,7 @@ class sound_system_c {
 		FMOD_SYSTEM *fmod_system;
 		FMOD_SOUND *music;
 		FMOD_CHANNEL *channel;
+		bool isPlaying;
 
 	public:
 		sound_system_c(const char *song_name);

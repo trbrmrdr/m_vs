@@ -11,6 +11,8 @@ uniform vec2 resolution;
 #define STEPS 16
 #define PRECISION 0.001
 #define DEPTH 35.0
+#define M_PI 3.14159265359
+#define M_PI2 1.57079632679
 
 vec3 eye = vec3(0,0.5,-1)*3.0;
 vec3 light = vec3(0,1,-1);
@@ -87,38 +89,49 @@ float scene(vec3 p)
 	return 0.0;
 }
 
+void glow(float d) {
+	float br =10.601;
+    //float br =0.005 * resolution.y;
+    if(d>1.0)return;
+    br=1.0;
+	gl_FragColor.rgb += vec3(0.3, 0.15, 0.45) * br / d;
+}
+
 void glow(float d,float br,vec3 color) {
+    glow(d);
+    return;
     //gl_FragColor.rgb += color * br / d;
     //return;
-    if(d>40.)
-        return;
+    //if(d>40.)
+      //  return;
     if(d>30.)// && d<30.)
     {
-        d-=30;
-        d = smoothstep(0.,1.,d);//11.1;//smoothstep(20.,30.,d);
+        //d-=30;
+        //d = smoothstep(0.,1.,d);//11.1;//smoothstep(20.,30.,d);
         //d *=0.4;
         //d = cos(d)*10.;
         //br = br*(d*10.);
         
-        d=cos(d-.5)*100.;
+        //d=cos(d-.5)*100.;
         //d = br+d;
         
     }
-    vec3 newC = color * br / d;
-    if(false){
+    
+    //if(d>br)
+    //    return;
+    float sc = br / d;
+    if(d/br>M_PI2)return;
+    //if(sc>M_PI)
+        //return;
+    sc = sin(d/br+M_PI2)*(br*1000./abs(d*d*d));
+    vec3 newC = color * sc;
+    if(false)
     if(newC.r<.1
     || newC.g<.005
     || newC.b<.005 
     )
     return;
-    }
 	gl_FragColor.rgb += newC;
-}
-
-void glow(float d) {
-	float br =10.601;
-    //float br =0.005 * resolution.y;
-	gl_FragColor.rgb += vec3(0.3, 0.15, 0.45) * br / d;
 }
 
 void line( vec2 a, vec2 l ) {
@@ -206,14 +219,14 @@ void main()
 	for (int l=0; l<70; l++) {
 		float sx = (fract(rand(l+342) + time * (0.002 + 0.01*rand(l)))-0.5) * 3.0;
 		float sy = y + 0.4 * rand(l+324);
+       
+        sx = fract(rand(l+342) + time * (0.002 + 0.01*rand(l))) * 3000.0;
+		sy = rand(l)*resolution.y;
+       
         if(false){
             sx = mouse.x*resolution.x;//*2. - 1.;
             sy = mouse.y*resolution.y;//;gl_FragCoord.y*tmp;
-        }
-        
-        sx = fract(rand(l+342) + time * (0.002 + 0.01*rand(l))) * 3000.0;
-		sy = rand(l)*resolution.y;
-        
+        }       
         //sx = .5;
         //sy = .0;
         //sy =100.5;

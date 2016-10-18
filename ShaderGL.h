@@ -48,6 +48,7 @@ public:
 	void SetUniform(const GLchar* name, float* fv, int size);
 	void SetUniform(const GLchar* name, float x, float y);
 	
+	void Free();
 };
 
 };

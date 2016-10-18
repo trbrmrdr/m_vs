@@ -49,9 +49,16 @@ class Core {
 private:
 	int width;
 	int height;
+
+	//int widthM;
+	///int heightM;
+	SDL_Surface* mSDL_Surface;
 	int bpp;
 	bool end;
 
+	int SDLflags;
+	bool fullScreen;
+	bool saveFronBuf;
 	bool editMode;
 	bool nowCompiled;
 	bool errorHighlight;
@@ -74,6 +81,8 @@ private:
 	std::string nowSource;
 
 	Uint32 baseTime;
+	Uint32 prevTime;
+	int fps;
 
 	float* audio_spectr_l = NULL;
 	float* audio_spectr_r = NULL;
@@ -90,7 +99,10 @@ private:
 	GLuint optionTexture;
 public:
 
-	int Initialize(std::string title_, int width_, int height_, int SDLflags);
+	int Initialize(std::string title_, int width_, int height_, bool fullScreen_);
+	int init();
+	void deinit();
+
 	int MainLoop();
 	void Render();
 

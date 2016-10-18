@@ -68,6 +68,15 @@ class BitmapFontGL
 			glPopAttrib();
 		}
 
+		void Free()
+		{
+			if (texName != 0)
+			{
+				glDeleteTextures(1, &texName);
+				texName = 0;
+			}
+		}
+
 		void DrawCursor(int col, int row, float aspect, float width) {
 			unsigned int ddx = row * fontWidth;
 			unsigned int ddy = -col * fontHeight;

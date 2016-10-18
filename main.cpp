@@ -10,15 +10,24 @@ extern "C" FILE * __cdecl __iob_func(void)
 }
 
 
+#ifdef _DEBUG
+#include <crtdbg.h>
+//#define _CRTDBG_MAP_ALLOC
+#endif
+
 int main(int argc, char** argv) {
+	//_CrtSetReportMode(_CRT_WARN, _CRTDBG_MODE_FILE);
+	//_CrtSetReportFile(_CRT_WARN, _CRTDBG_FILE_STDOUT);
+	_CrtDumpMemoryLeaks();
+
 	LiveCoder::Core core;
-	int flags = SDL_OPENGL;
+	int fullScreent = false;
 	int width = 1280;
 	int height = 720;
 
 	if (argc >= 2) {
 	  if (strcmp(argv[1], "-f") == 0) {
-	    flags = SDL_OPENGL | SDL_FULLSCREEN;
+		  fullScreent = true;
 	  }
 	}
 	if (argc >= 4) {
@@ -26,10 +35,9 @@ int main(int argc, char** argv) {
 	  height = atoi(argv[3]);
 	}
 
-	if (core.Initialize("Live Coder", width, height, flags) < 0) {
+	if (core.Initialize("Live Coder", width, height, fullScreent) < 0) {
 		return -1;
 	}
 	core.MainLoop();
-
 	return 0;
 }
