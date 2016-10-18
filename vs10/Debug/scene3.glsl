@@ -4,11 +4,14 @@
 #ifdef GL_ES
 precision highp float;
 #endif
+
 uniform float time;
 uniform float lowFreq;
 uniform float midFreq;
 uniform vec2 mouse;
 uniform vec2 resolution;
+
+//varying vec2 v_uv;
 
 float makePoint(float x,float y,float fx,float fy,float sx,float sy,float t){
    float xx=x+sin(t*fx)*sx;
@@ -16,6 +19,23 @@ float makePoint(float x,float y,float fx,float fy,float sx,float sy,float t){
    //float xx=x+sin(fx)*sx;
    //float yy=y+cos(fy)*sy;
    return 1.0/sqrt(xx*xx+yy*yy);
+}
+
+
+
+void fill(float d){
+    float br = 10.;
+    //if(d>1.)return;
+    gl_FragColor.rgb += vec3(0.3, 0.15, 0.45) * br / d;
+}
+
+void point(vec2 pos){
+    vec2 P = gl_FragCoord.xy;
+	float d = distance(P, pos);
+	//glow(d);
+    //if(d<20.)
+    //glow(d,20.1,vec3(0.13, 0.15, 0.15));
+    fill(d);
 }
 
 
@@ -62,4 +82,6 @@ void main( void ) {
    vec3 d=vec3(a,0,0)*.012;
    
    gl_FragColor = weight * vec4(d.x,d.y,d.z,1.0);
+   point(mouse*resolution);
+   //point(vec2(200,100));
 }

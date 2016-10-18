@@ -96,7 +96,6 @@ namespace LiveCoder
 					glDeleteShader(prog);
 					prog = 0;
 				}
-
 				return prog;
 			}break;
 			case GLSL_FS:
@@ -149,31 +148,52 @@ namespace LiveCoder
 		shaderProgram = 0;
 	}
 
-	GLuint ShaderGL::CompileFromFile(const std::string& filename)
+
+
+	std::string readFile(const std::string& filename)
 	{
+		std::string ret;
 		FILE* fp = fopen(filename.c_str(), "rt");
 		if (fp != NULL)
 		{
-			std::string fsshader;
 			char buf[1024];
 			while (fgets(buf, 1024, fp) != NULL)
 			{
-				fsshader += buf;
+				ret += buf;
 			}
 
 			fclose(fp);
-
-			return Compile(fsshader);
-
 		}
+		return ret;
+	}
+
+	GLuint ShaderGL::CompileFromFile(const std::string& filename)
+	{
+		std::string fsshader = readFile(filename);
+		if (!fsshader.empty())
+			return Compile(fsshader);
 		return 0;
 	}
 
 	GLuint ShaderGL::Compile(const std::string& fsshader)
 	{
 		// 頂点シェーダー（固定）
-		static const std::string vsshader = "attribute vec2 pos;void main(){gl_Position=vec4(pos.xy,0,1);}";
+		std::string vsshader = "\
+			attribute vec2 pos;\
+			\
+			//attribute vec2 a_vertex_xy;\
+			\
+			attribute vec2 a_vertex_uv;\
+			varying vec2 v_uv;\
+			\
+			void main(){\
+				gl_Position=vec4(pos.xy,0,1);\
+				/*gl_Position=vec4(a_vertex_xy,0,1);*/\
+				\
+				/*v_uv = a_vertex_uv;*/\
+			}";
 
+		vsshader = readFile("base.glvs");
 		errorLinesVS.clear();
 		GLuint vsh = CompileShader(GLSL_VS, vsshader.c_str(), &errorLinesVS);
 		if (vsh == 0)

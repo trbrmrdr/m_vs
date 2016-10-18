@@ -14,6 +14,8 @@ uniform float lowFreq;
 uniform float midFreq;
 uniform float highFreq;
 uniform float time;
+
+//varying vec2 v_uv;
 /*
 void main() {
   vec2 pos = vec2(0.5, 0.5) - gl_FragCoord.xy / resolution.y;
