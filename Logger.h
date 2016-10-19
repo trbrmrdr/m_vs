@@ -1,4 +1,3 @@
-
 #include <string>
 #ifndef _LOGGER_
 #define _LOGGER_
@@ -6,46 +5,46 @@
 #include <vector>
 #include <iostream>
 
-namespace LiveCoder {
+namespace App {
 
-class Logger {
-private:
-	std::vector<std::string> logs;
-public:
-	void PushString(std::string str) {
-		logs.push_back(str);
-	}
-	void OutputString(std::string str) {
-		std::cout << str << std::endl;
-		logs.push_back(str);
-	}
+#define LOGGER Logger::Instance
 
-	std::string ToString() {
-		std::string str;
-		for (int i = 0; i < logs.size(); i ++)
-			str += logs[i] + "\n";
+	class Logger {
+	private:
+		std::vector<std::string> logs;
+	public:
+		void PushString(std::string str) {
+			logs.push_back(str);
+		}
+		void OutputString(std::string str) {
+			std::cout<<str<<std::endl;
+			logs.push_back(str);
+		}
 
-		return str;
-	}
+		std::string ToString() {
+			std::string str;
+			for (int i = 0; i<logs.size(); i++)
+				str += logs[i]+"\n";
 
-	void Save(void) {
-		// ...
-	}
+			return str;
+		}
 
-	static Logger* Instance() {    
-		static Logger instance;  // 唯一のインスタンス
-    	return &instance;
-	}
+		void Save(void) {
+			// ...
+		}
 
-	Logger(const Logger& rhs) {};
-	Logger& operator=(const Logger& rhs) {};
+		static Logger* Instance() {
+			static Logger instance;
+			return &instance;
+		}
 
-	Logger() {
-	}
+		Logger(const Logger& rhs) {};
+		Logger& operator=(const Logger& rhs) {};
 
-	virtual ~Logger() {
-	}
-};
+		Logger() {}
+
+		virtual ~Logger() {}
+	};
 
 };
 

@@ -37,7 +37,7 @@
 //#include "AudioAnalyzer.h"
 #include "sound_system.h"
 
-namespace LiveCoder {
+namespace App {
 	
 const int DefaultWidth = 800;
 const int DefaultHeight = 600;

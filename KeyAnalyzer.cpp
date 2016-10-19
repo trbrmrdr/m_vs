@@ -1,6 +1,6 @@
 #include "KeyAnalyzer.h"
 
-namespace LiveCoder {
+using namespace App;
 
 bool IsMoveKey(SDLKey key) {
 	if (key == SDLK_UP || key == SDLK_DOWN || key == SDLK_LEFT || key == SDLK_RIGHT ||
@@ -131,6 +131,4 @@ KeyAnalyzer::KeyAnalyzer(void)
 
 KeyAnalyzer::~KeyAnalyzer(void)
 {
-}
-
 }

@@ -5,7 +5,7 @@
 
 #include "TextEditor.h"
 
-namespace LiveCoder {
+namespace App {
 
 
 class KeyAnalyzer

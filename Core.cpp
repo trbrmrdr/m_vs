@@ -6,13 +6,11 @@
 #include <map>
 #include <string>
 
-bool one = true;
 //#include <src/pngwriter.h>
 #include <FreeImage.h>
 #define OPTION_TEXTURE "option.png"
 
-namespace LiveCoder
-{
+namespace App {
 
 	const int POSTFxID = 11;
 	const char* EffectFileTable[] = {
@@ -60,25 +58,23 @@ namespace LiveCoder
 
 
 	std::map<std::string, long> hashEffectFileTable;
-	long getLastDataEdit(const char* fileName)
-	{
+	long getLastDataEdit(const char* fileName) {
 		struct tm* clock;
 		struct stat attrib;
 		stat(fileName, &attrib);
 		clock = gmtime(&(attrib.st_mtime));
-		return  clock->tm_hour * 10000
-			+ clock->tm_min * 100
-			+ clock->tm_sec;
+		return  clock->tm_hour*10000
+			+clock->tm_min*100
+			+clock->tm_sec;
 	}
 
-	void initHash()
-	{
+	void initHash() {
 		hashEffectFileTable.clear();
-		for (int i = 0; i < 12; ++i)
+		for (int i = 0; i<12; ++i)
 		{
 			const char* file = EffectFileTable[i];
 			FILE* fp = fopen(file, "rt");
-			if (fp == NULL)
+			if (fp==NULL)
 				continue;
 			long tmp = getLastDataEdit(file);
 			hashEffectFileTable.insert(std::pair<std::string, long>(file, tmp));
@@ -87,8 +83,7 @@ namespace LiveCoder
 
 
 	// èâä˙âª
-	int Core::Initialize(std::string title_ = "Title", int width_ = DefaultWidth, int height_ = DefaultHeight, bool fullScreen_ = false)
-	{
+	int Core::Initialize(std::string title_ = "Title", int width_ = DefaultWidth, int height_ = DefaultHeight, bool fullScreen_ = false) {
 		fullScreen = fullScreen_;
 		title = title_;
 
@@ -97,21 +92,20 @@ namespace LiveCoder
 		return init();
 	}
 
-	int Core::init()
-	{
+	int Core::init() {
 		if (fullScreen)
-			SDLflags = SDL_OPENGL | SDL_FULLSCREEN;
+			SDLflags = SDL_OPENGL|SDL_FULLSCREEN;
 		else
-			SDLflags = SDL_OPENGL | SDL_RESIZABLE;
+			SDLflags = SDL_OPENGL|SDL_RESIZABLE;
 
 		initHash();
 		sound_system.play_music();
 
 		const SDL_VideoInfo* info = NULL;
 
-		if (SDL_Init(SDL_INIT_VIDEO) < 0)
+		if (SDL_Init(SDL_INIT_VIDEO)<0)
 		{
-			Logger::Instance()->OutputString("Error: " + std::string(SDL_GetError()));
+			Logger::Instance()->OutputString("Error: "+std::string(SDL_GetError()));
 			return -1;
 		}
 		Logger::Instance()->OutputString("SDL_Init succeeded");
@@ -125,7 +119,7 @@ namespace LiveCoder
 
 		if (!info)
 		{
-			Logger::Instance()->OutputString("Error: " + std::string(SDL_GetError()));
+			Logger::Instance()->OutputString("Error: "+std::string(SDL_GetError()));
 			return -1;
 		}
 		Logger::Instance()->OutputString("SDL_GetVideoInfo succeeded");
@@ -139,9 +133,9 @@ namespace LiveCoder
 		SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 
 		mSDL_Surface = SDL_SetVideoMode(width, height, bpp, SDLflags);
-		if (NULL == mSDL_Surface)
+		if (NULL==mSDL_Surface)
 		{
-			Logger::Instance()->OutputString("Error: " + std::string(SDL_GetError()));
+			Logger::Instance()->OutputString("Error: "+std::string(SDL_GetError()));
 			return -1;
 		}
 		Logger::Instance()->OutputString("SDL_SetVideoMode succeeded");
@@ -149,7 +143,7 @@ namespace LiveCoder
 
 #ifdef	__NEEDSGLEW__
 		// GLEW
-		if (glewInit() != GLEW_OK)
+		if (glewInit()!=GLEW_OK)
 		{
 			Logger::Instance()->OutputString("Error: glewInit()");
 			return -1;
@@ -163,7 +157,7 @@ namespace LiveCoder
 		FREE_IMAGE_FORMAT format = FreeImage_GetFileType(OPTION_TEXTURE, 0);
 		//F_IMA
 		FIBITMAP* bitmap = FreeImage_Load(format, OPTION_TEXTURE);
-		if (NULL == bitmap)
+		if (NULL==bitmap)
 		{
 			Logger::Instance()->OutputString("Error: LoadFreeImage");
 		}
@@ -203,7 +197,7 @@ namespace LiveCoder
 #else //SDL
 		glGenTextures(1, &optionTexture);
 		SDL_Surface* bmp = SDL_LoadBMP("option.bmp");
-		if (bmp != NULL)
+		if (bmp!=NULL)
 		{
 			Uint32 rmask, gmask, bmask, amask;
 #if SDL_BYTEORDER == SDL_BIG_ENDIAN
@@ -289,30 +283,29 @@ namespace LiveCoder
 		return 0;
 	}
 
-	void Core::deinit()
-	{
+	void Core::deinit() {
 		BitmapFontGL::Instance()->Free();
 
-		for (int i = 0; i < EffectNum; ++i)
+		for (int i = 0; i<EffectNum; ++i)
 			shaderGL[i].Free();
 		//delete audioAnalyzer;
-		if(NULL!= audio_spectr_l)
-		delete audio_spectr_l; audio_spectr_l = NULL;
-		if(NULL!= audio_spectr_r)
-		delete audio_spectr_r; audio_spectr_r = NULL;
+		if (NULL!=audio_spectr_l)
+			delete audio_spectr_l; audio_spectr_l = NULL;
+		if (NULL!=audio_spectr_r)
+			delete audio_spectr_r; audio_spectr_r = NULL;
 
-		if (audioTexture != 0)
+		if (audioTexture!=0)
 			glDeleteTextures(1, &audioTexture);
 
-		if (frameBuffer != 0)
+		if (frameBuffer!=0)
 			glDeleteFramebuffers(1, &frameBuffer);
-		if (renderBuffer != 0)
+		if (renderBuffer!=0)
 			glDeleteRenderbuffers(1, &renderBuffer);
-		if (renderTexture != 0)
+		if (renderTexture!=0)
 			glDeleteTextures(1, &renderTexture);
-		if (backTexture != 0)
+		if (backTexture!=0)
 			glDeleteTextures(1, &backTexture);
-		if (optionTexture != 0)
+		if (optionTexture!=0)
 			glDeleteTextures(1, &optionTexture);
 
 		audioTexture = 0;
@@ -323,16 +316,15 @@ namespace LiveCoder
 		optionTexture = 0;
 	}
 
-	int	Core::ProcessSDLEvents()
-	{
+	int	Core::ProcessSDLEvents() {
 
 		///check hash file
 		const char* file = EffectFileTable[nowEffect];
 		std::map<std::string, long>::iterator it = hashEffectFileTable.find(std::string(file));
-		if (it != hashEffectFileTable.end())
+		if (it!=hashEffectFileTable.end())
 		{
 			long newD = getLastDataEdit(file);
-			if (newD != it->second)
+			if (newD!=it->second)
 			{
 				it->second = newD;
 				shaderGL[nowEffect].CompileFromFile(EffectFileTable[nowEffect]);
@@ -346,7 +338,7 @@ namespace LiveCoder
 		SDL_PumpEvents();
 		int mouseX, mouseY;
 		SDL_GetMouseState(&mouseX, &mouseY);
-		mouseBuffer.SetPosition(((float) mouseX / width), 1.0f - (float) mouseY / height);
+		mouseBuffer.SetPosition(((float)mouseX/width), 1.0f-(float)mouseY/height);
 
 		keyBuffer.Clear();
 		while (SDL_PollEvent(&eve))
@@ -354,83 +346,83 @@ namespace LiveCoder
 			switch (eve.type)
 			{
 				case SDL_KEYDOWN:
-				{
-					Uint16 ch = eve.key.keysym.unicode;
-					SDLKey key = isprint(ch) ? (SDLKey) ch : eve.key.keysym.sym;
-
-					if (editMode)
-						keyAnalyzer.KeyHit(&textEditor, key, eve.key.keysym.mod, EffectFileTable[nowEffect]);
-					if (eve.key.keysym.sym == SDLK_ESCAPE)
-						return -1;
-
-					int ctrl = eve.key.keysym.mod & KMOD_CTRL;
-					int alt = eve.key.keysym.mod & KMOD_ALT;
-
-					if (SDLK_F1 <= eve.key.keysym.sym && eve.key.keysym.sym <= SDLK_F12 && eve.key.keysym.sym != SDLK_F11)
 					{
-						nowEffect = eve.key.keysym.sym - SDLK_F1;
-						if (alt)
-							nowEffect += 12;
-						else if (ctrl)
-							nowEffect += 24;
+						Uint16 ch = eve.key.keysym.unicode;
+						SDLKey key = isprint(ch)?(SDLKey)ch:eve.key.keysym.sym;
 
-						std::cout << "curr Effect = " << nowEffect << std::endl;
-						shaderGL[nowEffect].CompileFromFile(EffectFileTable[nowEffect]);
-						textEditor.Load(EffectFileTable[nowEffect]);
-					}
-
-					if (eve.key.keysym.sym == SDLK_F11)
-					{
 						if (editMode)
-							editMode = false;
-						else
-							editMode = true;
-					}
+							keyAnalyzer.KeyHit(&textEditor, key, eve.key.keysym.mod, EffectFileTable[nowEffect]);
+						if (eve.key.keysym.sym==SDLK_ESCAPE)
+							return -1;
 
-					if (eve.key.keysym.mod & KMOD_CTRL && eve.key.keysym.sym == SDLK_TAB)
-					{
-						errorHighlight = !errorHighlight;
-					}
-					if (eve.key.keysym.mod & KMOD_CTRL && eve.key.keysym.sym == SDLK_SPACE)
-					{
-						static bool cursor = true;
-						cursor = !cursor;
-						SDL_ShowCursor(cursor);
-					}
-					if (eve.key.keysym.sym == SDLK_q)
-					{
-						saveFronBuf = true;
-					}
+						int ctrl = eve.key.keysym.mod & KMOD_CTRL;
+						int alt = eve.key.keysym.mod & KMOD_ALT;
 
-					if (eve.key.keysym.sym == SDLK_RETURN && eve.key.keysym.mod & SDLK_LAST)
-					{
-						fullScreen = !fullScreen;
-						deinit();
-
-						width = 1200;
-						height = 720;
-						if (fullScreen)
+						if (SDLK_F1<=eve.key.keysym.sym && eve.key.keysym.sym<=SDLK_F12 && eve.key.keysym.sym!=SDLK_F11)
 						{
-							width = 1920;
-							height = 1080;
+							nowEffect = eve.key.keysym.sym-SDLK_F1;
+							if (alt)
+								nowEffect += 12;
+							else if (ctrl)
+								nowEffect += 24;
+
+							std::cout<<"curr Effect = "<<nowEffect<<std::endl;
+							shaderGL[nowEffect].CompileFromFile(EffectFileTable[nowEffect]);
+							textEditor.Load(EffectFileTable[nowEffect]);
 						}
 
-						init();
+						if (eve.key.keysym.sym==SDLK_F11)
+						{
+							if (editMode)
+								editMode = false;
+							else
+								editMode = true;
+						}
 
-						BitmapFontGL::Instance()->CreateTexture();
-						// precompile the effect for editor
-						shaderGL[POSTFxID].CompileFromFile(EffectFileTable[POSTFxID]);
-						textEditor.Load(EffectFileTable[0]);
-						glGenTextures(1, &audioTexture);
-						//*/
-						nowSource = "";
-						shaderGL[nowEffect].CompileFromFile(EffectFileTable[nowEffect]);
-						textEditor.Load(EffectFileTable[nowEffect]);
+						if (eve.key.keysym.mod & KMOD_CTRL && eve.key.keysym.sym==SDLK_TAB)
+						{
+							errorHighlight = !errorHighlight;
+						}
+						if (eve.key.keysym.mod & KMOD_CTRL && eve.key.keysym.sym==SDLK_SPACE)
+						{
+							static bool cursor = true;
+							cursor = !cursor;
+							SDL_ShowCursor(cursor);
+						}
+						if (eve.key.keysym.sym==SDLK_q)
+						{
+							saveFronBuf = true;
+						}
+
+						if (eve.key.keysym.sym==SDLK_RETURN && eve.key.keysym.mod & SDLK_LAST)
+						{
+							fullScreen = !fullScreen;
+							deinit();
+
+							width = 1200;
+							height = 720;
+							if (fullScreen)
+							{
+								width = 1920;
+								height = 1080;
+							}
+
+							init();
+
+							BitmapFontGL::Instance()->CreateTexture();
+							// precompile the effect for editor
+							shaderGL[POSTFxID].CompileFromFile(EffectFileTable[POSTFxID]);
+							textEditor.Load(EffectFileTable[0]);
+							glGenTextures(1, &audioTexture);
+							//*/
+							nowSource = "";
+							shaderGL[nowEffect].CompileFromFile(EffectFileTable[nowEffect]);
+							textEditor.Load(EffectFileTable[nowEffect]);
+
+						}
 
 					}
-
-				}
-				break;
+					break;
 
 				case SDL_QUIT:
 					return -1;
@@ -441,8 +433,7 @@ namespace LiveCoder
 		return 0;
 	}
 
-	const char* GLErrString(int err)
-	{
+	const char* GLErrString(int err) {
 		switch (err)
 		{
 			case GL_INVALID_ENUM:
@@ -463,11 +454,10 @@ namespace LiveCoder
 		return "";
 	}
 
-	void CheckGLError()
-	{
-		for (GLenum err; (err = glGetError()) != GL_NO_ERROR;)
+	void CheckGLError() {
+		for (GLenum err; (err = glGetError())!=GL_NO_ERROR;)
 		{
-			std::cout << "GL_ERROR: " << err << " " << GLErrString(err);
+			std::cout<<"GL_ERROR: "<<err<<" "<<GLErrString(err);
 		}
 	}
 
@@ -478,39 +468,36 @@ namespace LiveCoder
 	float lastSec = -1;
 	bool isAudioCalc = false;
 
-	struct vec2
-	{
+	struct vec2 {
 		float from;
 		float to;
 		float lastT = 0;
 		float ut = uT_sp;
 
 		bool isEnd = true;
-		vec2(float from, float to) :from(from), to(to) {}
+		vec2(float from, float to):from(from), to(to) {}
 
-		void setVar(float newP, float sec)
-		{
+		void setVar(float newP, float sec) {
 			if (!isEnd)
 				return;
-			std::cout << std::endl;
-			if (lastT > .0)
+			std::cout<<std::endl;
+			if (lastT>.0)
 				from = getp(sec);
 			isEnd = false;
 			to = newP;
 			lastT = sec;
 		}
 
-		float getp(float sec)
-		{
+		float getp(float sec) {
 			float retP = to;
 			if (!isEnd)
 			{
-				float delay = sec - lastT;
-				if (delay >= 0.)
+				float delay = sec-lastT;
+				if (delay>=0.)
 				{
-					float compl = min(delay / ut, 1.);
-					retP = from + (to - from) * compl;
-					if (compl>= 1.)
+					float compl = min(delay/ut, 1.);
+					retP = from+(to-from) * compl;
+					if (compl>=1.)
 					{
 						isEnd = true;
 					}
@@ -525,35 +512,34 @@ namespace LiveCoder
 	vec2 mHigh(0, 0);
 
 	int tmpFPS = 0;
-	void Core::Render()
-	{
+	void Core::Render() {
 		// Swap render target
 		glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
 
 		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 		glLoadIdentity();
 
 		std::string str = textEditor.ToString();
-		if (nowSource != str)
+		if (nowSource!=str)
 		{
 			nowSource = str;
 
-			if (shaderGL[nowEffect].Compile(nowSource) != 0)
+			if (shaderGL[nowEffect].Compile(nowSource)!=0)
 				nowCompiled = true;
 			else
 				nowCompiled = false;
 		}
 
 		Uint32 nowTime = SDL_GetTicks();
-		float realSec = (nowTime - baseTime) / 1000.0f;
+		float realSec = (nowTime-baseTime)/1000.0f;
 
-		float delay = (nowTime - prevTime) / 1000.0f;
+		float delay = (nowTime-prevTime)/1000.0f;
 		tmpFPS++;
-		if (delay >= .5f)
+		if (delay>=.5f)
 		{
 			prevTime = nowTime;
-			fps = (int) ((float) tmpFPS / delay);
+			fps = (int)((float)tmpFPS/delay);
 			tmpFPS = 0;
 		}
 		//prevTime = nowTime;
@@ -570,28 +556,28 @@ namespace LiveCoder
 		if (shaderGL[nowEffect].Valid())
 		{
 			shaderGL[nowEffect].Bind();
-			shaderGL[nowEffect].SetUniform("resolution", (float) width, (float) height);
+			shaderGL[nowEffect].SetUniform("resolution", (float)width, (float)height);
 			shaderGL[nowEffect].SetUniform("time", realSec);
 			shaderGL[nowEffect].SetUniform("mouse", mouseBuffer.GetCursorX(), mouseBuffer.GetCursorY());
 
 			glEnable(GL_TEXTURE_2D);
 			glActiveTexture(GL_TEXTURE1);
 			glBindTexture(GL_TEXTURE_2D, optionTexture);
-			shaderGL[nowEffect].SetUniform("optTex", (int) 1);//1
+			shaderGL[nowEffect].SetUniform("optTex", (int)1);//1
 
 			glEnable(GL_TEXTURE_2D);
 			glActiveTexture(GL_TEXTURE2);
 			glBindTexture(GL_TEXTURE_2D, backTexture);
-			shaderGL[nowEffect].SetUniform("backbuffer", (int) 2);//2
+			shaderGL[nowEffect].SetUniform("backbuffer", (int)2);//2
 
 
 			// Calculate low, mid, high freq.
-			if (audio_spectr_l != NULL)
-			//if (false)
+			if (audio_spectr_l!=NULL)
+				//if (false)
 			{
-				if (lastSec == -1)
+				if (lastSec==-1)
 					lastSec = realSec;
-				isAudioCalc = (realSec - lastSec) >= delAudioCalc;
+				isAudioCalc = (realSec-lastSec)>=delAudioCalc;
 
 				//if (isAudioCalc)
 				{
@@ -599,17 +585,17 @@ namespace LiveCoder
 
 					const unsigned int image_width = SPECTRUMSIZE;
 					const unsigned int image_height = 2;
-					int scanLineWidh = ((3 * image_width) % 4 == 0) ? 3 * image_width : ((3 * image_width) / 4) * 4 + 4;
+					int scanLineWidh = ((3*image_width)%4==0)?3*image_width:((3*image_width)/4)*4+4;
 
-					GLfloat* texture = (GLfloat*) calloc(image_height*scanLineWidh, sizeof(GLfloat));
+					GLfloat* texture = (GLfloat*)calloc(image_height*scanLineWidh, sizeof(GLfloat));
 
-					for (int x = 0; x < image_width; x++)
-						for (int y = 0; y < image_height; y++)
+					for (int x = 0; x<image_width; x++)
+						for (int y = 0; y<image_height; y++)
 						{
 							float left = audio_spectr_l[x];
 							float right = audio_spectr_r[x];
-							texture[(y*scanLineWidh + 3 * x)] = left;
-							texture[(y*scanLineWidh + 3 * x) + 1] = right;
+							texture[(y*scanLineWidh+3*x)] = left;
+							texture[(y*scanLineWidh+3*x)+1] = right;
 							//texture[(y*scanLineWidh + 3 * x) + 2] = var;
 						}
 
@@ -634,20 +620,20 @@ namespace LiveCoder
 					glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 					glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 					CheckGLError();
-					shaderGL[nowEffect].SetUniform("fft", (int) 0);
+					shaderGL[nowEffect].SetUniform("fft", (int)0);
 
 					delete texture;
 
 					float* audioBuffer = audio_spectr_l;
 
-					int lowband = (int) floor(500.0 * (float) SPECTRUMSIZE / 44100.0 + 0.5);
-					int midband = (int) floor(5000.0 * (float) SPECTRUMSIZE / 44100.0 + 0.5);
+					int lowband = (int)floor(500.0 * (float)SPECTRUMSIZE/44100.0+0.5);
+					int midband = (int)floor(5000.0 * (float)SPECTRUMSIZE/44100.0+0.5);
 
-					for (int i = 0; i < lowband; i++)
+					for (int i = 0; i<lowband; i++)
 						low += audioBuffer[i];
-					for (int i = lowband; i < midband; i++)
+					for (int i = lowband; i<midband; i++)
 						mid += audioBuffer[i];
-					for (int i = midband; i < 1024; i++)
+					for (int i = midband; i<1024; i++)
 						high += audioBuffer[i];
 
 					//- 500 low
@@ -655,8 +641,8 @@ namespace LiveCoder
 					// 5000 - high
 
 					low /= lowband;
-					mid /= (midband - lowband);
-					high /= (SPECTRUMSIZE - midband);
+					mid /= (midband-lowband);
+					high /= (SPECTRUMSIZE-midband);
 
 
 					/*
@@ -674,9 +660,9 @@ namespace LiveCoder
 					float low = mLow.getp(realSec);
 					float mid = mMid.getp(realSec);
 					float high = mHigh.getp(realSec);
-					shaderGL[nowEffect].SetUniform("lowFreq", (float) low);
-					shaderGL[nowEffect].SetUniform("midFreq", (float) mid);
-					shaderGL[nowEffect].SetUniform("highFreq", (float) high);
+					shaderGL[nowEffect].SetUniform("lowFreq", (float)low);
+					shaderGL[nowEffect].SetUniform("midFreq", (float)mid);
+					shaderGL[nowEffect].SetUniform("highFreq", (float)high);
 				}
 			}
 			glRecti(1, 1, -1, -1);
@@ -699,8 +685,8 @@ namespace LiveCoder
 		if (saveFronBuf)
 		{
 			int bitsPerPixel = 32;//24
-			int bytesPerPixel = (int) ceil(bitsPerPixel / 8.0);
-			unsigned char   *pixels = new unsigned char[(size_t) width*(size_t) height*(size_t) bitsPerPixel / 8];
+			int bytesPerPixel = (int)ceil(bitsPerPixel/8.0);
+			unsigned char   *pixels = new unsigned char[(size_t)width*(size_t)height*(size_t)bitsPerPixel/8];
 
 			glPushClientAttrib(GL_CLIENT_PIXEL_STORE_BIT);
 			glPixelStorei(GL_PACK_ALIGNMENT, 1);                                                        // set read non block aligned...
@@ -711,10 +697,10 @@ namespace LiveCoder
 			unsigned char * tempLineOfPix = new unsigned char[sizeOfOneLineOfPixels];
 			unsigned char * linea;
 			unsigned char * lineb;
-			for (int i = 0; i < height / 2; i++)
+			for (int i = 0; i<height/2; i++)
 			{
-				linea = pixels + i * sizeOfOneLineOfPixels;
-				lineb = pixels + (height - i - 1) * sizeOfOneLineOfPixels;
+				linea = pixels+i * sizeOfOneLineOfPixels;
+				lineb = pixels+(height-i-1) * sizeOfOneLineOfPixels;
 				memcpy(tempLineOfPix, linea, sizeOfOneLineOfPixels);
 				memcpy(linea, lineb, sizeOfOneLineOfPixels);
 				memcpy(lineb, tempLineOfPix, sizeOfOneLineOfPixels);
@@ -725,11 +711,11 @@ namespace LiveCoder
 			std::string fileName = "test.png";
 			FREE_IMAGE_FORMAT fif = FIF_UNKNOWN;
 			fif = FreeImage_GetFileType(fileName.c_str(), 0);
-			if (fif == FIF_UNKNOWN)
+			if (fif==FIF_UNKNOWN)
 				fif = FreeImage_GetFIFFromFilename(fileName.c_str());
-			if ((fif != FIF_UNKNOWN) && FreeImage_FIFSupportsWriting(fif))
+			if ((fif!=FIF_UNKNOWN)&&FreeImage_FIFSupportsWriting(fif))
 				FreeImage_Save(fif, bmp, fileName.c_str(), 0);
-			if (bmp != NULL)
+			if (bmp!=NULL)
 				FreeImage_Unload(bmp);
 			saveFronBuf = false;
 		}
@@ -739,13 +725,13 @@ namespace LiveCoder
 			//keyAnalyzer.Input(&textEditor, EffectFileTable[nowEffect]);
 			glPushMatrix();
 			// TextEditor Background
-			const float aspect = width / static_cast<float>(height);
-			const float textEditorHeight = textEditor.GetMaxLineNum() * fontHeight * (0.25f * 8.0f / width * aspect);
+			const float aspect = width/static_cast<float>(height);
+			const float textEditorHeight = textEditor.GetMaxLineNum() * fontHeight * (0.25f * 8.0f/width * aspect);
 			const float textEditorBGHeight = textEditorHeight * 1.2f;
-			const float editorOffsetY = -(2.0f - textEditorHeight) / 2.0f;
-			const float editorBGOffsetY = -(2.0f - textEditorBGHeight) / 2.0f;
+			const float editorOffsetY = -(2.0f-textEditorHeight)/2.0f;
+			const float editorBGOffsetY = -(2.0f-textEditorBGHeight)/2.0f;
 			glPushMatrix();
-			glTranslatef(-1.0f, 1.0f + editorBGOffsetY, 0.f);
+			glTranslatef(-1.0f, 1.0f+editorBGOffsetY, 0.f);
 			glPushAttrib(GL_ENABLE_BIT);
 			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
@@ -755,25 +741,25 @@ namespace LiveCoder
 			glBegin(GL_QUADS);
 			glColor4f(0.0f, 0.0f, 0.0f, 0.0f);
 			glVertex2f(0.0f, 0.0f);
-			glVertex2f(0.0f + width, 0.0f);
+			glVertex2f(0.0f+width, 0.0f);
 			glColor4f(0.0f, 0.0f, 0.0f, 0.8f);
-			glVertex2f(0.0f + width, -textEditorBGHeight / 5.0f);
-			glVertex2f(0.0f, -textEditorBGHeight / 5.0f);
+			glVertex2f(0.0f+width, -textEditorBGHeight/5.0f);
+			glVertex2f(0.0f, -textEditorBGHeight/5.0f);
 			glEnd();
 			glBegin(GL_QUADS);
 			glColor4f(0.0f, 0.0f, 0.0f, 0.8f);
-			glVertex2f(0.0f, -textEditorBGHeight / 5.0f);
-			glVertex2f(0.0f + width, -textEditorBGHeight / 5.0f);
+			glVertex2f(0.0f, -textEditorBGHeight/5.0f);
+			glVertex2f(0.0f+width, -textEditorBGHeight/5.0f);
 			glColor4f(0.0f, 0.0f, 0.0f, 0.8f);
-			glVertex2f(0.0f + width, -4.0f*textEditorBGHeight / 5.0f);
-			glVertex2f(0.0f, -4.0f*textEditorBGHeight / 5.0f);
+			glVertex2f(0.0f+width, -4.0f*textEditorBGHeight/5.0f);
+			glVertex2f(0.0f, -4.0f*textEditorBGHeight/5.0f);
 			glEnd();
 			glBegin(GL_QUADS);
 			glColor4f(0.0f, 0.0f, 0.0f, 0.8f);
-			glVertex2f(0.0f, -4.0f*textEditorBGHeight / 5.0f);
-			glVertex2f(0.0f + width, -4.0f*textEditorBGHeight / 5.0f);
+			glVertex2f(0.0f, -4.0f*textEditorBGHeight/5.0f);
+			glVertex2f(0.0f+width, -4.0f*textEditorBGHeight/5.0f);
 			glColor4f(0.0f, 0.0f, 0.0f, 0.0f);
-			glVertex2f(0.0f + width, -textEditorBGHeight);
+			glVertex2f(0.0f+width, -textEditorBGHeight);
 			glVertex2f(0.0f, -textEditorBGHeight);
 			glEnd();
 			glPopAttrib();
@@ -781,63 +767,63 @@ namespace LiveCoder
 
 
 			// render editor
-			glTranslatef(-1.0f, 1.0f + editorOffsetY, 0.f);
+			glTranslatef(-1.0f, 1.0f+editorOffsetY, 0.f);
 			TextEditorPtrBuffer ptrbuf = textEditor.GetVisibleText();
 			TextEditorPtrBuffer textbuf = textEditor.GetText();
 
 			bool upAlpha = true;
 			bool downAlpha = true;
 
-			if (textEditor.GetLineOffset() == 0)
+			if (textEditor.GetLineOffset()==0)
 			{
 				upAlpha = false;
 			}
 
-			if (textEditor.GetLineOffset() + textEditor.GetMaxLineNum() >= textEditor.GetLineNum())
+			if (textEditor.GetLineOffset()+textEditor.GetMaxLineNum()>=textEditor.GetLineNum())
 			{
 				downAlpha = false;
 			}
 
 			const int transRange = 5;
 			BitmapFontGL::Instance()->Reset();
-			for (int i = 0; i < textEditor.GetLineOffset(); i++)
+			for (int i = 0; i<textEditor.GetLineOffset(); i++)
 			{
 				BitmapFontGL::Instance()->ProcessComment(*textbuf[i]);
 			}
 
 			std::set<int> errorLinesFS = shaderGL[nowEffect].GetErrorLinesFS();
 
-			for (int i = 0; i < ptrbuf.size(); i++)
+			for (int i = 0; i<ptrbuf.size(); i++)
 			{
 				float up = 1.0f;
 				float down = 1.0f;
 
 				if (upAlpha)
 				{
-					if (i < transRange)
+					if (i<transRange)
 					{
-						up = (float) i / transRange;
-						down = (float) (i + 1) / transRange;
+						up = (float)i/transRange;
+						down = (float)(i+1)/transRange;
 					}
 				}
 				if (downAlpha)
 				{
-					if (i >= ptrbuf.size() - transRange)
+					if (i>=ptrbuf.size()-transRange)
 					{
-						up = 1.0f - (float) (i - ptrbuf.size() + transRange) / transRange;
-						down = 1.0f - (float) (i + 1 - ptrbuf.size() + transRange) / transRange;
+						up = 1.0f-(float)(i-ptrbuf.size()+transRange)/transRange;
+						down = 1.0f-(float)(i+1-ptrbuf.size()+transRange)/transRange;
 					}
 				}
 
 				bool errorLine = false;
-				if (errorLinesFS.find(i + textEditor.GetLineOffset() + 1) != errorLinesFS.end())
+				if (errorLinesFS.find(i+textEditor.GetLineOffset()+1)!=errorLinesFS.end())
 					errorLine = true;
-				if (errorHighlight == false)
+				if (errorHighlight==false)
 					errorLine = false;
 
 				BitmapFontGL::Instance()->DrawLine(ptrbuf[i]->c_str(), aspect, width, i, up, down, errorLine);
-				if (i == textEditor.GetCursorPosition().col)
-					cy = height - i * fontHeight - fontHeight / 2.0f + height * editorOffsetY / 2.0f;
+				if (i==textEditor.GetCursorPosition().col)
+					cy = height-i * fontHeight-fontHeight/2.0f+height * editorOffsetY/2.0f;
 			}
 
 
@@ -846,10 +832,10 @@ namespace LiveCoder
 			else
 				BitmapFontGL::Instance()->DrawLine(EffectFileTable[nowEffect], aspect, width, textEditor.GetMaxLineNum(), 0.5f, 0.5f, 1.0f, 0.0f, 0.0f);
 
-			BitmapFontGL::Instance()->DrawLine("F1-F10: Change File  F11: Show/Hide code  F12: Edit PostFx", aspect, width, textEditor.GetMaxLineNum() + 1, 0.5f, 0.5f);
+			BitmapFontGL::Instance()->DrawLine("F1-F10: Change File  F11: Show/Hide code  F12: Edit PostFx", aspect, width, textEditor.GetMaxLineNum()+1, 0.5f, 0.5f);
 			char tmp[100];
 			sprintf(tmp, "realSec = %f   FPS = %i", realSec, fps);
-			BitmapFontGL::Instance()->DrawLine(tmp, aspect, width, textEditor.GetMaxLineNum() + 2, 0.5f, 0.5f);
+			BitmapFontGL::Instance()->DrawLine(tmp, aspect, width, textEditor.GetMaxLineNum()+2, 0.5f, 0.5f);
 
 
 			// render editor cursor
@@ -859,10 +845,10 @@ namespace LiveCoder
 			if (textEditor.IsSelectMode())
 			{
 				EditorCursor selectStart = textEditor.GetSelectStart();
-				if (selectStart.col > cursor.col)
+				if (selectStart.col>cursor.col)
 					std::swap(selectStart, cursor);
 
-				if (selectStart.col == cursor.col)
+				if (selectStart.col==cursor.col)
 				{
 					int start = selectStart.row;
 					int end = cursor.row;
@@ -872,20 +858,20 @@ namespace LiveCoder
 				}
 				else
 				{
-					for (int i = selectStart.col; i <= cursor.col; i++)
+					for (int i = selectStart.col; i<=cursor.col; i++)
 					{
-						if (i < 0 || i >= textEditor.GetMaxLineNum())
+						if (i<0||i>=textEditor.GetMaxLineNum())
 							continue;
 
-						if (i == selectStart.col)
+						if (i==selectStart.col)
 						{
 							BitmapFontGL::Instance()->DrawSelect(aspect, width, i, selectStart.row, textEditor.GetLineLength(i));
 						}
-						else if (i < cursor.col)
+						else if (i<cursor.col)
 						{
 							BitmapFontGL::Instance()->DrawSelect(aspect, width, i, 0, textEditor.GetLineLength(i));
 						}
-						else if (i == cursor.col)
+						else if (i==cursor.col)
 						{
 							BitmapFontGL::Instance()->DrawSelect(aspect, width, i, 0, cursor.row);
 						}
@@ -905,14 +891,14 @@ namespace LiveCoder
 			shaderGL[POSTFxID].Bind();
 
 			glBindTexture(GL_TEXTURE_2D, renderTexture);
-			shaderGL[POSTFxID].SetUniform("texture0", (int) 0);
-			shaderGL[POSTFxID].SetUniform("resolution", (float) width, (float) height);
+			shaderGL[POSTFxID].SetUniform("texture0", (int)0);
+			shaderGL[POSTFxID].SetUniform("resolution", (float)width, (float)height);
 			shaderGL[POSTFxID].SetUniform("time", realSec);
 			shaderGL[POSTFxID].SetUniform("mouse", mouseBuffer.GetCursorX(), mouseBuffer.GetCursorY());
-			shaderGL[POSTFxID].SetUniform("lowFreq", (float) low);
-			shaderGL[POSTFxID].SetUniform("midFreq", (float) mid);
-			shaderGL[POSTFxID].SetUniform("highFreq", (float) high);
-			shaderGL[POSTFxID].SetUniform("editorCursorY", (float) cy);
+			shaderGL[POSTFxID].SetUniform("lowFreq", (float)low);
+			shaderGL[POSTFxID].SetUniform("midFreq", (float)mid);
+			shaderGL[POSTFxID].SetUniform("highFreq", (float)high);
+			shaderGL[POSTFxID].SetUniform("editorCursorY", (float)cy);
 
 			//float cy = (textEditor.GetCursorPosition().col - textEditor.GetLineOffset()) * 11
 
@@ -930,8 +916,7 @@ namespace LiveCoder
 		SDL_GL_SwapBuffers();
 	}
 
-	int Core::MainLoop()
-	{
+	int Core::MainLoop() {
 
 		Logger::Instance()->OutputString("MainLoop...");
 
@@ -946,11 +931,11 @@ namespace LiveCoder
 		sound_system.update();
 		while (!end)
 		{
-			if (ProcessSDLEvents() < 0)
+			if (ProcessSDLEvents()<0)
 				break;
 
 			//audioBuffer = audioAnalyzer->Capture();
-			if (NULL == audio_spectr_l)
+			if (NULL==audio_spectr_l)
 			{
 				audio_spectr_l = new float[SPECTRUMSIZE];
 				audio_spectr_r = new float[SPECTRUMSIZE];
@@ -965,19 +950,17 @@ namespace LiveCoder
 		return 0;
 	}
 
-	Core::Core() : width(0), height(0), end(false), nowEffect(0), editMode(true), nowCompiled(false), saveFronBuf(false),
+	Core::Core(): width(0), height(0), end(false), nowEffect(0), editMode(true), nowCompiled(false), saveFronBuf(false),
 		fullScreen(false),
 		SDLflags(SDL_OPENGL),
-		sound_system("Anuch-Metro.mp3")
-	{
+		sound_system("Anuch-Metro.mp3") {
 
 		// OpenAL
 		//audioAnalyzer = new AudioAnalyzer(44100, 1024);
 
 	}
 
-	Core::~Core()
-	{
+	Core::~Core() {
 		deinit();
 	}
 

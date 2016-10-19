@@ -1,6 +1,6 @@
 #include "TextEditor.h"
 
-namespace LiveCoder {
+using namespace App;
 
 void TextEditor::UpdateLog() {
 	if (logIndex != -1) {
@@ -481,5 +481,3 @@ TextEditor::TextEditor(void)
 TextEditor::~TextEditor(void)
 {
 }
-
-};

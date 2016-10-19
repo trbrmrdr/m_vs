@@ -20,36 +20,36 @@
 
 #include "Logger.h"
 
-namespace LiveCoder {
+namespace App {
 
-class ShaderGL {
-private:
-	bool OK;
-	GLuint shaderProgram;
+	class ShaderGL {
+	private:
+		bool OK;
+		GLuint shaderProgram;
 
-	std::set<int> errorLinesFS;
-	std::set<int> errorLinesVS;
-public:
-	ShaderGL();
-	virtual ~ShaderGL();
+		std::set<int> errorLinesFS;
+		std::set<int> errorLinesVS;
+	public:
+		ShaderGL();
+		virtual ~ShaderGL();
 
-	const std::set<int>& GetErrorLinesFS() { return errorLinesFS; }
-	const std::set<int>& GetErrorLinesVS() { return errorLinesVS; }
+		const std::set<int>& GetErrorLinesFS() { return errorLinesFS; }
+		const std::set<int>& GetErrorLinesVS() { return errorLinesVS; }
 
-	GLuint Compile(const std::string& fsshader);
+		GLuint Compile(const std::string& fsshader);
 
-	GLuint CompileFromFile(const std::string& filename);
+		GLuint CompileFromFile(const std::string& filename);
 
-	bool Valid();
-	void Bind();
-	void Unbind();
-	void SetUniform(const GLchar* name, int i);
-	void SetUniform(const GLchar* name, float v);
-	void SetUniform(const GLchar* name, float* fv, int size);
-	void SetUniform(const GLchar* name, float x, float y);
-	
-	void Free();
-};
+		bool Valid();
+		void Bind();
+		void Unbind();
+		void SetUniform(const GLchar* name, int i);
+		void SetUniform(const GLchar* name, float v);
+		void SetUniform(const GLchar* name, float* fv, int size);
+		void SetUniform(const GLchar* name, float x, float y);
+
+		void Free();
+	};
 
 };
 

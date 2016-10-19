@@ -11,6 +11,8 @@ uniform float midFreq;
 uniform vec2 mouse;
 uniform vec2 resolution;
 
+uniform vec2 val_1;
+
 //varying vec2 v_uv;
 
 float makePoint(float x,float y,float fx,float fy,float sx,float sy,float t){
@@ -82,6 +84,19 @@ void main( void ) {
    vec3 d=vec3(a,0,0)*.012;
    
    gl_FragColor = weight * vec4(d.x,d.y,d.z,1.0);
-   point(mouse*resolution);
-   //point(vec2(200,100));
+   //point(mouse*resolution);
+   if(false){
+   float a=mouse.y*10.0;
+   float b= cos(mouse.y)*32.;
+   float c=sin(mouse.x)*13.0;
+   float d= .23;
+   vec2 ttt = gl_FragCoord.xy/resolution.xy;
+   
+   float Xn = ttt.x;
+   float Yn = ttt.y;
+   float v1 = sin(a * Yn) - cos(b * Xn);
+   float  v2 = sin(c * Xn) - cos(d * Yn);
+   gl_FragColor = vec4(v1,v2,1.,1.);
+   }
+   point(val_1*resolution);
 }

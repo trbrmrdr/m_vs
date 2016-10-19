@@ -19,68 +19,95 @@
     <Filter Include="freetype">
       <UniqueIdentifier>{bd756a00-ed75-41cf-b800-e7f927905d97}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{e56036c3-04f9-4a0a-93b9-6d6d6efdaf0f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\AudioAnalyzer.cpp">
+    <ClCompile Include="..\Application.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\AudioAnalyzer.cpp">
+      <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="..\Core.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="..\KeyAnalyzer.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="..\main.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="..\ShaderGL.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\TextEditor.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="..\sound_system.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\TextEditor.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Helper.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Scene1.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\AudioAnalyzer.h">
+    <ClInclude Include="..\Application.h">
       <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\AudioAnalyzer.h">
+      <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="..\BitmapFontGL.h">
-      <Filter>Source Files</Filter>
+      <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="..\Core.h">
-      <Filter>Source Files</Filter>
+      <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="..\inconsolata_160x90.h">
-      <Filter>Source Files</Filter>
+      <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="..\inconsolata_224x123.h">
-      <Filter>Source Files</Filter>
+      <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="..\KeyAnalyzer.h">
-      <Filter>Source Files</Filter>
+      <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="..\KeyBuffer.h">
-      <Filter>Source Files</Filter>
+      <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="..\lcfont_bw112x66.h">
-      <Filter>Source Files</Filter>
+      <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="..\Logger.h">
-      <Filter>Source Files</Filter>
+      <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="..\MouseBuffer.h">
-      <Filter>Source Files</Filter>
+      <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="..\ShaderGL.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\TextEditor.h">
-      <Filter>Source Files</Filter>
+      <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="..\sound_system.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\TextEditor.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Helper.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\stdafx.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Scene1.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\soundVal.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

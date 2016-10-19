@@ -8,7 +8,7 @@
 #include <stdio.h>
 #include <string.h>
 
-namespace LiveCoder {
+namespace App {
 
 enum EditorCursorMoveType {
 	ECMT_UP,
