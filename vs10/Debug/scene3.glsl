@@ -28,7 +28,9 @@ float makePoint(float x,float y,float fx,float fy,float sx,float sy,float t){
 void fill(float d){
     float br = 10.;
     //if(d>1.)return;
-    gl_FragColor.rgb += vec3(0.3, 0.15, 0.45) * br / d;
+    float tVal = br / d;
+    //tVal = sqrt(br - d*d);
+    gl_FragColor.rgb += vec3(0.3, 0.15, 0.45) * tVal;
 }
 
 void point(vec2 pos){
@@ -86,17 +88,18 @@ void main( void ) {
    gl_FragColor = weight * vec4(d.x,d.y,d.z,1.0);
    //point(mouse*resolution);
    if(false){
-   float a=mouse.y*10.0;
-   float b= cos(mouse.y)*32.;
-   float c=sin(mouse.x)*13.0;
-   float d= .23;
-   vec2 ttt = gl_FragCoord.xy/resolution.xy;
-   
-   float Xn = ttt.x;
-   float Yn = ttt.y;
-   float v1 = sin(a * Yn) - cos(b * Xn);
-   float  v2 = sin(c * Xn) - cos(d * Yn);
-   gl_FragColor = vec4(v1,v2,1.,1.);
+            float a=mouse.y*10.0;
+            float b= cos(mouse.y)*32.;
+            float c=sin(mouse.x)*13.0;
+            float d= .23;
+            vec2 ttt = gl_FragCoord.xy/resolution.xy;
+            
+            float Xn = ttt.x;
+            float Yn = ttt.y;
+            float v1 = sin(a * Yn) - cos(b * Xn);
+            float  v2 = sin(c * Xn) - cos(d * Yn);
+            gl_FragColor = vec4(v1,v2,1.,1.);
    }
+   
    point(val_1*resolution);
 }

@@ -33,4 +33,6 @@
 #include <map>
 #include <FreeImage.h>
 
+#include "Vec2.h"
+
 

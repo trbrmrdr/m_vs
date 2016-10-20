@@ -80,6 +80,8 @@ void sound_system_c::play_music()
 void sound_system_c::get_spectrum(float* left,float* right) const
 {
 
+	if (!isPlaying)
+		return;
 	FMOD_DSP_PARAMETER_FFT *bin_data;
 	fmod_errorcheck(FMOD_DSP_GetParameterData(m_dsp_fft, FMOD_DSP_FFT_SPECTRUMDATA, (void**) &bin_data, nullptr, nullptr, 0));
 

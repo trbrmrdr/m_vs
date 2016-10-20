@@ -30,7 +30,6 @@ Scene1::Scene1():
 	saveFronBuf(false),
 	FPS(0),
 	sound_system("Anuch-Metro.mp3") {
-	srand(time(NULL));
 }
 
 Scene1::~Scene1() {
@@ -400,7 +399,7 @@ void Scene1::render(float realSec) {
 				mHigh.setVar(high, realSec);
 
 
-				float randVal = (float)rand()/(float)RAND_MAX;
+				float randVal = ((float)rand()/(float)RAND_MAX)*.5;
 				mX.setVar(randVal, realSec);
 				mY.setVar(randVal, realSec);
 			}

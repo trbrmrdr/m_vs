@@ -1,6 +1,34 @@
 #include "Helper.h"
 
 using namespace App;
+bool randIsFirst = true;
+
+
+Vec2* Helper::getSplinePoint(const Vec2& origin, const Vec2& control1, const Vec2& control2, const Vec2& destination, unsigned int segments) {
+
+	Vec2* vertices = new (std::nothrow) Vec2[segments+1];
+
+	float t = 0;
+	for (unsigned int i = 0; i < segments; i++)
+	{
+		vertices[i].x = powf(1-t, 3) * origin.x+3.0f * powf(1-t, 2) * t * control1.x+3.0f * (1-t) * t * t * control2.x+t * t * t * destination.x;
+		vertices[i].y = powf(1-t, 3) * origin.y+3.0f * powf(1-t, 2) * t * control1.y+3.0f * (1-t) * t * t * control2.y+t * t * t * destination.y;
+		t += 1.0f/segments;
+	}
+	vertices[segments].x = destination.x;
+	vertices[segments].y = destination.y;
+	return vertices;
+}
+
+float Helper::GetRand() {
+	if (randIsFirst)
+	{
+		srand(time(NULL));
+		randIsFirst = false;
+	}
+	return (float)rand()/(float)RAND_MAX;
+}
+
 
 long Helper::GetLastDataEdit(const char* fileName) {
 	struct tm* clock;

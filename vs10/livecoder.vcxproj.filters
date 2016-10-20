@@ -42,9 +42,6 @@
     <ClCompile Include="..\ShaderGL.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="..\sound_system.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
     <ClCompile Include="..\TextEditor.cpp">
       <Filter>src</Filter>
     </ClCompile>
@@ -52,6 +49,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\Scene1.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sound_system.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -92,9 +92,6 @@
     <ClInclude Include="..\ShaderGL.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="..\sound_system.h">
-      <Filter>src</Filter>
-    </ClInclude>
     <ClInclude Include="..\TextEditor.h">
       <Filter>src</Filter>
     </ClInclude>
@@ -108,6 +105,12 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\soundVal.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\sound_system.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Vec2.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
