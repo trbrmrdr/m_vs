@@ -18,8 +18,10 @@ const char* EffectFileTable[] = {
 	"scene8.glsl",
 	"scene9.glsl",
 	"scene10.glsl", // 9
-	"non.glsl",
+	"scene11.glsl",
 	"effect.glsl", // 11
+	"scene21.glsl",
+	"scene22.glsl"
 };
 
 Scene1::Scene1():
@@ -29,23 +31,31 @@ Scene1::Scene1():
 	nowCompiled(false),
 	saveFronBuf(false),
 	FPS(0),
-	sound_system("Anuch-Metro.mp3") {
-}
+	sound_system("Anuch-Metro.mp3") {}
 
 Scene1::~Scene1() {
 	free();
 }
 
+
+
+long getHash(const char* fileName) {
+	FILE* fp = fopen(fileName, "rt");
+	if (fp==NULL)
+		return -1;
+	long ret = Helper::GetLastDataEdit(fileName);
+	fclose(fp);
+	return ret;
+
+}
 void Scene1::initHashFile() {
 	hashEffectFileTable.clear();
 	for (int i = 0; i<EffectNum; ++i)
 	{
 		const char* file = EffectFileTable[i];
-		FILE* fp = fopen(file, "rt");
-		if (fp==NULL)
-			continue;
-		long tmp = Helper::GetLastDataEdit(file);
-		hashEffectFileTable.insert(std::pair<std::string, long>(file, tmp));
+		long hash = getHash(file);
+		if (hash!=-1)
+			hashEffectFileTable.insert(std::pair<std::string, long>(file, hash));
 	}
 }
 
@@ -61,6 +71,12 @@ void Scene1::checkValidHashFile() {
 			loadEffect(nowEffect);
 			return;
 		}
+	}
+	else
+	{
+		long hash = getHash(file);
+		if (hash!=-1)
+			hashEffectFileTable.insert(std::pair<std::string, long>(file, hash));
 	}
 }
 
@@ -84,6 +100,7 @@ int Scene1::init(int width_, int height_) {
 		Logger::Instance()->OutputString("Error: glewInit()");
 		return -1;
 	}
+	glViewport(0, 0, width, height);
 
 	//Textures
 
@@ -133,7 +150,7 @@ int Scene1::init(int width_, int height_) {
 
 
 	shaderGL[POSTFxID].CompileFromFile(EffectFileTable[POSTFxID]);
-	textEditor.Load(EffectFileTable[0]);
+	textEditor.Load(EffectFileTable[nowEffect]);
 
 	baseTime = -1;
 	nowSource.clear();
@@ -296,6 +313,9 @@ void Scene1::render(float realSec) {
 	const int fontHeight = 15;
 	BitmapFontGL::Instance()->SetFontSize(fontWidth, fontHeight);
 
+
+
+
 	if (shaderGL[nowEffect].Valid())
 	{
 		shaderGL[nowEffect].Bind();
@@ -376,7 +396,7 @@ void Scene1::render(float realSec) {
 					low += audioBuffer[i];
 				for (int i = lowband; i<midband; i++)
 					mid += audioBuffer[i];
-				for (int i = midband; i<1024; i++)
+				for (int i = midband; i<SPECTRUMSIZE; i++)
 					high += audioBuffer[i];
 
 				//- 500 low
@@ -418,6 +438,32 @@ void Scene1::render(float realSec) {
 				shaderGL[nowEffect].SetUniform("val_1", tX, tY);
 			}
 		}
+
+
+
+		//#####
+		if (true)
+		{
+			glPushMatrix();
+			glPushAttrib(GL_ENABLE_BIT);
+
+			glLineWidth(30);
+			glBegin(GL_LINES);
+
+			glColor4f(1.0f, 0.0f, 0.0f, 1.0f);
+			glVertex2f(0.0f, 0.0f);
+			glVertex2f(1.f, 1.f);
+
+			glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+			glVertex2f(1.0f, 0.1f);
+			glVertex2f(.5f, .5f);
+
+			glEnd();
+
+			glPopAttrib();
+			glPopMatrix();
+		}
+		//#####
 		glRecti(1, 1, -1, -1);
 		shaderGL[nowEffect].Unbind();
 
@@ -604,6 +650,7 @@ void Scene1::render(float realSec) {
 		glPopMatrix();
 	}
 
+	
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 

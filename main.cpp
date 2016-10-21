@@ -22,7 +22,9 @@ int main(int argc, char** argv) {
 #if 1
 	App::Application application;
 
-	if (application.Initialize("visual app", 1280, 720, false)<0)
+	const int width = 1280;
+	const int height = 720;
+	if (application.Initialize("visual app", width, height, false)<0)
 	{
 		return -1;
 	}

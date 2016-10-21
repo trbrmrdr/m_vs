@@ -24,7 +24,7 @@ Application::~Application() {
 }
 
 
-int Application::Initialize(std::string title_ , int width_, int height_, bool fullScreen_) {
+int Application::Initialize(std::string title_, int width_, int height_, bool fullScreen_) {
 	fullScreen = fullScreen_;
 	title = title_;
 
@@ -54,13 +54,13 @@ int Application::init() {
 	}
 	if (fullScreen)
 	{
-		SDLflags = SDL_OPENGL|SDL_FULLSCREEN;
+		SDLflags = SDL_OPENGL|SDL_FULLSCREEN;// |SDL_DOUBLEBUF;
 		currWidth = widthMax;
 		currHeight = heightMax;
 	}
 	else
 	{
-		SDLflags = SDL_OPENGL|SDL_RESIZABLE;
+		SDLflags = SDL_OPENGL|SDL_RESIZABLE;// |SDL_DOUBLEBUF;
 		currWidth = width;
 		currHeight = height;
 	}
@@ -100,7 +100,7 @@ int Application::init() {
 	SDL_EnableUNICODE(true);
 	SDL_EnableKeyRepeat(250, 25);
 
-	
+
 	int ret = mScene1.init(currWidth, currHeight);
 	return ret;
 }
@@ -121,6 +121,12 @@ int	Application::ProcessSDLEvents() {
 	{
 		switch (eve.type)
 		{
+			case SDL_VIDEORESIZE:
+				currWidth = width = eve.resize.w;
+				currHeight = height = eve.resize.h;
+				mScene1.free();
+				mScene1.init(currWidth, currHeight);
+				return 1;
 			case SDL_KEYDOWN:
 				{
 					if (eve.key.keysym.sym==SDLK_ESCAPE)

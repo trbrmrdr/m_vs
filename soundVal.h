@@ -24,8 +24,8 @@ struct soundVal {
 			from = getp(sec);
 		isEnd = false;
 		to = newP;
-		if (unic)
-			std::cout<<from<<" "<<to<<std::endl;
+		//if (unic)
+			//std::cout<<from<<" "<<to<<std::endl;
 		startT = sec;
 	}
 
@@ -46,7 +46,7 @@ struct soundVal {
 						float randVal = Helper::GetRand();//(0,1)
 						randVal = 1.+randVal*2.;
 						ut = randVal;
-						std::cout<<"ut = "<<randVal<<std::endl;
+						//std::cout<<"ut = "<<randVal<<std::endl;
 					}
 				}
 			}

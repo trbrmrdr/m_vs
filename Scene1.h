@@ -4,7 +4,7 @@
 namespace App
 {
 
-	const int EffectNum = 12;
+	const int EffectNum = 14;
 
 	class Scene1
 	{
