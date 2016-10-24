@@ -57,14 +57,14 @@ void main(void)
 {
     vec2 pos = gl_FragCoord/resolution;
     vec2 pp = vec2(.5,.5);
-    float cc = length(gl_FragCoord-pp*resolution).x/resolution.x;
     
-    сс = fract(artan(sin(cc)));
-    cc = smoothstep(.0,.25,cc);
+    vec2 cc = length(gl_FragCoord-pp*resolution)/resolution;
+    float r = 10.*atan(cc.y*2,cc.x*2);
+    r = smoothstep(.0,.25,r);
     //nPos*=length(pos - pp);
     //nPos=smoothstep(.0,.4,length(gl_FragCoord-pp*resolution)/resolution);
     vec3 color  = vec3(.4,.3,.7);
-    color *= cc;
+    color *= r;
     color = drawText1(color,123.333);
     
     gl_FragColor = vec4(color,1.);
