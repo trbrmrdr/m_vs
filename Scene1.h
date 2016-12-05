@@ -59,7 +59,7 @@ namespace App
 		int Update(Uint32 nowTime);
 		void render(float realSec);
 		void changeMouse(int mouseX, int mouseY);
-		int changeKeys(SDL_keysym keysym);
+		int changeKeys(SDL_Keysym keysym);
 		void loadEffect(int effectId);
 
 		void initHashFile();

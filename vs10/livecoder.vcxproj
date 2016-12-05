@@ -43,15 +43,15 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>$(SDL)/include;$(GLEW)/include;$(FMOD)FMOD Studio API Windows\api\lowlevel\inc;$(ProjectDir)..\pngwriter\FreeImage3160\Source\LibPNG\;$(ProjectDir)..\pngwriter;$(ProjectDir)..\pngwriter\FreeImage3160\Source\ZLib;$(ProjectDir)..\pngwriter\freetype\include;$(ProjectDIr)..\FreeImage3160\Dist\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SDL)/include;$(GLEW)/include;$(FMOD)\FMOD Studio API Windows\api\lowlevel\inc;$(ProjectDir)..\pngwriter\FreeImage3160\Source\LibPNG\;$(ProjectDir)..\pngwriter;$(ProjectDir)..\pngwriter\FreeImage3160\Source\ZLib;$(ProjectDir)..\pngwriter\freetype\include;$(ProjectDIr)..\FreeImage3160\Dist\</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
-      <AdditionalDependencies>fmod_vc.lib;opengl32.lib;glu32.lib;$(SDL)/lib/x86/SDLmain.lib;$(SDL)/lib/x86/SDL.lib;$(GLEW)/lib\Release\Win32/glew32.lib;$(ProjectDIr)..\FreeImage3160\Dist\FreeImaged.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>fmod_vc.lib;opengl32.lib;glu32.lib;$(SDL)/lib/x86/SDL2main.lib;$(SDL)/lib/x86/SDL2.lib;$(GLEW)/lib\Release\Win32/glew32.lib;$(ProjectDIr)..\FreeImage3160\Dist\FreeImaged.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreSpecificDefaultLibraries>MSVCRT;LIBCMT;</IgnoreSpecificDefaultLibraries>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
-      <AdditionalLibraryDirectories>C:\Program Files (x86)\FMOD SoundSystem\FMOD Studio API Windows\api\lowlevel\lib</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(FMOD)\FMOD Studio API Windows\api\lowlevel\lib</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -75,7 +75,9 @@
     <ClCompile Include="..\AudioAnalyzer.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\Core.cpp" />
+    <ClCompile Include="..\Core.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\Helper.cpp" />
     <ClCompile Include="..\KeyAnalyzer.cpp" />
     <ClCompile Include="..\main.cpp" />

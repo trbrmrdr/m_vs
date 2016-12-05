@@ -35,38 +35,46 @@ bool edge_2(float e1,float e2,float c)
 
 void main( void ) {
 
-    vec2 uv = .187 * gl_FragCoord.xy / resolution.y;
+    vec2 uv = .145* gl_FragCoord.xy / resolution.y;
     //vec2 uv =  gl_FragCoord.xy / resolution.y + vec2(sin(time*0.003)*7.13,cos(time*0.005)*7.513);
-    float t = time*.01125, k = cos(t), l = sin(t);        
+    float t = time*.01125;
+    float k = cos(t);
+    float l = sin(t);
     
-    //float s = .456;
-    float s = .1956;
-    for(int i=0; i<97; ++i) {
-        uv  = abs(uv) - s;    // Mirror
-        uv *= mat2(k,-l,l,k); // Rotate
-        //s  *= .959;         // Scale
-    	s  *= .959;
+    //float s = .1956;
+    vec2 ts = vec2(-1.+.3*cos(t),
+                   -1.+.3*sin(t));
+    vec2 s = vec2(.123,.123)*ts;
+    vec2 dp = mouse;
+    for(int i=0; i<90; ++i) {
+        uv  = abs(uv) + s;// - dp*0.5;    // Mirror
+        //float t1 = 1.;//sin(t)*mouse.x*10;
+        uv *= mat2(k,l,-l,k); // Rotate
+        //s  *= .956;         // Scale
+    	s  *= .950+0.006*sin(time*0.1);
     }
     
     float x = .5 + .5*cos(9.8318*(537.*length(uv)));
     vec3 rgb = vec3(length(uv)*37.0,0.755*x, 0.155/x);
-	
-    rgb.r = edge(.1,.3,rgb.r,1.,.0);
-    rgb.g = edge(.3,.5,rgb.g,1.,.0);
+    
+    float tv = 0.;//0.1*(-2+1.*sin(time*0.01));
+    rgb.r = edge(.1+tv,.3+tv,rgb.r,1.,.0);
+    rgb.g = edge(.3+tv,.2+tv,rgb.g,1.,.0);
     //rgb.b = smoothstep(1.5,2.,rgb.b);
     //rgb.b = edge(.6,.9,rgb.b,1.,.0);
 
 	vec3 edge = vec3(.5,.5,.5);
 	if(true){
 	if(
-		edge_2(.3,.7,rgb.r)
-	      ||edge_2(.3,.7,rgb.g)
-	      ||edge_2(.3,.7,rgb.b)
+		edge_2(.3+tv,.7+tv,rgb.r)
+	      ||edge_2(.3+tv,.7+tv,rgb.g)
+	      ||edge_2(.3+tv,.7+tv,rgb.b)
 	   )
 		rgb = vec3(1.);
 		else
 			rgb = vec3(.0);
 	}
+    
     if(false){
 	
 	if(rgb.r>=edge.r
