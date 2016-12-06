@@ -1,6 +1,6 @@
 #ifdef GL_ES
-//precision mediump float;
-precision highp float;
+precision mediump float;
+//precision highp float;
 //precision lowp float;
 #endif
 
@@ -14,83 +14,145 @@ uniform float lowFreq;
 uniform float midFreq;
 uniform float highFreq;
 uniform float time;
+//http://glslsandbox.com/e#34713.10
 
-//varying vec2 v_uv;
-/*
-void main() {
-  vec2 pos = vec2(0.5, 0.5) - gl_FragCoord.xy / resolution.y;
-  
-  float d = length(pos);
-  float a = atan(pos.y, pos.x);
-  
-//  vec2 tex = vec2(time + 2.0 / (6.0 * d + 3.0 * pos.x), 3.0 * a / 3.14);
-  vec2 tex = vec2(time + 2.0 / (6.0 * d + 3.0 * pos.x), 4.0 * d / 3.14 + 3.0 * a / 3.14);
-  
-  float f = min(1.0, d/0.3);
-  
-  gl_FragColor = texture2D(optTex, tex) * f;
+#extension GL_OES_standard_derivatives : enable
+
+
+float ha( float n ) {return fract(sin(n)*758.5453);}
+
+vec3 mod289(vec3 x) {
+  return x - floor(x * (1.0 / 289.0)) * 289.0;
 }
-*/
+
+vec4 mod289(vec4 x) {
+  return x - floor(x * (1.0 / 289.0)) * 289.0;
+}
+
+vec4 permute(vec4 x) {
+     return mod289(((x*34.0)+1.0)*x);
+}
+
+vec4 taylorInvSqrt(vec4 r)
+{
+  return 1.79284291400159 - 0.85373472095314 * r;
+}
+
+float snoise(vec3 v)
+  { 
+  const vec2  C = vec2(1.0/6.0, 1.0/3.0) ;
+  const vec4  D = vec4(0.0, 0.5, 1.0, 2.0);
+
+// First corner
+  vec3 i  = floor(v + dot(v, C.yyy) );
+  vec3 x0 =   v - i + dot(i, C.xxx) ;
+
+// Other corners
+  vec3 g = step(x0.yzx, x0.xyz);
+  vec3 l = 1.0 - g;
+  vec3 i1 = min( g.xyz, l.zxy );
+  vec3 i2 = max( g.xyz, l.zxy );
+
+  //   x0 = x0 - 0.0 + 0.0 * C.xxx;
+  //   x1 = x0 - i1  + 1.0 * C.xxx;
+  //   x2 = x0 - i2  + 2.0 * C.xxx;
+  //   x3 = x0 - 1.0 + 3.0 * C.xxx;
+  vec3 x1 = x0 - i1 + C.xxx;
+  vec3 x2 = x0 - i2 + C.yyy; // 2.0*C.x = 1/3 = C.y
+  vec3 x3 = x0 - D.yyy;      // -1.0+3.0*C.x = -0.5 = -D.y
+
+// Permutations
+  i = mod289(i); 
+  vec4 p = permute( permute( permute( 
+             i.z + vec4(0.0, i1.z, i2.z, 1.0 ))
+           + i.y + vec4(0.0, i1.y, i2.y, 1.0 )) 
+           + i.x + vec4(0.0, i1.x, i2.x, 1.0 ));
+
+// Gradients: 7x7 points over a square, mapped onto an octahedron.
+// The ring size 17*17 = 289 is close to a multiple of 49 (49*6 = 294)
+  float n_ = 0.142857142857; // 1.0/7.0
+  vec3  ns = n_ * D.wyz - D.xzx;
+
+  vec4 j = p - 49.0 * floor(p * ns.z * ns.z);  //  mod(p,7*7)
+
+  vec4 x_ = floor(j * ns.z);
+  vec4 y_ = floor(j - 7.0 * x_ );    // mod(j,N)
+
+  vec4 x = x_ *ns.x + ns.yyyy;
+  vec4 y = y_ *ns.x + ns.yyyy;
+  vec4 h = 1.0 - abs(x) - abs(y);
+
+  vec4 b0 = vec4( x.xy, y.xy );
+  vec4 b1 = vec4( x.zw, y.zw );
+
+  //vec4 s0 = vec4(lessThan(b0,0.0))*2.0 - 1.0;
+  //vec4 s1 = vec4(lessThan(b1,0.0))*2.0 - 1.0;
+  vec4 s0 = floor(b0)*2.0 + 1.0;
+  vec4 s1 = floor(b1)*2.0 + 1.0;
+  vec4 sh = -step(h, vec4(0.0));
+
+  vec4 a0 = b0.xzyw + s0.xzyw*sh.xxyy ;
+  vec4 a1 = b1.xzyw + s1.xzyw*sh.zzww ;
+
+  vec3 p0 = vec3(a0.xy,h.x);
+  vec3 p1 = vec3(a0.zw,h.y);
+  vec3 p2 = vec3(a1.xy,h.z);
+  vec3 p3 = vec3(a1.zw,h.w);
+
+//normalise gradients
+  vec4 norm = taylorInvSqrt(vec4(dot(p0,p0), dot(p1,p1), dot(p2, p2), dot(p3,p3)));
+  p0 *= norm.x;
+  p1 *= norm.y;
+  p2 *= norm.z;
+  p3 *= norm.w;
+
+// Mix final noise value
+  vec4 m = max(0.6 - vec4(dot(x0,x0), dot(x1,x1), dot(x2,x2), dot(x3,x3)), 0.0);
+  m = m * m;
+  return 42.0 * dot( m*m, vec4( dot(p0,x0), dot(p1,x1), 
+                                dot(p2,x2), dot(p3,x3) ) );
+  }
+float no( in vec3 x )
+{    vec3 p = floor(x);    vec3 f = fract(x); 
+    float n = p.x + p.y*57.0 + p.z*800.0;float res = mix(mix(mix( ha(n+  0.0), ha(n+  1.0),f.x), mix( ha(n+ 57.0), ha(n+ 58.0),f.x),f.y),
+    mix(mix( ha(n+800.0), ha(n+801.0),f.x), mix( ha(n+857.0), ha(n+858.0),f.x),f.y),f.z);
+    return res;}
+
+float fb(vec3 p){
+	float v = 0.0;
+	float w = 0.0;
+	float a = 1.0;
+	for(int i=0;i<5;i++){
+		v += a * (snoise(p) * 0.5 + 0.5);
+		w += a;
+		p *= 3.0;
+		a *= 0.7;
+	}
+	return smoothstep(0.1, 1.0, v / w);
+}
+
+vec3 colo = vec3(0.0);
+
+float f(vec3 p){
+	float a = snoise(p * 1.06 + time * midFreq*.05f);//0.01);
+	colo = mix(vec3(1.0, 1.0, 0.0), vec3(0.0, 0.0, 1.0), a * 0.5 + 0.5);
+	colo = mix(colo, vec3(1.0, 0.0, 0.0), pow(a * 0.5 + 0.5, 5.0));
+	return fb(p + a);
+}
 
 
 void main( void ) {
-return;
-//
-    float mouse_pos = mouse.x/resolution.x;
-    vec2 uv = .987 * gl_FragCoord.xy / resolution.y;
-    float t = time*.01;//.01125;
-    float k = cos(t); 
-    float l = sin(t);        
-    
-    float s = .456+midFreq;
-    float tmp = .963 +lowFreq*.003;
-    for(int i=0; i<96; ++i) {
-        uv  = abs(uv) - s;    // Mirror
-        uv *= mat2(k,-l,l,k); // Rotate
-        s  *= tmp;//0.963;// * tmp;         // Scale
-    }
-    
-    float x = .5 + .5*cos((3.28318+(2.-midFreq*4.))*337.*length(uv));
-    //x = texture2D(backbuffer,gl_FragCoord);
-    //x.r = texture2D(fft,vec2(0,0)).r;
-    gl_FragColor = vec4(
-        //vec3(length(uv)*37.0,0.755*x, 0.955/x),
-        vec3(length(uv)*37*(lowFreq),
-        (.5+lowFreq)*x,
-        1*(1-lowFreq)/x),
-    0.65);
-    
-    
-    int fix_size = 1000;
-    vec2 uv_t = gl_FragCoord / fix_size;
-    vec4 newCol = gl_FragColor;
-    if(gl_FragCoord.x<=fix_size)
-    {
-        float lc = texture2D(fft,vec2(uv_t.x,0)).r;
-        //if(uv_t.y<=lc)
-        //   newCol =vec4(1.);
-        
-        float rc = texture2D(fft,vec2(uv_t.x,0)).g;
-        //if(uv_t.y<=rc)
-        //    newCol = vec4(.0);
-    } 
-    if(uv_t.x<=.1 && uv_t.y<=lowFreq)
-        newCol = vec4(vec3(1.),.1);
-    
-    if(uv_t.x >=.15 && uv_t.x<=.3 && uv_t.y<=midFreq)
-       newCol = vec4(vec3(.7),.1);
-    
-    if(uv_t.x >=.45 && uv_t.x<=.7 && uv_t.y<=highFreq)
-       newCol = vec4(vec3(.3),.1);
 
-    /*
-    if(gl_FragCoord.x> fix_size && (gl_FragCoord.x-fix_size)<=fix_size)
-    {
-        float rc = texture2D(fft,vec2(uv_t.x,0)).g;
-        if(uv_t.y<=rc)
-            newCol = vec4(1.);
-    }
-    */
-    gl_FragColor = newCol;
-    //gl_FragColor = texture2D(backbuffer,gl_FragCoord);
+	//vec2 position = ( surfacePosition ) * 2.0;
+  //vec2 position = resolution*gl_FragCord;
+  vec2 position=(gl_FragCoord.xy/resolution.x)*2.0-vec2(1.0,resolution.y/resolution.x);
+  
+	float z = f(vec3(position, 0.0));
+	gl_FragColor = vec4(colo * z + (1.-z), 1.0);
+	
+	vec3 col = gl_FragColor.rgb;
+	
+	col.rg = mix(col.rg, col.rg*vec2(0.8,1.2),.0f);//sin(time*midFreq));//.4));
+	gl_FragColor.rgb = col;
+
 }

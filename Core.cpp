@@ -93,6 +93,7 @@ namespace App {
 	}
 
 	int Core::init() {
+		baseTime = SDL_GetTicks();
 		if (fullScreen)
 			SDLflags = SDL_OPENGL|SDL_FULLSCREEN;
 		else
@@ -921,7 +922,6 @@ namespace App {
 		Logger::Instance()->OutputString("MainLoop...");
 
 		BitmapFontGL::Instance()->CreateTexture();
-		baseTime = SDL_GetTicks();
 		prevTime = baseTime;
 		// precompile the effect for editor
 		shaderGL[POSTFxID].CompileFromFile(EffectFileTable[POSTFxID]);

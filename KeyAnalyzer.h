@@ -12,7 +12,7 @@ class KeyAnalyzer
 {
 private:
 public:
-	void KeyHit(TextEditor* textEditor, SDLKey key, SDLMod mod,  const std::string& filename);
+	void KeyHit(TextEditor* textEditor, SDL_Keysym keysym,  const std::string& filename);
 
 
 	KeyAnalyzer(void);

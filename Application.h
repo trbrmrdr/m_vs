@@ -2,6 +2,7 @@
 #define _APPLICATION_H
 #include "stdafx.h"
 #include <SDL.h>
+#include <SDL_video.h>
 
 namespace App {
 
@@ -17,7 +18,7 @@ namespace App {
 		int currHeight;
 
 
-		SDL_Surface* mSDL_Surface;
+		SDL_Window* mSDL_Window;
 		int bpp;
 		bool end;
 
