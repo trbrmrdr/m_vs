@@ -4,6 +4,7 @@ precision highp float;
 
 uniform vec2 resolution;
 uniform float time;
+uniform vec2 mouse;
 
 bool isphere( in vec4 sph, in vec3 ro, in vec3 rd, out vec2 t )
 {
@@ -143,10 +144,16 @@ void main(void)
     vec3 light2 = vec3( -0.707, 0.000, 0.707 );
 
     float fov = 1.0;
-    float r = 100.0*lowFreq*lowFreq + 1.4+0.2*cos(6.28318*time/20.0);
-    vec3 campos = vec3( r*sin(6.28318*time/20.0), 0.3-0.4*sin(6.28318*time/20.0), r*cos(6.28318*time/20.0) );
-    vec3 camtar = vec3(0.0,0.1,0.0);
+    float r = 1+1.5*lowFreq*lowFreq + 1.4+0.2*cos(6.28318*time/20.0);
+	float d1= 20.;
+	
+	float tmp= resolution.x/ mouse.x;
+	//tmp*=1000000.001;
+	
+    vec3 campos = vec3( r*sin(6.28318*time/d1), 0.3-0.4*sin(6.28318*time/d1), r*cos(6.28318*time/d1) );
+    vec3 camtar = vec3(0.0,0.,0.0);
     //camera matrix
+	
     vec3 cw = normalize(camtar-campos);
     vec3 cp = vec3(0.0,1.0,0.0);
     vec3 cu = normalize(cross(cw,cp));
