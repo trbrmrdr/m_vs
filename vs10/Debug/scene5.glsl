@@ -69,8 +69,8 @@ void main(void){
   //Camera animation
   vec3 vuv=vec3(0,1,0);//Change camere up vector here
   vec3 vrp=vec3(0,.5,0); //Change camere view here
-  float mx=mouse.x*PI*2.0;
-  float my=mouse.y*PI/2.01;
+  float mx=mouse.x*PI*1.0;
+  float my=mouse.y*PI/1.01;
   vec3 prp=vec3(cos(my)*cos(mx),sin(my),cos(my)*sin(mx))*2.0; //Trackball style camera pos
   
 

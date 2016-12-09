@@ -1,4 +1,3 @@
-//
 // Blobs
 
 #ifdef GL_ES
@@ -6,7 +5,7 @@ precision highp float;
 #endif
 
 uniform float time;
-uniform float lowFreq;
+//uniform float lowFreq;
 uniform float midFreq;
 uniform vec2 mouse;
 uniform vec2 resolution;
@@ -27,9 +26,9 @@ float makePoint(float x,float y,float fx,float fy,float sx,float sy,float t){
 
 void fill(float d){
     float br = 10.;
-    //if(d>1.)return;
+    if(d>1.)return;
     float tVal = br / d;
-    //tVal = sqrt(br - d*d);
+    tVal = sqrt(br - d*d);
     gl_FragColor.rgb += vec3(0.3, 0.15, 0.45) * tVal;
 }
 
@@ -53,13 +52,13 @@ void main( void ) {
    float percent = mouse.x/resolution.x;
    //percent = (1.+midFreq*.00000001);
    //p = mouse.xy*2.-vec2(1.,resolution.y/resolution.x);
-   vec2 m = vec2(1.,1000.001);//mouse/resolution;
-   p *= 1.5;
+   vec2 m = vec2(1.,10.001);//mouse/resolution;
+   p *= cos(time);
    float x=p.x;
    float y=p.y;
 
-   time = .05*time;
-   time = 1.0;
+   //time = 0.05*time;
+   //time = 1.;
    float a=makePoint(x,y,m.x,m.y,1.3,0.3,time);
    //float a=makePoint(x,y,3.3,2.9,0.3,0.3,time);
    //a=a+makePoint(x,y,1.9,2.0,0.4,0.4,time);
@@ -69,7 +68,7 @@ void main( void ) {
    //a=a+makePoint(x,y,1.3,2.1,0.6,0.3,time);
    //a=a+makePoint(x,y,1.8,1.7,0.5,0.4,time);   
    
-   float b=makePoint(x,y,1.2,1.9,10000.0,0.3,time);
+   float b=makePoint(x,y,1.2,.9,.2,0.3,time);
    //b=b+makePoint(x,y,0.7,2.7,0.4,0.4,time);
    //b=b+makePoint(x,y,1.4,0.6,0.4,0.5,time);
  
@@ -83,7 +82,7 @@ void main( void ) {
    //c=c+makePoint(x,y,1.3,0.5,0.5,0.4,time);
    
    //vec3 d=vec3(a,b,c)*.012;
-   vec3 d=vec3(a,0,0)*.012;
+   vec3 d=vec3(a,0,0)*.032;
    
    gl_FragColor = weight * vec4(d.x,d.y,d.z,1.0);
    //point(mouse*resolution);

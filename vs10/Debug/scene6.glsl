@@ -6,8 +6,8 @@ precision mediump float;
 
 //varying vec2 surfacePosition;
 uniform vec2 resolution;
-uniform float time;
 uniform vec2 mouse;
+uniform float time;
 
 
 const float color_intensity = 0.45;
@@ -21,7 +21,7 @@ float adnan (float scale) {
 
 void main()
 {
-  vec2 surfacePosition = gl_FragCoord/resolution;
+  vec2 surfacePosition = gl_FragCoord.xy/resolution;
   float speed  =mouse.x/resolution.x*100;
   vec2 var2 = vec2(.1,.1);//time*0.1);//mouse;//vec2(0.5,0.5);
   float var0 = 0.5;
@@ -33,8 +33,8 @@ void main()
   for(int i=1;i<300;i++)
   {
     vec2 newp=p;
-    newp.x+=var2.x/float(i)*sin(float(i)*Pi*p.y+time*.1*speed);
-    newp.y+=var2.y/float(i)*cos(float(i)*Pi*p.x+time*.1*speed)-1.;
+    newp.x+=var2.x/float(i)*sin(float(i)*Pi*p.y+time*5.7);
+    newp.y+=var2.y/float(i)*cos(float(i)*Pi*p.x+time*10.1)-1.;
   if (mod(float(i),2.) == 0.)
      p=newp;
   else
