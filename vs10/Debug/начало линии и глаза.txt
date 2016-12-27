@@ -1,0 +1,158 @@
+#ifdef GL_ES
+precision mediump float;
+#endif
+
+#extension GL_OES_standard_derivatives : enable
+
+#define PI_2 1.57
+#define PI_180
+
+uniform float time;
+uniform vec2 mouse;
+uniform vec2 resolution;
+
+float DigitBin(const in int x)
+{
+    return x==0?480599.0:x==1?139810.0:x==2?476951.0:x==3?476999.0:x==4?350020.0:x==5?464711.0:x==6?464727.0:x==7?476228.0:x==8?481111.0:x==9?481095.0:0.0;
+}
+
+float PrintValue(const in vec2 fragCoord, const in vec2 vPixelCoords, const in vec2 vFontSize, const in float fValue, const in float fMaxDigits, const in float fDecimalPlaces)
+{
+    vec2 vStringCharCoords = (fragCoord.xy - vPixelCoords) / vFontSize;
+    if ((vStringCharCoords.y < 0.0) || (vStringCharCoords.y >= 1.0)) return 0.0;
+	float fLog10Value = log2(abs(fValue)) / log2(10.0);
+	float fBiggestIndex = max(floor(fLog10Value), 0.0);
+	float fDigitIndex = fMaxDigits - floor(vStringCharCoords.x);
+	float fCharBin = 0.0;
+	if(fDigitIndex > (-fDecimalPlaces - 1.01)) {
+		if(fDigitIndex > fBiggestIndex) {
+			if((fValue < 0.0) && (fDigitIndex < (fBiggestIndex+1.5))) fCharBin = 1792.0;
+		} else {		
+			if(fDigitIndex == -1.0) {
+				if(fDecimalPlaces > 0.0) fCharBin = 2.0;
+			} else {
+				if(fDigitIndex < 0.0) fDigitIndex += 1.0;
+				float fDigitValue = (abs(fValue / (pow(10.0, fDigitIndex))));
+                float kFix = 0.0001;
+                fCharBin = DigitBin(int(floor(mod(kFix+fDigitValue, 10.0))));
+			}		
+		}
+	}
+    return floor(mod((fCharBin / pow(2.0, floor(fract(vStringCharCoords.x) * 4.0) + (floor(vStringCharCoords.y * 5.0) * 4.0))), 2.0));
+}
+
+float TEXT1=.0;
+float TEXT2=.0;
+float TEXT3 = .0;
+vec3 drawText(in vec2 pos,in vec3 color,const in float val)
+{
+    vec2 fontsize = vec2(13.0, 15.0);
+    float prn = PrintValue(gl_FragCoord.xy, pos , fontsize, val, 1.0, 6.0);
+    return mix( color, vec3(0.7, 0.0, 0.0), prn);
+}
+
+
+float rand(int seed) {
+	return fract(sin(float(seed)*15.234234) + sin(float(seed)*4.3456342) * 372.4532);
+}
+
+float hash(float p)
+{
+    mat2 m = mat2(  13.85, 47.77,
+                    99.41, 88.48
+                );
+    return fract(sin(m*vec2(p)) * 46738.29).x;
+}
+
+
+vec2 hash(vec2 p)
+{
+    mat2 m = mat2(  13.85, 47.77,
+                    99.41, 88.48
+                );
+
+    return fract(sin(m*p) * 46738.29);
+}
+
+float voronoi(vec2 p)
+{
+    vec2 g = floor(p);
+    vec2 f = fract(p);
+
+    float distanceToClosestFeaturePoint =1.;
+    for(int y = -1; y <= 1; y++)
+    {
+        for(int x = -1; x <= 1; x++)
+        {
+            vec2 latticePoint = vec2(x, y);
+            float currentDistance = distance(latticePoint + hash(g+latticePoint), f);
+            distanceToClosestFeaturePoint = min(distanceToClosestFeaturePoint, currentDistance);
+	    //return ((latticePoint + hash(g+latticePoint))- f).x;
+	    //distanceToClosestFeaturePoint = min(distanceToClosestFeaturePoint, ((latticePoint + hash(g+latticePoint))- f).x);
+        }
+    }
+
+    return distanceToClosestFeaturePoint;
+}
+
+
+float voronoi(float p)
+{
+	return voronoi(vec2(p,0));
+    float g = floor(p);
+    float f = fract(p);
+    return f - hash(g);
+}
+
+float lerp(float v,float min,float max){return (min+v*(max-min));}
+
+float serp(float v,float min,float max){if (v >= 1.)return max;else if (v <= .0)return min;return min + sin(v * PI_2) * ( max - min );}
+
+void main( void ) {
+
+	vec2 pos = ( gl_FragCoord.xy / resolution.xy );
+
+	vec2 it=1./resolution;
+	
+	float t = .0;
+	
+	for(float i=1.;i<=10.;++i)
+	{
+		float hash_i = hash(i);
+		float s =.0;// (1.+pow(sin(time*.025),2.))*.5;//((1.+sin(hash_i+time))*.5);
+		//s>=1.
+		
+		//#define time 1./(1000000.+mouse.x*1000000.)
+		//float dh = 1000.;
+		float di = 1000.;//hash_i*dh;
+		float ci = floor(time/di);
+		float ti = time - ci*di;
+		//ti = ti/di;
+		
+		//TEXT1 = time;
+		//TEXT2 = ci*di;
+		//TEXT3 = ti;
+		//t=ti;
+		//break;
+		//s=lerp(.5+mouse.x*(floor(hash_i/2.)==.0?-1.:+1.),-.5,+.5);
+		s=hash(i*2.)*.01*time;
+		float sig = fract(hash_i)/2.<=.25?-1.:+1.;
+		float offset = sig*hash_i+s;
+		float fof =  floor(offset);
+		offset=abs(fof)>1.?offset-fof:offset;
+		//if(offset>1. || offset<.0)continue;
+		if(abs(offset - pos.x)<it.x){t=1.;break;}
+		//if(abs(offset - pos.y)<it.x){t=1.;break;}
+		
+	}
+	//vec3 newCol = vec3(t,1.-t,sqrt(t*time*.05));
+	vec3 newCol = vec3(t,t,t);
+	
+	TEXT1 = fract(mouse.x*100.)/2.<=.01?+1.:-1.;
+	//if(TEXT1!=.0)
+		newCol = drawText(vec2(505.,60.),newCol,TEXT1);
+	if(TEXT2!=.0)newCol = drawText(vec2(505.,36.),newCol,TEXT2);
+	if(TEXT3!=.0)newCol = drawText(vec2(505.,10.),newCol,TEXT3);
+	gl_FragColor = vec4( newCol, 1.0 );
+
+}

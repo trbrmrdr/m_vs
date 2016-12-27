@@ -1,158 +1,119 @@
+
 #ifdef GL_ES
 precision mediump float;
-//precision highp float;
-//precision lowp float;
 #endif
-
-uniform sampler2D fft;//1024 1
-uniform sampler2D optTex;
-uniform sampler2D backbuffer;
-
-uniform vec2 resolution;
-uniform vec2 mouse;
-uniform float lowFreq;
-uniform float midFreq;
-uniform float highFreq;
+ 
 uniform float time;
-//http://glslsandbox.com/e#34713.10
+uniform vec2 mouse;
+uniform vec2 resolution;
 
-#extension GL_OES_standard_derivatives : enable
-
-
-float ha( float n ) {return fract(sin(n)*758.5453);}
-
-vec3 mod289(vec3 x) {
-  return x - floor(x * (1.0 / 289.0)) * 289.0;
-}
-
-vec4 mod289(vec4 x) {
-  return x - floor(x * (1.0 / 289.0)) * 289.0;
-}
-
-vec4 permute(vec4 x) {
-     return mod289(((x*34.0)+1.0)*x);
-}
-
-vec4 taylorInvSqrt(vec4 r)
+float DigitBin(const in int x)
 {
-  return 1.79284291400159 - 0.85373472095314 * r;
+    return x==0?480599.0:x==1?139810.0:x==2?476951.0:x==3?476999.0:x==4?350020.0:x==5?464711.0:x==6?464727.0:x==7?476228.0:x==8?481111.0:x==9?481095.0:0.0;
 }
 
-float snoise(vec3 v)
-  { 
-  const vec2  C = vec2(1.0/6.0, 1.0/3.0) ;
-  const vec4  D = vec4(0.0, 0.5, 1.0, 2.0);
-
-// First corner
-  vec3 i  = floor(v + dot(v, C.yyy) );
-  vec3 x0 =   v - i + dot(i, C.xxx) ;
-
-// Other corners
-  vec3 g = step(x0.yzx, x0.xyz);
-  vec3 l = 1.0 - g;
-  vec3 i1 = min( g.xyz, l.zxy );
-  vec3 i2 = max( g.xyz, l.zxy );
-
-  //   x0 = x0 - 0.0 + 0.0 * C.xxx;
-  //   x1 = x0 - i1  + 1.0 * C.xxx;
-  //   x2 = x0 - i2  + 2.0 * C.xxx;
-  //   x3 = x0 - 1.0 + 3.0 * C.xxx;
-  vec3 x1 = x0 - i1 + C.xxx;
-  vec3 x2 = x0 - i2 + C.yyy; // 2.0*C.x = 1/3 = C.y
-  vec3 x3 = x0 - D.yyy;      // -1.0+3.0*C.x = -0.5 = -D.y
-
-// Permutations
-  i = mod289(i); 
-  vec4 p = permute( permute( permute( 
-             i.z + vec4(0.0, i1.z, i2.z, 1.0 ))
-           + i.y + vec4(0.0, i1.y, i2.y, 1.0 )) 
-           + i.x + vec4(0.0, i1.x, i2.x, 1.0 ));
-
-// Gradients: 7x7 points over a square, mapped onto an octahedron.
-// The ring size 17*17 = 289 is close to a multiple of 49 (49*6 = 294)
-  float n_ = 0.142857142857; // 1.0/7.0
-  vec3  ns = n_ * D.wyz - D.xzx;
-
-  vec4 j = p - 49.0 * floor(p * ns.z * ns.z);  //  mod(p,7*7)
-
-  vec4 x_ = floor(j * ns.z);
-  vec4 y_ = floor(j - 7.0 * x_ );    // mod(j,N)
-
-  vec4 x = x_ *ns.x + ns.yyyy;
-  vec4 y = y_ *ns.x + ns.yyyy;
-  vec4 h = 1.0 - abs(x) - abs(y);
-
-  vec4 b0 = vec4( x.xy, y.xy );
-  vec4 b1 = vec4( x.zw, y.zw );
-
-  //vec4 s0 = vec4(lessThan(b0,0.0))*2.0 - 1.0;
-  //vec4 s1 = vec4(lessThan(b1,0.0))*2.0 - 1.0;
-  vec4 s0 = floor(b0)*2.0 + 1.0;
-  vec4 s1 = floor(b1)*2.0 + 1.0;
-  vec4 sh = -step(h, vec4(0.0));
-
-  vec4 a0 = b0.xzyw + s0.xzyw*sh.xxyy ;
-  vec4 a1 = b1.xzyw + s1.xzyw*sh.zzww ;
-
-  vec3 p0 = vec3(a0.xy,h.x);
-  vec3 p1 = vec3(a0.zw,h.y);
-  vec3 p2 = vec3(a1.xy,h.z);
-  vec3 p3 = vec3(a1.zw,h.w);
-
-//normalise gradients
-  vec4 norm = taylorInvSqrt(vec4(dot(p0,p0), dot(p1,p1), dot(p2, p2), dot(p3,p3)));
-  p0 *= norm.x;
-  p1 *= norm.y;
-  p2 *= norm.z;
-  p3 *= norm.w;
-
-// Mix final noise value
-  vec4 m = max(0.6 - vec4(dot(x0,x0), dot(x1,x1), dot(x2,x2), dot(x3,x3)), 0.0);
-  m = m * m;
-  return 42.0 * dot( m*m, vec4( dot(p0,x0), dot(p1,x1), 
-                                dot(p2,x2), dot(p3,x3) ) );
-  }
-float no( in vec3 x )
-{    vec3 p = floor(x);    vec3 f = fract(x); 
-    float n = p.x + p.y*57.0 + p.z*800.0;float res = mix(mix(mix( ha(n+  0.0), ha(n+  1.0),f.x), mix( ha(n+ 57.0), ha(n+ 58.0),f.x),f.y),
-    mix(mix( ha(n+800.0), ha(n+801.0),f.x), mix( ha(n+857.0), ha(n+858.0),f.x),f.y),f.z);
-    return res;}
-
-float fb(vec3 p){
-	float v = 0.0;
-	float w = 0.0;
-	float a = 1.0;
-	for(int i=0;i<5;i++){
-		v += a * (snoise(p) * 0.5 + 0.5);
-		w += a;
-		p *= 3.0;
-		a *= 0.7;
+float PrintValue(const in vec2 fragCoord, const in vec2 vPixelCoords, const in vec2 vFontSize, const in float fValue, const in float fMaxDigits, const in float fDecimalPlaces)
+{
+    vec2 vStringCharCoords = (fragCoord.xy - vPixelCoords) / vFontSize;
+    if ((vStringCharCoords.y < 0.0) || (vStringCharCoords.y >= 1.0)) return 0.0;
+	float fLog10Value = log2(abs(fValue)) / log2(10.0);
+	float fBiggestIndex = max(floor(fLog10Value), 0.0);
+	float fDigitIndex = fMaxDigits - floor(vStringCharCoords.x);
+	float fCharBin = 0.0;
+	if(fDigitIndex > (-fDecimalPlaces - 1.01)) {
+		if(fDigitIndex > fBiggestIndex) {
+			if((fValue < 0.0) && (fDigitIndex < (fBiggestIndex+1.5))) fCharBin = 1792.0;
+		} else {		
+			if(fDigitIndex == -1.0) {
+				if(fDecimalPlaces > 0.0) fCharBin = 2.0;
+			} else {
+				if(fDigitIndex < 0.0) fDigitIndex += 1.0;
+				float fDigitValue = (abs(fValue / (pow(10.0, fDigitIndex))));
+                float kFix = 0.0001;
+                fCharBin = DigitBin(int(floor(mod(kFix+fDigitValue, 10.0))));
+			}		
+		}
 	}
-	return smoothstep(0.1, 1.0, v / w);
-}
-
-vec3 colo = vec3(0.0);
-
-float f(vec3 p){
-	float a = snoise(p * 1.06 + time * midFreq*.05f);//0.01);
-	colo = mix(vec3(1.0, 1.0, 0.0), vec3(0.0, 0.0, 1.0), a * 0.5 + 0.5);
-	colo = mix(colo, vec3(1.0, 0.0, 0.0), pow(a * 0.5 + 0.5, 5.0));
-	return fb(p + a);
+    return floor(mod((fCharBin / pow(2.0, floor(fract(vStringCharCoords.x) * 4.0) + (floor(vStringCharCoords.y * 5.0) * 4.0))), 2.0));
 }
 
 
-void main( void ) {
+vec3 drawText1(vec3 color,const in float val)
+{
+    vec2 fontsize = vec2(13.0, 15.0);
+    vec2 position = vec2(15.,10.);
+    float prn = PrintValue(gl_FragCoord.xy, position , fontsize, val, 1.0, 6.0);
+    return mix( color, vec3(0.7, 0.0, 0.0), prn);
+}
 
-	//vec2 position = ( surfacePosition ) * 2.0;
-  //vec2 position = resolution*gl_FragCord;
-  vec2 position=(gl_FragCoord.xy/resolution.x)*2.0-vec2(1.0,resolution.y/resolution.x);
-  
-	float z = f(vec3(position, 0.0));
-	gl_FragColor = vec4(colo * z + (1.-z), 1.0);
-	
-	vec3 col = gl_FragColor.rgb;
-	
-	col.rg = mix(col.rg, col.rg*vec2(0.8,1.2),.0f);//sin(time*midFreq));//.4));
-	gl_FragColor.rgb = col;
+float wave(float x)
+{
+	bool p  = fract(x*.5)<.5;
+	x	= fract(x)*2.;
+	x 	*= 2.-x;
+	x 	*= 1.-abs(1.-x)*.25;
+	return  p ? x : -x;
+}
 
+#define _2PI 6.2831853071794
+void main(void){
+	vec2 v = (gl_FragCoord.xy - resolution/2.0) / min(resolution.y,resolution.x) * 20.0 ;//+ mouse.xy*;
+	vec2 vv = v; vec2 vvv = v;
+	
+	vec2 edge = vec2(0.,_2PI);
+	
+    float len= .05;
+    float start = 3.14*.134;//mouse.x;//.68+.32*mouse.x;
+	edge = vec2(_2PI*start,_2PI*start+len);
+	float varT = (+1.+cos(time*0.03))*.5;
+	
+	float tm = edge.x + abs(edge.x-edge.y)*varT;//time*0.03;
+	
+	vec2 mspt = (vec2(
+			sin(tm)+cos(tm*0.2)+sin(tm*0.5)+cos(tm*-0.4)+sin(tm*1.3),
+			cos(tm)+sin(tm*0.1)+cos(tm*0.8)+sin(tm*-1.1)+cos(tm*1.5)
+			)+1.0); //5x harmonics, scale back to [0,1]
+	float R = 0.0;
+	float RR = 0.0;
+	float RRR = 0.0;
+	float a = (.6-mspt.x)*6.2;
+	float C = cos(a);
+	float S = sin(a);
+	vec2 xa=vec2(C, -S);
+	vec2 ya=vec2(S, C);
+	vec2 shift = vec2( -.34, 1.62)+(cos(time*.003));
+	//vec2 shift = vec2( 0, .62+(cos(time*.003)));
+	float Z = 1.0 + mspt.y*6.0;
+	float ZZ = 1.0 + (mspt.y)*1.2;
+	float ZZZ = 1.0 + (mspt.y)*1.9;
+	
+	for ( int i = 0; i < 130; i++ ){
+		float r = dot(v,v);
+		if ( r > 1.0 )
+		{
+			r = (1.0)/r ;
+			v.x = v.x * r;
+			v.y = v.y * r;
+		}
+		R *= .99;
+		R += r;
+		if(i < 39){
+			RR *= .99*(1.+cos(time*.07))*.5;
+			RR += r;
+			if(i < 38){
+				RRR *= .99*(1.+sin(time*.01))*.5;
+				RRR += r;
+			}
+		}
+		
+		v = vec2( dot(v, xa), dot(v, ya)) * Z + shift;
+	}
+	float c = ((mod(R,2.0)>1.0)?1.0-fract(R):fract(R));
+	float cc = ((mod(RR,2.0)>1.0)?1.0-fract(RR):fract(RR));
+	float ccc = ((mod(RRR,2.0)>1.0)?1.0-fract(RRR):fract(RRR));
+	vec4 newCol = vec4(ccc, cc, c, 1.0);
+	
+	newCol = vec4(drawText1(newCol.rgb,mouse.x),newCol.a);
+	gl_FragColor = newCol;
+	
 }

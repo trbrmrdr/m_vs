@@ -1,5 +1,10 @@
 *.iml
 *.db
+*.idb
+*.tlog
+*.obj
+*.enc
+*.lasbuildstate
 bin/
 gen/
 objs/
