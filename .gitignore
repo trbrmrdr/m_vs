@@ -4,6 +4,7 @@
 *.tlog
 *.obj
 *.enc
+*.ipch
 *.lasbuildstate
 bin/
 gen/
