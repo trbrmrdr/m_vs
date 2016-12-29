@@ -29,6 +29,7 @@ public:
 	void SetUniform(const GLchar* name, float v);
 	void SetUniform(const GLchar* name, float* fv, int size);
 	void SetUniform(const GLchar* name, float x, float y);
+	void SetUniform(const GLchar* name, const Vec2& vec2);
 
 	void Free();
 };

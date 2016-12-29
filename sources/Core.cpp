@@ -65,7 +65,7 @@ int Core::init(const Size& windows) {
 	shaderGL[POSTFxID].CompileFromFile(EffectFileTable[POSTFxID]);
 	textEditor.Load(EffectFileTable[nowEffect]);
 #endif
-	baseTime = -1;
+	//baseTime = -1;
 	nowSource.clear();
 	errorHighlight = true;
 	return 0;
@@ -95,7 +95,6 @@ int Core::changeKeys(SDL_Keysym keysym) {
 	//keyBuffer.Clear();
 	//if (editMode)
 	//	keyAnalyzer.KeyHit(&textEditor, keysym, EffectFileTable[nowEffect]);
-
 	if (scenes.changeKeys(keysym))
 		return 1;
 	return 0;

@@ -3,24 +3,28 @@
 
 using namespace std;
 
-struct file {
+struct file
+{
 	string fileName;
-	long hash = 0;
+	long isEditData = 0;
 
-	bool checkHash() {
-		long ret = Helper::GetLastDataEdit(fileName.c_str());
-		hash = ret;
-		if (ret != hash)
-			return false;
+	bool checkIsEdit()
+	{
+		long new_data = Helper::GetLastDataEdit(fileName.c_str());
+		bool ret = new_data != isEditData;
+		isEditData = new_data;
+		return ret;
 	}
 
 	file() {}
-	file(const string& _fileName):fileName(_fileName) {
-		checkHash();
+	file(const string& _fileName) :fileName(_fileName)
+	{
+		checkIsEdit();
 	}
 };
 
-struct Setting {
+struct Setting
+{
 	file file_vs;
 	file file_fs;
 
@@ -34,18 +38,71 @@ struct Setting {
 
 
 
-#define OPTION_TEXTURE "option.png"
-
-struct EffectLoadCallback {
+struct EffectLoadCallback
+{
 	EffectLoadCallback() {};
 	~EffectLoadCallback() {};
 	virtual void loadEffectCallback(uint effectId) {};
 };
 
-class Scenes {
+class Scenes
+{
+	struct GlobalSettings
+	{
+		file settingsFile;
+		file optionTexture;
+		string maskSaveText;
+		Vec2 posSave;
+		Size sizeSave;
+		GlobalSettings(const string& fileName) :
+			settingsFile(fileName),
+			posSave(),
+			sizeSave(-1, -1),
+			optionTexture("option.png"),
+			maskSaveText("save_text_")
+		{}
+		bool checkEdit() { return isEmpty() && settingsFile.checkIsEdit(); }
+		bool isEmpty() { return settingsFile.isEditData == 0; }
+
+		void save() {};
+		void parse() {};
+
+
+		string getNewNameSavesText()
+		{
+			string mask = Strings::FormatToString("%s*.png", maskSaveText.c_str());
+			vector<string> files = Helper::GetFilesInDirectory(".", mask);
+			int id = 0;
+			int new_id = 0;
+			for (vector<string>::iterator it = files.begin(), it_e = files.end(); it != it_e; ++it)
+			{
+				string file = Strings::ToLower(*it);
+				file = file.erase(0, maskSaveText.size() + 2);//"./mask...."
+				file = file.erase(file.find(".png"), 4);
+				int tmp = Strings::StrToInt(file);
+				if (id != new_id)
+					new_id = tmp;
+				else
+				{
+					id++;
+					new_id++;
+				}
+			}
+			do
+			{
+				string ret = Strings::FormatToString("%s%i.png", maskSaveText.c_str(), new_id);
+				if (Helper::GetLastDataEdit(ret.c_str()) == 0)
+					return ret;
+				new_id++;
+			}
+			while (true);
+			//return ;
+		}
+
+	} globalSettings;
+
+
 	bool isFree;
-	file settingsFile;
-	Setting global_setting;
 	//optTex
 
 	// FBO
@@ -67,22 +124,25 @@ class Scenes {
 
 	EffectLoadCallback* callback;
 public:
-	void setEffectLoadCallback(EffectLoadCallback* _callback) {
+	void setEffectLoadCallback(EffectLoadCallback* _callback)
+	{
 		callback = _callback;
 	}
 
-	Scenes(const string& fileName):
-		settingsFile(fileName),
+	Scenes(const string& fileName) :
+		globalSettings(fileName),
 		needSaveFronBuf(false),
 		pEffectId(-1),
 		nowEffect(0),
-		isFree(true) {};
+		isFree(true)
+	{};
 
 	~Scenes() { free(); }
 
 	void init();
 
-	void free() {
+	void free()
+	{
 		isFree = true;
 		for (auto it : shaderGL)
 		{
@@ -109,54 +169,35 @@ public:
 
 	void load(uint effectId);
 
-	bool nowIsValid() {
+	bool nowIsValid()
+	{
 		return shaderGL[nowEffect]->Valid();
 	}
 
-	void swapRenderTarget() {
+	void swapRenderTarget()
+	{
 		// Swap render target
 		glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
 	}
 
-	void clear() {
+	void clear()
+	{
 		CHECK_GL_ERROR();
 		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glLoadIdentity();
 	}
 
-	void begin(float realSec);
+	void begin(float realTime);
 
 	void end();
 
 	void draw();
-	/*
-	void Scenes::checkValidHashFile() {
-	const char* file = EffectFileTable[nowEffect];
-	std::map<std::string, long>::iterator it = hashEffectFileTable.find(std::string(file));
-	if (it != hashEffectFileTable.end())
-	{
-		long newD = Helper::GetLastDataEdit(file);
-		if (newD != it->second)
-		{
-			it->second = newD;
-			loadEffect(nowEffect);
-			return;
-		}
-	}
-	else
-	{
-		long hash = Helper::getFileDataHash(file);
-		if (hash != -1)
-			hashEffectFileTable.insert(std::pair<std::string, long>(file, hash));
-	}
-}
-*/
-	void update() {
-		//	checkValidHashFile();
-	}
 
-	int changeKeys(SDL_Keysym keysym) {
+	void update();
+
+	int changeKeys(SDL_Keysym keysym)
+	{
 		int ctrl = keysym.mod & KMOD_CTRL;
 		int alt = keysym.mod & KMOD_ALT;
 
@@ -201,4 +242,5 @@ public:
 		return 1;
 	}
 
+	void parseSettings();
 };

@@ -6,7 +6,18 @@
 #define windowWidth			(float)CORE().getWindowSize().width
 #define windowHeight		(float)CORE().getWindowSize().height
 
-void Scenes::init() {
+void Scenes::parseSettings()
+{
+	if (globalSettings.isEmpty())
+		globalSettings.save();
+	else
+		globalSettings.parse();
+}
+
+void Scenes::init()
+{
+	// parse settings
+	parseSettings();
 	if (!isFree)free();
 
 	int width = windowWidth;
@@ -14,7 +25,7 @@ void Scenes::init() {
 
 	glViewport(0, 0, width, height);
 
-	optionTexture = Helper::LoadTexture(OPTION_TEXTURE);
+	optionTexture = Helper::LoadTexture(globalSettings.optionTexture.fileName);
 
 	// Initialize back buffer
 	backTexture = 0;
@@ -60,36 +71,34 @@ void Scenes::init() {
 }
 
 static float sec = 0;
-void Scenes::begin(float realSec) {
+void Scenes::begin(float realTime)
+{
 	if (!nowIsValid())return;
-	sec = realSec;
+	sec = realTime;
 	CHECK_GL_ERROR();
 	shaderGL[nowEffect]->Bind();
 	CHECK_GL_ERROR();
 	int width = windowWidth;
 	int height = windowHeight;
 	shaderGL[nowEffect]->SetUniform("resolution", width, height);
-	CHECK_GL_ERROR();
-	shaderGL[nowEffect]->SetUniform("time", realSec);
-	CHECK_GL_ERROR();
-	shaderGL[nowEffect]->SetUniform("mouse", MOUSE().GetCursorX(), MOUSE().GetCursorY());
-	CHECK_GL_ERROR();
-
+	shaderGL[nowEffect]->SetUniform("time", realTime);
+	shaderGL[nowEffect]->SetUniform("mouse", MOUSE().getCursorPos());
 
 	glEnable(GL_TEXTURE_2D);
+
 	glActiveTexture(GL_TEXTURE1);
 	glBindTexture(GL_TEXTURE_2D, optionTexture);
-	shaderGL[nowEffect]->SetUniform("optTex", optionTexture);//1
+	shaderGL[nowEffect]->SetUniform("optTex", optionTexture);
 
-	glEnable(GL_TEXTURE_2D);
 	glActiveTexture(GL_TEXTURE2);
 	glBindTexture(GL_TEXTURE_2D, backTexture);
-	shaderGL[nowEffect]->SetUniform("backbuffer", backTexture);//2
+	shaderGL[nowEffect]->SetUniform("backbuffer", backTexture);
 }
 
-void Scenes::end() {
+void Scenes::end()
+{
 	if (!nowIsValid())return;
-	
+
 	glRecti(1, 1, -1, -1);
 	//shaderGL[nowEffect]->Unbind();
 
@@ -109,18 +118,25 @@ void Scenes::end() {
 	if (needSaveFronBuf)
 	{
 		needSaveFronBuf = false;
-		Helper::SaveLastTexture("test.png", CORE().getWindowSize(), Vec2(), CORE().getWindowSize());
+		Size sizeSave = globalSettings.sizeSave;
+		if (globalSettings.sizeSave.width <= -1.f && globalSettings.sizeSave.height <= -1.f)
+			sizeSave = CORE().getWindowSize();
+
+		Helper::SaveLastTexture(globalSettings.getNewNameSavesText(),
+								CORE().getWindowSize(),
+								globalSettings.posSave,
+								sizeSave);
 	}
-	CHECK_GL_ERROR();
 }
 
-void Scenes::draw() {
+void Scenes::draw()
+{
 	uint POSTFxID = 1;
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	//return;
 	//if (shaderGL[POSTFxID]->Valid())
-		if (false)
+	if (false)
 	{
 		CHECK_GL_ERROR();
 		shaderGL[POSTFxID]->Bind();
@@ -155,7 +171,8 @@ void Scenes::draw() {
 	}
 }
 
-void Scenes::load(uint effectId) {
+void Scenes::load(uint effectId)
+{
 	if (pEffectId != -1)
 		shaderGL[pEffectId]->Unbind();
 	pEffectId = (int) effectId;
@@ -163,7 +180,15 @@ void Scenes::load(uint effectId) {
 	//shaderGL[pEffectId].CompileFromFile(EffectFileTable[effectId]);
 	shaderGL.clear();
 	//shaderGL.push_back(new ShaderGL("effect.glsl"));
-	shaderGL.push_back(new ShaderGL("scene7.glsl"));
+	shaderGL.push_back(new ShaderGL("scene1.glsl"));
 	if (NULL != callback)
 		callback->loadEffectCallback(effectId);
+}
+
+void Scenes::update()
+{
+	if (globalSettings.checkEdit())
+	{
+		init();
+	}
 }

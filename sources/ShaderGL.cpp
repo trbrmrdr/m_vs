@@ -1,12 +1,14 @@
 #include "stdafx.h"
 #include "ShaderGL.h"
 
-enum ShaderGLType {
+enum ShaderGLType
+{
 	GLSL_VS,
 	GLSL_FS
 };
 
-void getErrorLog(GLuint shader, std::set<int>* errorLines = NULL) {
+void getErrorLog(GLuint shader, std::set<int>* errorLines = NULL)
+{
 	GLsizei bufSize = 0;
 	glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &bufSize);
 
@@ -37,7 +39,7 @@ void getErrorLog(GLuint shader, std::set<int>* errorLines = NULL) {
 						{
 							if (isdigit(tmpStr[j]))
 							{
-								num = num * 10 + ( tmpStr[j] - '0' );
+								num = num * 10 + (tmpStr[j] - '0');
 							}
 							else
 							{
@@ -56,7 +58,7 @@ void getErrorLog(GLuint shader, std::set<int>* errorLines = NULL) {
 							if (isdigit(tmpStr[j]))
 							{
 								inNum = true;
-								num = num * 10 + ( tmpStr[j] - '0' );
+								num = num * 10 + (tmpStr[j] - '0');
 							}
 						}
 					}
@@ -73,47 +75,49 @@ void getErrorLog(GLuint shader, std::set<int>* errorLines = NULL) {
 	}
 }
 
-GLuint CompileShader(ShaderGLType type, const GLchar* source, std::set<int>* errorLines = NULL) {
+GLuint CompileShader(ShaderGLType type, const GLchar* source, std::set<int>* errorLines = NULL)
+{
 	GLint status;
 	unsigned int prog = 0;
 	switch (type)
 	{
 		case GLSL_VS:
+		{
+			prog = glCreateShader(GL_VERTEX_SHADER);
+			glShaderSource(prog, 1, &source, 0);
+			glCompileShader(prog);
+			glGetShaderiv(prog, GL_COMPILE_STATUS, &status);
+			if (status == GL_FALSE)
 			{
-				prog = glCreateShader(GL_VERTEX_SHADER);
-				glShaderSource(prog, 1, &source, 0);
-				glCompileShader(prog);
-				glGetShaderiv(prog, GL_COMPILE_STATUS, &status);
-				if (status == GL_FALSE)
-				{
-					getErrorLog(prog, errorLines);
-					LOGGER()->OutputString("Compile error in vertex shader.");
-					glDeleteShader(prog);
-					prog = 0;
-				}
-				return prog;
-			}break;
+				getErrorLog(prog, errorLines);
+				LOGGER()->OutputString("Compile error in vertex shader.");
+				glDeleteShader(prog);
+				prog = 0;
+			}
+			return prog;
+		}break;
 		case GLSL_FS:
+		{
+			prog = glCreateShader(GL_FRAGMENT_SHADER);
+			glShaderSource(prog, 1, &source, 0);
+			glCompileShader(prog);
+			glGetShaderiv(prog, GL_COMPILE_STATUS, &status);
+			if (status == GL_FALSE)
 			{
-				prog = glCreateShader(GL_FRAGMENT_SHADER);
-				glShaderSource(prog, 1, &source, 0);
-				glCompileShader(prog);
-				glGetShaderiv(prog, GL_COMPILE_STATUS, &status);
-				if (status == GL_FALSE)
-				{
-					getErrorLog(prog, errorLines);
-					LOGGER()->OutputString("Compile error in fragment shader.");
-					glDeleteShader(prog);
-					prog = 0;
-				}
+				getErrorLog(prog, errorLines);
+				LOGGER()->OutputString("Compile error in fragment shader.");
+				glDeleteShader(prog);
+				prog = 0;
+			}
 
-				return prog;
-			}break;
+			return prog;
+		}break;
 	}
 	return 0;
 }
 
-GLuint LinkShader(GLuint vsh, GLuint fsh) {
+GLuint LinkShader(GLuint vsh, GLuint fsh)
+{
 	GLuint program = 0;
 	if (vsh != 0 && fsh != 0)
 	{
@@ -135,18 +139,21 @@ GLuint LinkShader(GLuint vsh, GLuint fsh) {
 	return program;
 }
 
-ShaderGL::ShaderGL(const string& filename) 	{
+ShaderGL::ShaderGL(const string& filename)
+{
 	OK = false;
 	shaderProgram = 0;
 	CompileFromFile(filename);
 }
 
-ShaderGL::ShaderGL() {
+ShaderGL::ShaderGL()
+{
 	OK = false;
 	shaderProgram = 0;
 }
 
-std::string readFile(const std::string& filename) {
+std::string readFile(const std::string& filename)
+{
 	std::string ret;
 	FILE* fp = fopen(filename.c_str(), "rt");
 	if (fp != NULL)
@@ -162,14 +169,16 @@ std::string readFile(const std::string& filename) {
 	return ret;
 }
 
-GLuint ShaderGL::CompileFromFile(const std::string& filename) {
+GLuint ShaderGL::CompileFromFile(const std::string& filename)
+{
 	std::string fsshader = readFile(filename);
 	if (!fsshader.empty())
 		return Compile(fsshader);
 	return 0;
 }
 
-GLuint ShaderGL::Compile(const std::string& fsshader) {
+GLuint ShaderGL::Compile(const std::string& fsshader)
+{
 	// 頂点シェーダー（固定）
 	std::string vsshader = "\
 			attribute vec2 pos;\
@@ -223,11 +232,13 @@ GLuint ShaderGL::Compile(const std::string& fsshader) {
 	return shaderProgram;
 }
 
-ShaderGL::~ShaderGL() {
+ShaderGL::~ShaderGL()
+{
 	Free();
 }
 
-void ShaderGL::Free() {
+void ShaderGL::Free()
+{
 	if (shaderProgram != 0)
 	{
 		glDeleteProgram(shaderProgram);
@@ -235,19 +246,23 @@ void ShaderGL::Free() {
 	}
 }
 
-bool ShaderGL::Valid() {
+bool ShaderGL::Valid()
+{
 	return OK;
 }
 
-void ShaderGL::Bind() {
+void ShaderGL::Bind()
+{
 	glUseProgram(shaderProgram);
 }
 
-void ShaderGL::Unbind() {
+void ShaderGL::Unbind()
+{
 	glUseProgram(0);
 }
 
-void ShaderGL::SetUniform(const GLchar* name, uint i) {
+void ShaderGL::SetUniform(const GLchar* name, uint i)
+{
 	if (shaderProgram)
 	{
 		GLuint id = glGetUniformLocation(shaderProgram, name);
@@ -256,7 +271,8 @@ void ShaderGL::SetUniform(const GLchar* name, uint i) {
 	}
 }
 
-void ShaderGL::SetUniform(const GLchar* name, int i) {
+void ShaderGL::SetUniform(const GLchar* name, int i)
+{
 	if (shaderProgram)
 	{
 		GLuint id = glGetUniformLocation(shaderProgram, name);
@@ -265,7 +281,8 @@ void ShaderGL::SetUniform(const GLchar* name, int i) {
 	}
 }
 
-void ShaderGL::SetUniform(const GLchar* name, float v) {
+void ShaderGL::SetUniform(const GLchar* name, float v)
+{
 	if (shaderProgram)
 	{
 		GLuint id = glGetUniformLocation(shaderProgram, name);
@@ -274,7 +291,8 @@ void ShaderGL::SetUniform(const GLchar* name, float v) {
 	}
 }
 
-void ShaderGL::SetUniform(const GLchar* name, float* fv, int size) {
+void ShaderGL::SetUniform(const GLchar* name, float* fv, int size)
+{
 	if (shaderProgram)
 	{
 		GLuint id = glGetUniformLocation(shaderProgram, name);
@@ -283,7 +301,8 @@ void ShaderGL::SetUniform(const GLchar* name, float* fv, int size) {
 	}
 }
 
-void ShaderGL::SetUniform(const GLchar* name, float x, float y) {
+void ShaderGL::SetUniform(const GLchar* name, float x, float y)
+{
 	if (shaderProgram)
 	{
 		GLuint id = glGetUniformLocation(shaderProgram, name);
@@ -292,3 +311,12 @@ void ShaderGL::SetUniform(const GLchar* name, float x, float y) {
 	}
 }
 
+void ShaderGL::SetUniform(const GLchar* name, const Vec2& vec2)
+{
+	if (shaderProgram)
+	{
+		GLuint id = glGetUniformLocation(shaderProgram, name);
+		if (id != -1)
+			glUniform2f(id, vec2.x, vec2.y);
+	}
+}

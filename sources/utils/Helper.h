@@ -7,6 +7,8 @@ using namespace std;
 
 namespace Helper {
 
+	vector<string> GetFilesInDirectory(const string &directory,const string& mask = "*");
+
 	GLuint LoadTexture(const string& fileName);
 	void SaveLastTexture(const string& fileName, const Size& sizeWindow, const Vec2& pos, const Size& size);
 	const char* GLErrString(int err);

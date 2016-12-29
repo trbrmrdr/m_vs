@@ -5,16 +5,72 @@ using namespace Helper;
 using namespace Xml;
 using namespace Strings;
 
+vector<string> Helper::GetFilesInDirectory(const string &directory, const string& mask)
+{
+	vector<string> ret;
+#if TARGET_WIN32
+	HANDLE dir;
+	WIN32_FIND_DATA file_data;
 
-Vec2* Helper::getSplinePoint(const Vec2& origin, const Vec2& control1, const Vec2& control2, const Vec2& destination, unsigned int segments) {
+	if ((dir = FindFirstFile((directory + "/" + mask).c_str(), &file_data)) == INVALID_HANDLE_VALUE)
+		return ret; /* No files found */
 
-	Vec2* vertices = new ( nothrow ) Vec2[segments + 1];
+	do
+	{
+		const string file_name = file_data.cFileName;
+		const string full_file_name = directory + "/" + file_name;
+		const bool is_directory = (file_data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) != 0;
+
+		if (file_name[0] == '.')
+			continue;
+
+		if (is_directory)
+			continue;
+
+		ret.push_back(full_file_name);
+	}
+	while (FindNextFile(dir, &file_data));
+
+	FindClose(dir);
+#else
+	DIR *dir;
+	class dirent *ent;
+	class stat st;
+
+	dir = opendir(directory);
+	while ((ent = readdir(dir)) != NULL)
+	{
+		const string file_name = ent->d_name;
+		const string full_file_name = directory + "/" + file_name;
+
+		if (file_name[0] == '.')
+			continue;
+
+		if (stat(full_file_name.c_str(), &st) == -1)
+			continue;
+
+		const bool is_directory = (st.st_mode & S_IFDIR) != 0;
+
+		if (is_directory)
+			continue;
+
+		ret.push_back(full_file_name);
+	}
+	closedir(dir);
+#endif
+	return ret;
+} // GetFilesInDirectory
+
+Vec2* Helper::getSplinePoint(const Vec2& origin, const Vec2& control1, const Vec2& control2, const Vec2& destination, unsigned int segments)
+{
+
+	Vec2* vertices = new (nothrow) Vec2[segments + 1];
 
 	float t = 0;
 	for (unsigned int i = 0; i < segments; i++)
 	{
-		vertices[i].x = powf(1 - t, 3) * origin.x + 3.0f * powf(1 - t, 2) * t * control1.x + 3.0f * ( 1 - t ) * t * t * control2.x + t * t * t * destination.x;
-		vertices[i].y = powf(1 - t, 3) * origin.y + 3.0f * powf(1 - t, 2) * t * control1.y + 3.0f * ( 1 - t ) * t * t * control2.y + t * t * t * destination.y;
+		vertices[i].x = powf(1 - t, 3) * origin.x + 3.0f * powf(1 - t, 2) * t * control1.x + 3.0f * (1 - t) * t * t * control2.x + t * t * t * destination.x;
+		vertices[i].y = powf(1 - t, 3) * origin.y + 3.0f * powf(1 - t, 2) * t * control1.y + 3.0f * (1 - t) * t * t * control2.y + t * t * t * destination.y;
 		t += 1.0f / segments;
 	}
 	vertices[segments].x = destination.x;
@@ -22,17 +78,19 @@ Vec2* Helper::getSplinePoint(const Vec2& origin, const Vec2& control1, const Vec
 	return vertices;
 }
 
-long Helper::GetLastDataEdit(const char* fileName) {
+long Helper::GetLastDataEdit(const char* fileName)
+{
 	struct tm* clock;
 	struct stat attrib;
 	stat(fileName, &attrib);
-	clock = gmtime(&( attrib.st_mtime ));
+	clock = gmtime(&(attrib.st_mtime));
 	return  clock->tm_hour * 10000
 		+ clock->tm_min * 100
 		+ clock->tm_sec;
 }
 
-const char* Helper::GLErrString(int err) {
+const char* Helper::GLErrString(int err)
+{
 	switch (err)
 	{
 		case GL_INVALID_ENUM:
@@ -53,14 +111,16 @@ const char* Helper::GLErrString(int err) {
 	return "";
 }
 
-void Helper::CheckGLError() {
-	for (GLenum err; ( err = glGetError() ) != GL_NO_ERROR;)
+void Helper::CheckGLError()
+{
+	for (GLenum err; (err = glGetError()) != GL_NO_ERROR;)
 	{
 		cout << "GL_ERROR: " << err << " " << GLErrString(err) << endl;
 	}
 }
 
-GLuint Helper::LoadTexture(const string& fileName) {
+GLuint Helper::LoadTexture(const string& fileName)
+{
 	GLuint texture = 0;
 	const char *filename = fileName.c_str();
 	FREE_IMAGE_FORMAT format = FreeImage_GetFileType(filename, 0);
@@ -89,7 +149,8 @@ GLuint Helper::LoadTexture(const string& fileName) {
 
 }
 
-void Helper::SaveLastTexture(const string& fileName, const Size& sizeWindow, const Vec2& pos, const Size& size) {
+void Helper::SaveLastTexture(const string& fileName, const Size& sizeWindow, const Vec2& pos, const Size& size)
+{
 	Vec2 p1 = Math::Clamp(pos, Vec2(), pos);
 	Vec2  p2 = Math::Clamp(p1 + size, Vec2(), sizeWindow);
 	uint widthScreen = (uint) sizeWindow.width;
@@ -115,7 +176,7 @@ void Helper::SaveLastTexture(const string& fileName, const Size& sizeWindow, con
 	for (uint i = 0; i < height / 2; i++)
 	{
 		linea = pixels + i * sizeOfOneLineOfPixels;
-		lineb = pixels + ( height - i - 1 ) * sizeOfOneLineOfPixels;
+		lineb = pixels + (height - i - 1) * sizeOfOneLineOfPixels;
 		memcpy(tempLineOfPix, linea, sizeOfOneLineOfPixels);
 		memcpy(linea, lineb, sizeOfOneLineOfPixels);
 		memcpy(lineb, tempLineOfPix, sizeOfOneLineOfPixels);
@@ -127,13 +188,14 @@ void Helper::SaveLastTexture(const string& fileName, const Size& sizeWindow, con
 	fif = FreeImage_GetFileType(fileName.c_str(), 0);
 	if (fif == FIF_UNKNOWN)
 		fif = FreeImage_GetFIFFromFilename(fileName.c_str());
-	if (( fif != FIF_UNKNOWN ) && FreeImage_FIFSupportsWriting(fif))
+	if ((fif != FIF_UNKNOWN) && FreeImage_FIFSupportsWriting(fif))
 		FreeImage_Save(fif, bmp, fileName.c_str(), 0);
 	if (bmp != NULL)
 		FreeImage_Unload(bmp);
 }
 
-long Helper::getFileDataHash(const char* fileName) {
+long Helper::getFileDataHash(const char* fileName)
+{
 	FILE* fp = fopen(fileName, "rt");
 	if (fp == NULL)
 		return -1;
@@ -143,7 +205,8 @@ long Helper::getFileDataHash(const char* fileName) {
 }
 //Xml
 
-string Xml::XmlAttrToString(TiXmlElement* node, const string& name, const string& def) {
+string Xml::XmlAttrToString(TiXmlElement* node, const string& name, const string& def)
+{
 	if (!node || name.empty()) return def;
 
 	const char* val = node->Attribute(name.c_str());
@@ -151,7 +214,8 @@ string Xml::XmlAttrToString(TiXmlElement* node, const string& name, const string
 	return val ? val : def;
 }
 
-int Xml::XmlAttrToInt(TiXmlElement* node, const string& name, const int def) {
+int Xml::XmlAttrToInt(TiXmlElement* node, const string& name, const int def)
+{
 	if (!node || name.empty()) return def;
 
 	const char* val = node->Attribute(name.c_str());
@@ -159,11 +223,13 @@ int Xml::XmlAttrToInt(TiXmlElement* node, const string& name, const int def) {
 	return val ? StrToInt(val) : def;
 }
 
-bool Xml::XmlAttrToBool(TiXmlElement* node, const string& name, const bool def) {
+bool Xml::XmlAttrToBool(TiXmlElement* node, const string& name, const bool def)
+{
 	return (bool) XmlAttrToInt(node, name, (bool) def);
 }
 
-float Xml::XmlAttrToFloat(TiXmlElement* node, const string& name, const float def) {
+float Xml::XmlAttrToFloat(TiXmlElement* node, const string& name, const float def)
+{
 	if (!node || name.empty()) return def;
 
 	const char* val = node->Attribute(name.c_str());
@@ -201,7 +267,8 @@ Vec2 Xml::XmlTwoAttrToVec2(TiXmlElement* node, const string& name, Vec2 def) {
 	return def;
 }
 */
-string Xml::XmlToString(TiXmlElement* node, const string& def) {
+string Xml::XmlToString(TiXmlElement* node, const string& def)
+{
 	if (!node) return def;
 
 	const char* val = node->GetText();
@@ -209,7 +276,8 @@ string Xml::XmlToString(TiXmlElement* node, const string& def) {
 	return val ? val : def;
 }
 
-int Xml::XmlToInt(TiXmlElement* node, const int def) {
+int Xml::XmlToInt(TiXmlElement* node, const int def)
+{
 	if (!node) return def;
 
 	const char* val = node->GetText();
@@ -217,11 +285,13 @@ int Xml::XmlToInt(TiXmlElement* node, const int def) {
 	return val ? StrToInt(val) : def;
 }
 
-bool Xml::XmlToBool(TiXmlElement* node, const bool def) {
+bool Xml::XmlToBool(TiXmlElement* node, const bool def)
+{
 	return (bool) XmlToInt(node, (bool) def);
 }
 
-float Xml::XmlToFloat(TiXmlElement* node, const float def) {
+float Xml::XmlToFloat(TiXmlElement* node, const float def)
+{
 	if (!node) return def;
 
 	const char* val = node->GetText();
@@ -229,7 +299,8 @@ float Xml::XmlToFloat(TiXmlElement* node, const float def) {
 	return val ? StrToFloat(val) : def;
 }
 
-Vec2 Xml::XmlToVec2(TiXmlElement* node, Vec2 def) {
+Vec2 Xml::XmlToVec2(TiXmlElement* node, Vec2 def)
+{
 	if (!node) return def;
 
 	const char* val = node->GetText();
@@ -250,7 +321,8 @@ Vec2 Xml::XmlToVec2(TiXmlElement* node, Vec2 def) {
 	return def;
 }
 
-TiXmlElement* Xml::XmlSetText(TiXmlElement* node, const string& val) {
+TiXmlElement* Xml::XmlSetText(TiXmlElement* node, const string& val)
+{
 	if (!node || val.empty()) return node;
 
 	TiXmlText* text = new TiXmlText(val);
@@ -259,24 +331,29 @@ TiXmlElement* Xml::XmlSetText(TiXmlElement* node, const string& val) {
 	return node;
 }
 
-TiXmlElement* Xml::XmlSetTextFromInt(TiXmlElement* node, int val) {
+TiXmlElement* Xml::XmlSetTextFromInt(TiXmlElement* node, int val)
+{
 	return XmlSetText(node, IntToStr(val));
 }
 
-TiXmlElement* Xml::XmlSetTextFromFloat(TiXmlElement* node, float val) {
+TiXmlElement* Xml::XmlSetTextFromFloat(TiXmlElement* node, float val)
+{
 	return XmlSetText(node, FloatToStr(val));
 }
 
-TiXmlElement* Xml::XmlSetTextFromBool(TiXmlElement* node, bool val) {
+TiXmlElement* Xml::XmlSetTextFromBool(TiXmlElement* node, bool val)
+{
 	return XmlSetTextFromInt(node, val);
 }
 
-TiXmlElement* XmlSetTextFromPoint(TiXmlElement* node, const Vec2& val) {
+TiXmlElement* XmlSetTextFromPoint(TiXmlElement* node, const Vec2& val)
+{
 	string str = FormatToString("%f, %f", val.x, val.y);
 	return Xml::XmlSetText(node, str);
 }
 
-TiXmlElement* XmlNewChild(TiXmlElement* node, const string& name) {
+TiXmlElement* XmlNewChild(TiXmlElement* node, const string& name)
+{
 	if (!node || name.empty()) return NULL;
 
 	TiXmlElement* newNode = new TiXmlElement(name);
