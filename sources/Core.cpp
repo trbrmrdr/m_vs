@@ -128,8 +128,10 @@ int Core::update(Uint32 nowTime) {
 }
 
 void Core::render(float realSec) {
-	scenes.swapRenderTarget();
-	scenes.clear();
+	scenes.draw(realSec);
+	return;
+	//scenes.swapRenderTarget();
+	//scenes.clear();
 
 	/*
 	std::string str = textEditor.ToString();
@@ -154,7 +156,7 @@ void Core::render(float realSec) {
 
 	if (scenes.nowIsValid())
 	{
-		scenes.begin(realSec);
+		//scenes.begin(realSec);
 #if 0 //todo
 		// Calculate low, mid, high freq.
 		if (audio_spectr_l != NULL)
@@ -284,7 +286,7 @@ void Core::render(float realSec) {
 			glPopMatrix();
 		}
 		//#####
-		scenes.end();
+		//scenes.end();
 	}
 
 #if 0
@@ -480,6 +482,6 @@ void Core::render(float realSec) {
 	else
 #endif
 	{
-		scenes.draw();
+		//scenes.draw();
 	}
 }

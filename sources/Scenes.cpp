@@ -6,16 +6,14 @@
 #define windowWidth			(float)CORE().getWindowSize().width
 #define windowHeight		(float)CORE().getWindowSize().height
 
-void Scenes::parseSettings()
-{
+void Scenes::parseSettings() {
 	if (globalSettings.isEmpty())
 		globalSettings.save();
 	else
 		globalSettings.parse();
 }
 
-void Scenes::init()
-{
+void Scenes::init() {
 	// parse settings
 	parseSettings();
 	if (!isFree)free();
@@ -70,18 +68,21 @@ void Scenes::init()
 	CHECK_GL_ERROR();
 }
 
-static float sec = 0;
-void Scenes::begin(float realTime)
-{
-	if (!nowIsValid())return;
-	sec = realTime;
-	CHECK_GL_ERROR();
+void Scenes::draw(float realSec) {
+	//## Swap render target
+	glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
+	//## Clear
+	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glLoadIdentity();
+	//## Begin
+	if (!nowIsValid())
+		return;
 	shaderGL[nowEffect]->Bind();
-	CHECK_GL_ERROR();
-	int width = windowWidth;
-	int height = windowHeight;
-	shaderGL[nowEffect]->SetUniform("resolution", width, height);
-	shaderGL[nowEffect]->SetUniform("time", realTime);
+
+
+	shaderGL[nowEffect]->SetUniform("resolution", CORE().getWindowSize());
+	shaderGL[nowEffect]->SetUniform("time", realSec);
 	shaderGL[nowEffect]->SetUniform("mouse", MOUSE().getCursorPos());
 
 	glEnable(GL_TEXTURE_2D);
@@ -93,11 +94,7 @@ void Scenes::begin(float realTime)
 	glActiveTexture(GL_TEXTURE2);
 	glBindTexture(GL_TEXTURE_2D, backTexture);
 	shaderGL[nowEffect]->SetUniform("backbuffer", backTexture);
-}
-
-void Scenes::end()
-{
-	if (!nowIsValid())return;
+	//## End
 
 	glRecti(1, 1, -1, -1);
 	//shaderGL[nowEffect]->Unbind();
@@ -115,25 +112,12 @@ void Scenes::end()
 	glCopyTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 0, 0, windowWidth, windowHeight, 0);
 	glBindTexture(GL_TEXTURE_2D, 0);
 
-	if (needSaveFronBuf)
-	{
-		needSaveFronBuf = false;
-		Size sizeSave = globalSettings.sizeSave;
-		if (globalSettings.sizeSave.width <= -1.f && globalSettings.sizeSave.height <= -1.f)
-			sizeSave = CORE().getWindowSize();
+	saveNeeded();
 
-		Helper::SaveLastTexture(globalSettings.getNewNameSavesText(),
-								CORE().getWindowSize(),
-								globalSettings.posSave,
-								sizeSave);
-	}
-}
-
-void Scenes::draw()
-{
-	uint POSTFxID = 1;
-
+	//## Draw
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+#if 0
+	uint POSTFxID = 1;
 	//return;
 	//if (shaderGL[POSTFxID]->Valid())
 	if (false)
@@ -146,10 +130,10 @@ void Scenes::draw()
 		CHECK_GL_ERROR();
 		shaderGL[POSTFxID]->SetUniform("texture0", renderTexture);
 		shaderGL[POSTFxID]->SetUniform("resolution", windowWidth, windowHeight);
-		shaderGL[POSTFxID]->SetUniform("time", sec);
+		shaderGL[POSTFxID]->SetUniform("time", realSec);
 		shaderGL[POSTFxID]->SetUniform("mouse", MOUSE().GetCursorX(), MOUSE().GetCursorY());
 		//shaderGL[POSTFxID]->SetUniform("lowFreq", Math::Random<float>());
-		shaderGL[POSTFxID]->SetUniform("midFreq", Math::Random<float>());
+		//shaderGL[POSTFxID]->SetUniform("midFreq", Math::Random<float>());
 		//shaderGL[POSTFxID]->SetUniform("highFreq", Math::Random<float>());
 		//shaderGL[POSTFxID]->SetUniform("editorCursorY", (float) cy);
 
@@ -161,6 +145,7 @@ void Scenes::draw()
 		shaderGL[POSTFxID]->Unbind();
 	}
 	else
+#endif
 	{
 
 		glBindTexture(GL_TEXTURE_2D, renderTexture);
@@ -171,8 +156,7 @@ void Scenes::draw()
 	}
 }
 
-void Scenes::load(uint effectId)
-{
+void Scenes::load(uint effectId) {
 	if (pEffectId != -1)
 		shaderGL[pEffectId]->Unbind();
 	pEffectId = (int) effectId;
@@ -185,10 +169,23 @@ void Scenes::load(uint effectId)
 		callback->loadEffectCallback(effectId);
 }
 
-void Scenes::update()
-{
+void Scenes::update() {
 	if (globalSettings.checkEdit())
 	{
 		init();
 	}
+}
+
+void Scenes::saveNeeded() {
+	if (!needSaveFronBuf)
+		return;
+	needSaveFronBuf = false;
+	Size sizeSave = globalSettings.sizeSave;
+	if (globalSettings.sizeSave.width <= -1.f && globalSettings.sizeSave.height <= -1.f)
+		sizeSave = CORE().getWindowSize();
+
+	Helper::SaveLastTexture(globalSettings.getNewNameSavesText(),
+							CORE().getWindowSize(),
+							globalSettings.posSave,
+							sizeSave);
 }

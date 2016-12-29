@@ -169,32 +169,13 @@ public:
 
 	void load(uint effectId);
 
-	bool nowIsValid()
-	{
-		return shaderGL[nowEffect]->Valid();
-	}
+	bool nowIsValid(){return shaderGL[nowEffect]->Valid();}
 
-	void swapRenderTarget()
-	{
-		// Swap render target
-		glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
-	}
-
-	void clear()
-	{
-		CHECK_GL_ERROR();
-		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		glLoadIdentity();
-	}
-
-	void begin(float realTime);
-
-	void end();
-
-	void draw();
+	void draw(float realSec);
 
 	void update();
+
+	void saveNeeded();
 
 	int changeKeys(SDL_Keysym keysym)
 	{
