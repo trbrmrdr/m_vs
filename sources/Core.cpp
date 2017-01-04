@@ -2,45 +2,24 @@
 #include "Core.h"
 #include "soundVal.h"
 #include "Scenes.h"
-
-
-#define ENABLE_POST_FX 0
-
-#if ENABLE_POST_FX
-const int POSTFxID = 11;
-const char* EffectFileTable[] = {
-	"scene1.glsl", // 0
-	"scene2.glsl",
-	"scene3.glsl",
-	"scene4.glsl",
-	"scene5.glsl",
-	"scene6.glsl",
-	"scene7.glsl",
-	"scene8.glsl",
-	"scene9.glsl",
-	"scene10.glsl", // 9
-	"scene11.glsl",
-	"effect.glsl", // 11
-	"scene21.glsl",
-	"scene22.glsl"
-};
-#endif
-
-Core::Core():
+Core::Core() :
 	editMode(false),
 	nowCompiled(false),
 	FPS(0),
 	baseTime(-1),
 	sound_system("Anuch-Metro.mp3"),
-	scenes("settings.xml") {
+	scenes("settings.xml")
+{
 
 	scenes.setEffectLoadCallback(this);
 }
 
-int Core::init(const Size& windows) {
+int Core::init(const Size& windows)
+{
 	windowSize = windows;
 	//Sound
-	sound_system.play_music();
+	//sound_system.play_music();
+
 	//if (NULL == audio_spectr_l)
 	if (false)
 	{
@@ -55,7 +34,7 @@ int Core::init(const Size& windows) {
 		return -1;
 	}
 	//Textures
-	scenes.init();
+	scenes.init(true);
 	errorHighlight = true;
 
 	//BitmapFontGL::Instance()->CreateTexture();
@@ -71,7 +50,8 @@ int Core::init(const Size& windows) {
 	return 0;
 }
 
-void Core::free() {
+void Core::free()
+{
 	scenes.free();
 
 	BitmapFontGL::Instance()->Free();
@@ -84,37 +64,46 @@ void Core::free() {
 		delete audio_spectr_l; audio_spectr_l = NULL;
 	if (NULL != audio_spectr_r)
 		delete audio_spectr_r; audio_spectr_r = NULL;
-	
+
 }
 
-void Core::changeMouse(const Vec2& pos) {
-	mouseBuffer.SetPosition(pos);
+void Core::changeMouseKeys(bool left, bool right)
+{
+	MOUSE().SetKeys(left, right);
 }
 
-int Core::changeKeys(SDL_Keysym keysym) {
+void Core::changeMouse(const Vec2& pos)
+{
+	MOUSE().SetPosition(pos);
+}
+
+int Core::changeKeys(const Uint8 *state, bool press)
+{
 	//keyBuffer.Clear();
 	//if (editMode)
 	//	keyAnalyzer.KeyHit(&textEditor, keysym, EffectFileTable[nowEffect]);
-	if (scenes.changeKeys(keysym))
+	if (scenes.changeKeys(state, press))
 		return 1;
 	return 0;
 }
 
-void Core::loadEffectCallback(uint effectId) {
-	LOGF("curr Effect = %i", effectId);
+void Core::loadEffectCallback(uint effectId)
+{
+	//LOGF("curr Effect = %i", effectId);
 	//textEditor.Load(EffectFileTable[effectId]);
 }
 
-int Core::update(Uint32 nowTime) {
+int Core::update(Uint32 nowTime)
+{
 	if (-1 == baseTime)
 		baseTime = nowTime;
-	float realSec = ( nowTime - baseTime ) / 1000.0f;
-	float delay = ( nowTime - prevTime ) / 1000.0f;
+	float realSec = (nowTime - baseTime) / 1000.0f;
+	float delay = (nowTime - prevTime) / 1000.0f;
 	FPS++;
 	if (delay >= .5f)
 	{
 		prevTime = nowTime;
-		fps = (int) ( (float) FPS / delay );
+		fps = (int) ((float) FPS / delay);
 		FPS = 0;
 	}
 	//prevTime = nowTime;
@@ -127,7 +116,8 @@ int Core::update(Uint32 nowTime) {
 	return 0;
 }
 
-void Core::render(float realSec) {
+void Core::render(float realSec)
+{
 	scenes.draw(realSec);
 	return;
 	//scenes.swapRenderTarget();
@@ -164,7 +154,7 @@ void Core::render(float realSec) {
 		{
 			if (lastSec == -1)
 				lastSec = realSec;
-			isAudioCalc = ( realSec - lastSec ) >= delAudioCalc;
+			isAudioCalc = (realSec - lastSec) >= delAudioCalc;
 
 			//if (isAudioCalc)
 			{
@@ -172,7 +162,7 @@ void Core::render(float realSec) {
 
 				const unsigned int image_width = SPECTRUMSIZE;
 				const unsigned int image_height = 2;
-				int scanLineWidh = ( ( 3 * image_width ) % 4 == 0 ) ? 3 * image_width : ( ( 3 * image_width ) / 4 ) * 4 + 4;
+				int scanLineWidh = ((3 * image_width) % 4 == 0) ? 3 * image_width : ((3 * image_width) / 4) * 4 + 4;
 
 				GLfloat* texture = (GLfloat*) calloc(image_height*scanLineWidh, sizeof(GLfloat));
 
@@ -181,8 +171,8 @@ void Core::render(float realSec) {
 					{
 						float left = audio_spectr_l[x];
 						float right = audio_spectr_r[x];
-						texture[( y*scanLineWidh + 3 * x )] = left;
-						texture[( y*scanLineWidh + 3 * x ) + 1] = right;
+						texture[(y*scanLineWidh + 3 * x)] = left;
+						texture[(y*scanLineWidh + 3 * x) + 1] = right;
 						//texture[(y*scanLineWidh + 3 * x) + 2] = var;
 					}
 
@@ -228,8 +218,8 @@ void Core::render(float realSec) {
 				// 5000 - high
 
 				low /= lowband;
-				mid /= ( midband - lowband );
-				high /= ( SPECTRUMSIZE - midband );
+				mid /= (midband - lowband);
+				high /= (SPECTRUMSIZE - midband);
 
 
 				/*
@@ -243,7 +233,7 @@ void Core::render(float realSec) {
 				mHigh.setVar(high, realSec);
 
 
-				float randVal = ( (float) rand() / (float) RAND_MAX )*.5;
+				float randVal = ((float) rand() / (float) RAND_MAX)*.5;
 				mX.setVar(randVal, realSec);
 				mY.setVar(randVal, realSec);
 			}
@@ -261,7 +251,7 @@ void Core::render(float realSec) {
 				float tY = mY.getp(realSec);
 				shaderGL[nowEffect].SetUniform("val_1", tX, tY);
 			}
-		}
+	}
 #endif
 		//#####
 		if (false)
@@ -287,7 +277,7 @@ void Core::render(float realSec) {
 		}
 		//#####
 		//scenes.end();
-	}
+}
 
 #if 0
 	if (editMode)
@@ -295,11 +285,11 @@ void Core::render(float realSec) {
 		//keyAnalyzer.Input(&textEditor, EffectFileTable[nowEffect]);
 		glPushMatrix();
 		// TextEditor Background
-		const float aspect = width / static_cast<float>( height );
-		const float textEditorHeight = textEditor.GetMaxLineNum() * fontHeight * ( 0.25f * 8.0f / width * aspect );
+		const float aspect = width / static_cast<float>(height);
+		const float textEditorHeight = textEditor.GetMaxLineNum() * fontHeight * (0.25f * 8.0f / width * aspect);
 		const float textEditorBGHeight = textEditorHeight * 1.2f;
-		const float editorOffsetY = -( 2.0f - textEditorHeight ) / 2.0f;
-		const float editorBGOffsetY = -( 2.0f - textEditorBGHeight ) / 2.0f;
+		const float editorOffsetY = -(2.0f - textEditorHeight) / 2.0f;
+		const float editorBGOffsetY = -(2.0f - textEditorBGHeight) / 2.0f;
 		glPushMatrix();
 		glTranslatef(-1.0f, 1.0f + editorBGOffsetY, 0.f);
 		glPushAttrib(GL_ENABLE_BIT);
@@ -373,15 +363,15 @@ void Core::render(float realSec) {
 				if (i < transRange)
 				{
 					up = (float) i / transRange;
-					down = (float) ( i + 1 ) / transRange;
+					down = (float) (i + 1) / transRange;
 				}
 			}
 			if (downAlpha)
 			{
 				if (i >= ptrbuf.size() - transRange)
 				{
-					up = 1.0f - (float) ( i - ptrbuf.size() + transRange ) / transRange;
-					down = 1.0f - (float) ( i + 1 - ptrbuf.size() + transRange ) / transRange;
+					up = 1.0f - (float) (i - ptrbuf.size() + transRange) / transRange;
+					down = 1.0f - (float) (i + 1 - ptrbuf.size() + transRange) / transRange;
 				}
 			}
 

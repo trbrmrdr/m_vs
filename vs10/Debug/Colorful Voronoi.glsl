@@ -8,8 +8,8 @@ precision mediump float;
 #endif
 
 uniform float time;
-uniform vec2 mouse;
-uniform vec2 resolution;
+uniform vec3 iMouse;
+uniform vec2 iResolution;
 
 vec2 hash(vec2 p)
 {
@@ -41,8 +41,8 @@ float voronoi(vec2 p)
 
 void main( void )
 {
-    vec2 uv = ( gl_FragCoord.xy / resolution.xy ) * 2.0 - 1.0;
-    uv.x *= resolution.x / resolution.y;
+    vec2 uv = ( gl_FragCoord.xy / iResolution.xy ) * 2.0 - 1.0;
+    uv.x *= iResolution.x / iResolution.y;
 
     float offset = voronoi(uv*10.0 + vec2(time*8.));
     float t = 1.0/abs(((uv.x + sin(uv.y + time)) + offset) * 30.0);

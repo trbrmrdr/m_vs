@@ -39,6 +39,7 @@ typedef unsigned char uchar;
 #include <map>
 #include <string>
 #include <vector>
+#include <list>
 #include <iostream>
 #include <algorithm>
 #include <stdio.h>
@@ -55,6 +56,7 @@ typedef unsigned char uchar;
 #include "utils/Strings.h"
 #include "utils/Math.h"
 #include "utils/Singleton.h"
+#include "utils/xml/xmlFile.h"
 
 
 

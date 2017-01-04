@@ -139,18 +139,22 @@ GLuint LinkShader(GLuint vsh, GLuint fsh)
 	return program;
 }
 
-ShaderGL::ShaderGL(const string& filename)
+ShaderGL::ShaderGL(const string& filename) :
+	fs_filename(filename)
 {
 	OK = false;
 	shaderProgram = 0;
-	CompileFromFile(filename);
+	//if (0 == CompileFromFile(filename))
+	//	LOGF("shader %s compile error",filename.c_str());
 }
 
+/*
 ShaderGL::ShaderGL()
 {
 	OK = false;
 	shaderProgram = 0;
 }
+*/
 
 std::string readFile(const std::string& filename)
 {
@@ -169,15 +173,18 @@ std::string readFile(const std::string& filename)
 	return ret;
 }
 
-GLuint ShaderGL::CompileFromFile(const std::string& filename)
+GLuint ShaderGL::CompileFromFile(const string& filename)
 {
-	std::string fsshader = readFile(filename);
+	fs_filename = string(filename);
+	OK = false;
+	shaderProgram = 0;
+	string fsshader = readFile(fs_filename);
 	if (!fsshader.empty())
 		return Compile(fsshader);
 	return 0;
 }
 
-GLuint ShaderGL::Compile(const std::string& fsshader)
+GLuint ShaderGL::Compile(const string& fsshader)
 {
 	// 頂点シェーダー（固定）
 	std::string vsshader = "\
@@ -318,5 +325,15 @@ void ShaderGL::SetUniform(const GLchar* name, const Vec2& vec2)
 		GLuint id = glGetUniformLocation(shaderProgram, name);
 		if (id != -1)
 			glUniform2f(id, vec2.x, vec2.y);
+	}
+}
+
+void ShaderGL::SetUniform(const GLchar* name, const Vec3& vec3)
+{
+	if (shaderProgram)
+	{
+		GLuint id = glGetUniformLocation(shaderProgram, name);
+		if (id != -1)
+			glUniform3f(id, vec3.x, vec3.y, vec3.z);
 	}
 }

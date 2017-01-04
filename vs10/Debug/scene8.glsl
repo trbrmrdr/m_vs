@@ -5,8 +5,8 @@ precision mediump float;
 #endif
 
 uniform float time;
-uniform vec2 mouse;
-uniform vec2 resolution;
+uniform vec3 iMouse;
+uniform vec2 iResolution;
 
 uniform sampler2D optTex;
 
@@ -15,7 +15,7 @@ float spow( float x, float y ) { float s = sign( x ); return s*pow( s*x, y ); }
 vec3 doit( in vec2 pix )
 {
     vec2 p = -1.0 + 2.0*pix;
-    p.x *= resolution.x/resolution.y;
+    p.x *= iResolution.x/iResolution.y;
 
     vec3 ro = vec3( 0.0, 0.0, 20.5 );
     vec3 rd = normalize( vec3( p, -2.0 ) );
@@ -34,7 +34,7 @@ vec3 doit( in vec2 pix )
 
         // texture mapping
         vec2 uv;
-        uv.x = atan(nor.x,nor.z)/6.2831 - 0.05*time - mouse.x*2.;
+        uv.x = atan(nor.x,nor.z)/6.2831 - 0.05*time - iMouse.x*2.;
         uv.y = acos(nor.y)/3.1416;
         uv.y = 0.5 + spow( uv.y-0.5, 1.2 );
         col = texture2D(optTex,uv).xyz;
@@ -48,7 +48,7 @@ vec3 doit( in vec2 pix )
 
 void fly(){
     //##########
-    vec2 p = (gl_FragCoord.xy / resolution.xy)*2.-1.;
+    vec2 p = (gl_FragCoord.xy / iResolution.xy)*2.-1.;
     vec2 uv;
     float an = .25;//*time;
     float x = p.x*cos(an)-p.y*sin(an);
@@ -64,10 +64,10 @@ void main(void)
     //fly();
     //return;
     // render this with four sampels per pixel
-    vec3 col0 = doit( (gl_FragCoord.xy+vec2(0.0,0.0) )/resolution.xy );
-    vec3 col1 = doit( (gl_FragCoord.xy+vec2(0.5,0.0) )/resolution.xy );
-    vec3 col2 = doit( (gl_FragCoord.xy+vec2(0.0,0.5) )/resolution.xy );
-    vec3 col3 = doit( (gl_FragCoord.xy+vec2(0.5,0.5) )/resolution.xy );
+    vec3 col0 = doit( (gl_FragCoord.xy+vec2(0.0,0.0) )/iResolution.xy );
+    vec3 col1 = doit( (gl_FragCoord.xy+vec2(0.5,0.0) )/iResolution.xy );
+    vec3 col2 = doit( (gl_FragCoord.xy+vec2(0.0,0.5) )/iResolution.xy );
+    vec3 col3 = doit( (gl_FragCoord.xy+vec2(0.5,0.5) )/iResolution.xy );
     vec3 col = 0.25*(col0 + col1 + col2 + col3);
 
     //if(length(col.rgb)!=.0)

@@ -5,8 +5,8 @@ precision mediump float;
 #extension GL_OES_standard_derivatives : enable
 
 uniform float time;
-uniform vec2 mouse;
-uniform vec2 resolution;
+uniform vec3 iMouse;
+uniform vec2 iResolution;
 varying vec2 surfacePosition;
 float ha( float n ) {return fract(sin(n)*758.5453);}
 

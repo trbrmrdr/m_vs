@@ -4,15 +4,15 @@
 //
 // Adapted from  by J.
 
-// best on 1 resolution
+// best on 1 iResolution
 
 #ifdef GL_ES
 precision mediump float;
 #endif
 
 uniform float time;
-uniform vec2 mouse;
-uniform vec2 resolution;
+uniform vec3 iMouse;
+uniform vec2 iResolution;
 
 uniform sampler2D fft;//1024 1
 uniform float lowFreq;
@@ -35,8 +35,8 @@ bool edge_2(float e1,float e2,float c)
 
 void main( void ) {
 
-    vec2 uv = .145* gl_FragCoord.xy / resolution.y;
-    //vec2 uv =  gl_FragCoord.xy / resolution.y + vec2(sin(time*0.003)*7.13,cos(time*0.005)*7.513);
+    vec2 uv = .145* gl_FragCoord.xy / iResolution.y;
+    //vec2 uv =  gl_FragCoord.xy / iResolution.y + vec2(sin(time*0.003)*7.13,cos(time*0.005)*7.513);
     float t = time*.01125;
     float k = cos(t);
     float l = sin(t);
@@ -45,10 +45,10 @@ void main( void ) {
     vec2 ts = vec2(-1.+.3*cos(t),
                    -1.+.3*sin(t));
     vec2 s = vec2(.123,.123)*ts;
-    vec2 dp = mouse;
+    vec2 dp = iMouse;
     for(int i=0; i<90; ++i) {
         uv  = abs(uv) + s;// - dp*0.5;    // Mirror
-        //float t1 = 1.;//sin(t)*mouse.x*10;
+        //float t1 = 1.;//sin(t)*iMouse.x*10;
         uv *= mat2(k,l,-l,k); // Rotate
         //s  *= .956;         // Scale
     	s  *= .950+0.006*sin(time*0.1);

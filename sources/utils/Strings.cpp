@@ -6,7 +6,8 @@ using namespace std;
 
 //########################################################################## 
 
-string Strings::l_trim(string& str) {
+string Strings::l_trim(string& str)
+{
 	int spos = 0;
 	for (string::iterator it = str.begin(); it != str.end(); ++it)
 	{
@@ -24,7 +25,8 @@ string Strings::l_trim(string& str) {
 	return str;
 }
 
-string Strings::r_trim(string& str) {
+string Strings::r_trim(string& str)
+{
 	int ecnt = 0;
 	for (string::reverse_iterator it = str.rbegin(); it != str.rend(); ++it)
 	{
@@ -42,7 +44,8 @@ string Strings::r_trim(string& str) {
 	return str;
 }
 
-string Strings::TrimC(const string& str) {
+string Strings::TrimC(const string& str)
+{
 	signed long start = 0;
 	signed long finish = str.size() - 1;
 
@@ -54,11 +57,13 @@ string Strings::TrimC(const string& str) {
 	return str.substr(start, finish - start + 1);
 }
 
-string Strings::Trim(string& str) {
+string Strings::Trim(string& str)
+{
 	return r_trim(l_trim(str));
 }
 
-vector<string> Strings::SplitString(const string& str, const string& aDelimiters, bool bSkipEmpty) {
+vector<string> Strings::SplitString(const string& str, const string& aDelimiters, bool bSkipEmpty)
+{
 	vector<string> ret;
 	string name;
 	size_t spos = 0, epos;
@@ -67,7 +72,7 @@ vector<string> Strings::SplitString(const string& str, const string& aDelimiters
 		epos = str.find_first_of(aDelimiters, spos);
 		name = str.substr(spos, epos - spos);
 		Strings::Trim(name);
-		if (!( name.empty() && bSkipEmpty ))
+		if (!(name.empty() && bSkipEmpty))
 		{
 			ret.push_back(name);
 		}
@@ -78,27 +83,32 @@ vector<string> Strings::SplitString(const string& str, const string& aDelimiters
 	return ret;
 }
 
-static char toUpperFunction(char c) {
+static char toUpperFunction(char c)
+{
 	return toupper(c);
 }
 
-static char toLowerFunction(char c) {
+static char toLowerFunction(char c)
+{
 	return tolower(c);
 }
 
-string Strings::ToUpper(const string& s) {
+string Strings::ToUpper(const string& s)
+{
 	string ret = s;
 	transform(ret.begin(), ret.end(), ret.begin(), toUpperFunction);
 	return ret;
 }
 
-string Strings::ToLower(const string& s) {
+string Strings::ToLower(const string& s)
+{
 	string ret = s;
 	transform(ret.begin(), ret.end(), ret.begin(), toLowerFunction);
 	return ret;
 }
 
-int Strings::StrCmp(const string& lhs, const string& rhs) {
+int Strings::StrCmp(const string& lhs, const string& rhs)
+{
 #if defined(_WIN32) || defined(WIN32)
 	return _stricmp(lhs.c_str(), rhs.c_str());
 #elif defined (POSIX)
@@ -121,32 +131,38 @@ int Strings::StrCmp(const wstring& lhs, const wstring& rhs) {
 */
 //########################################################################## 
 
-template <class T> string Strings::DoubleToString(T value, int precision) {
+template <class T> string Strings::DoubleToString(T value, int precision)
+{
 	stringstream sstr;
 	sstr << fixed << setprecision(precision) << value;
 	return sstr.str();
 }
 
-string Strings::FloatToStr(float value, int precision) {
+string Strings::FloatToStr(float value, int precision)
+{
 	return DoubleToString(value, precision);
 }
 
-string Strings::DoubleToStr(double value, int precision) {
+string Strings::DoubleToStr(double value, int precision)
+{
 	return DoubleToString(value, precision);
 }
 
-template <class T > 
-string Strings::NumberToStr(T value) {
+template <class T >
+string Strings::NumberToStr(T value)
+{
 	stringstream sstr;
 	sstr << value;
 	return sstr.str();
 }
 
-string Strings::UnsignedToStr(unsigned int value) {
+string Strings::UnsignedToStr(unsigned int value)
+{
 	return NumberToStr(value);
 }
 
-string Strings::IntToStr(int value) {
+string Strings::IntToStr(int value)
+{
 	return NumberToStr(value);
 }
 
@@ -186,21 +202,23 @@ string ColorToStr(const TColor& color, const char delimiters) {
 */
 
 
-string Strings::Vec2ToStr(const Vec2& point, const char delimiters) {
+string Strings::Vec2ToStr(const Vec2& point, const char delimiters)
+{
 	string ret;
 	string del = " ";
 	if (delimiters != 0) del[0] = delimiters;
 	ret.append(
 		FloatToStr(point.y) + del +
 		FloatToStr(point.x)
-	);
+		);
 	return ret;
 }
 
 
 //########################################################################## 
 
-string Strings::OnlyNumbers(const string& str) {
+string Strings::OnlyNumbers(const string& str)
+{
 	string ret;
 	for (uint i = 0, i2 = 0, i3 = 0; i < str.length(); ++i)
 	{
@@ -209,7 +227,7 @@ string Strings::OnlyNumbers(const string& str) {
 		{
 			ret += ch;
 		}
-		else if (( ch == '+' || ch == '-' ) && i2 == 0)
+		else if ((ch == '+' || ch == '-') && i2 == 0)
 		{
 			i2++;
 			ret += ch;
@@ -223,37 +241,41 @@ string Strings::OnlyNumbers(const string& str) {
 	return ret;
 }
 
-int Strings::StrToInt(const string& str) {
+int Strings::StrToInt(const string& str)
+{
 	int x;
 	sscanf(str.c_str(), "%d", &x);
 	return x;
 }
 
-float Strings::StrToFloat(const string& str) {
+float Strings::StrToFloat(const string& str)
+{
 	float x;
 	sscanf(str.c_str(), "%f", &x);
 	return x;
 }
 
-signed long Strings::StrToSigned(const string& s, bool& ok) {
+signed long Strings::StrToSigned(const string& s, bool& ok)
+{
 	char* end = NULL;
 	signed long l = strtol(s.c_str(), &end, 10);
-	ok = ( end != NULL && *end == 0 );
+	ok = (end != NULL && *end == 0);
 	return l;
 }
 
-unsigned long Strings::StrToUnsigned(const string& s, bool& ok) {
+unsigned long Strings::StrToUnsigned(const string& s, bool& ok)
+{
 	char* end = NULL;
 	unsigned long l = strtoul(s.c_str(), &end, 10);
-	ok = ( end != NULL && *end == 0 );
 	return l;
 }
 
-bool Strings::StrToBool(const string&s, bool& ok) {
+bool Strings::StrToBool(const string&s, bool& ok)
+{
 
 	char* end = NULL;
 	unsigned long l = strtoul(s.c_str(), &end, 10);
-	ok = ( end != NULL && *end == 0 );
+	ok = (end != NULL && *end == 0);
 	bool ret = l != 0;
 	if (!ok)
 	{
@@ -326,7 +348,8 @@ FRect StrToRect(const string& str, const char delimetrs) {
 }
 /**/
 
-Vec2 Strings::StrToVec2(const string& str, const char delimiters) {
+Vec2 Strings::StrToVec2(const string& str, const char delimiters)
+{
 	Vec2 point;
 	//sscanf(pointString.c_str(), "%f %f %f", &point.x, &point.y, &point.z);
 	if (delimiters == 0)
@@ -344,13 +367,14 @@ Vec2 Strings::StrToVec2(const string& str, const char delimiters) {
 //###########################################################################
 
 
-string Strings::URLEncode(const string& s) {
+string Strings::URLEncode(const string& s)
+{
 	string ret;
 	char buf[16];
 	for (string::const_iterator cit = s.begin(); cit != s.end(); ++cit)
 	{
 		unsigned char c = *cit;
-		if (( c >= '0' && c <= '9' ) || ( c >= 'A' && c <= 'Z' ) || ( c >= 'a' && c <= 'z' ) || c == '-' || c == '.' || c == '_' || c == '~')
+		if ((c >= '0' && c <= '9') || (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') || c == '-' || c == '.' || c == '_' || c == '~')
 			ret += c;
 		else
 		{
@@ -361,13 +385,14 @@ string Strings::URLEncode(const string& s) {
 	return ret;
 }
 
-string Strings::URLDecode(const string& s) {
+string Strings::URLDecode(const string& s)
+{
 	string ret;
 	for (string::const_iterator cit = s.begin(); cit != s.end(); ++cit)
 	{
 		if (*cit == '%')
 		{
-			char ch[3] = {0, 0, 0};
+			char ch[3] = { 0, 0, 0 };
 			++cit;
 			if (cit == s.end())
 				break;

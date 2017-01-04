@@ -1,9 +1,10 @@
 #pragma once
 #include "stdafx.h"
 
-class Application {
+class Application
+{
 private:
-	Size maxSize;
+	vector<Size> maxSizeDisplay;
 	Size startSize;
 	Size currSize;
 
@@ -13,6 +14,7 @@ private:
 
 	int SDLflags;
 	bool fullScreen;
+	int mDisaplayId;
 
 	std::string title;
 
@@ -20,12 +22,13 @@ private:
 public:
 
 	int Initialize(std::string title_, int width_, int height_, bool fullScreen_);
-
-	int init();
-	void free();
-
 	int MainLoop();
 
 	Application();
 	virtual ~Application();
+private:
+	int init(int display_index = 0);
+	void free();
+
+
 };

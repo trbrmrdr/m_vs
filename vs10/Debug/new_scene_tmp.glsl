@@ -5,18 +5,18 @@ precision mediump float;
 #extension GL_OES_standard_derivatives : enable
 
 uniform float time;
-uniform vec2 mouse;
-uniform vec2 resolution;
+uniform vec3 iMouse;
+uniform vec2 iResolution;
 
 void main( void ) {
 
-	vec2 p = ( gl_FragCoord.xy - 0.5 * resolution.xy ) / resolution.y;
+	vec2 p = ( gl_FragCoord.xy - 0.5 * iResolution.xy ) / iResolution.y;
 	p /= dot(p, p);
 	float tmp = sin(time*.2)*8.;//*cos(time);
 	float t = time*.5;
 	float tmp2 = sin(t)*cos(t)*5.;
-	p.x = sin(p.x*(1.*mouse.x*tmp))*time*.0001*mouse.x;
-	p.y = cos(p.y*(1.*mouse.y*tmp2))*time*.1*mouse.y;
+	p.x = sin(p.x*(1.*iMouse.x*tmp))*time*.0001*iMouse.x;
+	p.y = cos(p.y*(1.*iMouse.y*tmp2))*time*.1*iMouse.y;
 	gl_FragColor = vec4( vec3(atan(p.x, p.y)), 1.0 );
 
 }
@@ -31,8 +31,8 @@ precision mediump float;
 #extension GL_OES_standard_derivatives : enable
 
 uniform float time;
-uniform vec2 mouse;
-uniform vec2 resolution;
+uniform vec3 iMouse;
+uniform vec2 iResolution;
 
 float hash(vec2 p) {
 	return fract(sin(p.x * 15.67 + p.y * 37.28) * 43758.26);
@@ -40,7 +40,7 @@ float hash(vec2 p) {
 
 void main( void ) {
 
-	vec2 p = ( gl_FragCoord.xy - 0.5 * resolution.xy ) / resolution.y;
+	vec2 p = ( gl_FragCoord.xy - 0.5 * iResolution.xy ) / iResolution.y;
 	
 	float theta = 3.141592 / 4.0;
 	float cn = cos(theta);
@@ -82,8 +82,8 @@ precision mediump float;
 #extension GL_OES_standard_derivatives : enable
 
 uniform float time;
-uniform vec2 mouse;
-uniform vec2 resolution;
+uniform vec3 iMouse;
+uniform vec2 iResolution;
 
 float circle(vec2 pos, float s){
 	return smoothstep(s+0.02,s+0.01,length(pos))-smoothstep(s+0.01,s,length(pos));
@@ -91,13 +91,13 @@ float circle(vec2 pos, float s){
 
 void main( void ) {
 
-	vec2 p =  gl_FragCoord.xy/resolution.xy ;
+	vec2 p =  gl_FragCoord.xy/iResolution.xy ;
 	
-	float ratio =min(resolution.x/resolution.y,resolution.y/resolution.x);
+	float ratio =min(iResolution.x/iResolution.y,iResolution.y/iResolution.x);
 	p-=0.5;
 	p.x /= ratio;
 	//p-=vec2(0.5,0.5ratio);
-		//( gl_FragCoord.xy -0.5* resolution.xy)/resolution.y;
+		//( gl_FragCoord.xy -0.5* iResolution.xy)/iResolution.y;
 	
 	float col = smoothstep(0.14,0.5,sin(length(p)*20.0+time)-(length(p*1.5)));
 	

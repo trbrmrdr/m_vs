@@ -13,6 +13,7 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{5D9D18C9-0EA5-4C0C-8DFD-EC75ABD07AB5}</ProjectGuid>
     <RootNamespace>livecoder</RootNamespace>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -44,8 +45,10 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>$(SDL)\include;$(GLEW)\include;$(FMOD)\FMOD Studio API Windows\api\lowlevel\inc;$(ProjectDir)..\pngwriter\FreeImage3160\Source\LibPNG\;$(ProjectDir)..\pngwriter;$(ProjectDir)..\pngwriter\FreeImage3160\Source\ZLib;$(ProjectDir)..\pngwriter\freetype\include;$(ProjectDIr)..\FreeImage3160\Dist\;$(ProjectDir)..\sources</AdditionalIncludeDirectories>
-      <MultiProcessorCompilation>false</MultiProcessorCompilation>
+      <MultiProcessorCompilation>
+      </MultiProcessorCompilation>
       <PrecompiledHeader>Use</PrecompiledHeader>
+      <PreprocessorDefinitions>NO_UNICODE;NOUNICODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -76,6 +79,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\sources\Application.cpp" />
+    <ClCompile Include="..\sources\GlobalSettings.cpp" />
     <ClCompile Include="..\sources\KeyAnalyzer.cpp" />
     <ClCompile Include="..\sources\Core.cpp" />
     <ClCompile Include="..\sources\Scenes.cpp" />
@@ -106,6 +110,8 @@
   <ItemGroup>
     <ClInclude Include="..\sources\Application.h" />
     <ClInclude Include="..\sources\BitmapFontGL.h" />
+    <ClInclude Include="..\sources\file.h" />
+    <ClInclude Include="..\sources\GlobalSettings.h" />
     <ClInclude Include="..\sources\inconsolata_160x90.h" />
     <ClInclude Include="..\sources\inconsolata_224x123.h" />
     <ClInclude Include="..\sources\KeyAnalyzer.h" />

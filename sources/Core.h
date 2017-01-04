@@ -18,7 +18,6 @@ private:
 
 
 	KeyBuffer keyBuffer;
-	MouseBuffer mouseBuffer;
 	//	ShaderGL postEffect;
 	TextEditor textEditor;
 	KeyAnalyzer keyAnalyzer;
@@ -43,8 +42,10 @@ public:
 
 	int update(Uint32 nowTime);
 	void render(float realSec);
+
+	void changeMouseKeys(bool left, bool right);
 	void changeMouse(const Vec2& pos);
-	int changeKeys(SDL_Keysym keysym);
+	int changeKeys(const Uint8 *state,bool press);
 
 	virtual void loadEffectCallback(uint effectId);
 

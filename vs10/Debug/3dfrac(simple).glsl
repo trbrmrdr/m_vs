@@ -2,9 +2,9 @@
 precision highp float;
 #endif
 
-uniform vec2 resolution;
+uniform vec2 iResolution;
 uniform float time;
-uniform vec2 mouse;
+uniform vec3 iMouse;
 
 bool isphere( in vec4 sph, in vec3 ro, in vec3 rd, out vec2 t )
 {
@@ -137,7 +137,7 @@ bool ifractal( in vec3 ro, in vec3 rd, out float rest, in float maxt, out vec3 r
 uniform float lowFreq;
 void main(void)
 {
-    vec2 p = -1.0 + 2.0 * gl_FragCoord.xy / resolution.xy;
+    vec2 p = -1.0 + 2.0 * gl_FragCoord.xy / iResolution.xy;
     vec2 s = p*vec2(1.33,1.0);
 
     vec3 light1 = vec3(  0.577, 0.577, 0.577 );
@@ -147,7 +147,7 @@ void main(void)
     float r = 1+1.5*lowFreq*lowFreq + 1.4+0.2*cos(6.28318*time/20.0);
 	float d1= 20.;
 	
-	float tmp= resolution.x/ mouse.x;
+	float tmp= iResolution.x/ iMouse.x;
 	//tmp*=1000000.001;
 	
     vec3 campos = vec3( r*sin(6.28318*time/d1), 0.3-0.4*sin(6.28318*time/d1), r*cos(6.28318*time/d1) );

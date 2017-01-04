@@ -21,19 +21,19 @@ precision mediump float;
 
 uniform float time;
 
-uniform vec2 resolution;
+uniform vec2 iResolution;
 
-uniform vec2 mouse;
+uniform vec3 iMouse;
 
 #define time (time + 60.0)
 
 void main(void)
 {
-    vec2 uv = gl_FragCoord.xy / resolution.xy - .5;
-    uv.y *= resolution.y / resolution.x;
+    vec2 uv = gl_FragCoord.xy / iResolution.xy - .5;
+    uv.y *= iResolution.y / iResolution.x;
     vec3 dir = vec3(uv * 0.4, 1.);
     float a2 = time * 0.3 + .5;
-    float a1 = 0.0+.5;//mouse.x;
+    float a1 = 0.0+.5;//iMouse.x;
     mat2 rot1 = mat2(cos(a1), sin(a1), - sin(a1), cos(a1));
     //mat2 rot2 = rot1;
     mat2 rot2 = mat2(cos(a2), sin(a2), - sin(a2), cos(a2));

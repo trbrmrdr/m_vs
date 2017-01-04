@@ -4,14 +4,14 @@ precision mediump float;
 #endif
  
 uniform float time;
-uniform vec2 mouse;
-uniform vec2 resolution;
+uniform vec3 iMouse;
+uniform vec2 iResolution;
  
 void main(void){
-	vec2 v = (gl_FragCoord.xy - resolution/2.0) / min(resolution.y,resolution.x) * 20.0;
+	vec2 v = (gl_FragCoord.xy - iResolution/2.0) / min(iResolution.y,iResolution.x) * 20.0;
 	vec2 vv = v; vec2 vvv = v;
 	float tm = time*0.03;
-	vec4 t1 = vec4(.2,.5,.4,20.7)*tm*.00001;
+	vec4 t1 = vec4(.2,.5,.4,20.7)*tm*.000001;
 	vec4 t2 = vec4(.2,.8,1.1,1.5);
 	vec2 mspt = (vec2(
 			sin(tm)+cos(tm*t1.r)+sin(tm*0.5)+cos(tm*t1.b)+sin(tm*t1.a),

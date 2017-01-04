@@ -3,9 +3,11 @@
 precision mediump float;
 #endif
  
-uniform float time;
-uniform vec2 mouse;
-uniform vec2 resolution;
+uniform float iGlobalTime;
+uniform vec3 iMouse;
+uniform vec2 iResolution;
+
+#define time iGlobalTime
 
 float DigitBin(const in int x)
 {
@@ -57,23 +59,25 @@ float wave(float x)
 
 #define _2PI 6.2831853071794
 void main(void){
-	vec2 v = (gl_FragCoord.xy - resolution/2.0) / min(resolution.y,resolution.x) * 20.0 ;//+ mouse.xy*;
+	vec2 v = (gl_FragCoord.xy - iResolution/2.0) / min(iResolution.y,iResolution.x) * 20.0 ;//+ iMouse.xy*;
 	vec2 vv = v; vec2 vvv = v;
 	
 	vec2 edge = vec2(0.,_2PI);
 	
-    float len= .05;
-    float start = 3.14*.134;//mouse.x;//.68+.32*mouse.x;
+	//iMouse.x = .58;
+    float len= .4;
+    float start = iMouse.x;//.68+.32*iMouse.x;
 	edge = vec2(_2PI*start,_2PI*start+len);
-	float varT = (+1.+cos(time*0.03))*.5;
+	float varT = (+1.+cos(time*0.03))*.5*iMouse.y;
 	
 	float tm = edge.x + abs(edge.x-edge.y)*varT;//time*0.03;
 	
 	vec2 mspt = (vec2(
-			sin(tm)+cos(tm*0.2)+sin(tm*0.5)+cos(tm*-0.4)+sin(tm*1.3),
+			sin(tm)+cos(tm*0.76)+sin(tm*0.5)+cos(tm*-0.4)+sin(tm*1.3),
 			cos(tm)+sin(tm*0.1)+cos(tm*0.8)+sin(tm*-1.1)+cos(tm*1.5)
 			)+1.0); //5x harmonics, scale back to [0,1]
 	float R = 0.0;
+	
 	float RR = 0.0;
 	float RRR = 0.0;
 	float a = (.6-mspt.x)*6.2;
@@ -81,13 +85,14 @@ void main(void){
 	float S = sin(a);
 	vec2 xa=vec2(C, -S);
 	vec2 ya=vec2(S, C);
-	vec2 shift = vec2( -.34, 1.62)+(cos(time*.003));
-	//vec2 shift = vec2( 0, .62+(cos(time*.003)));
+	//vec2 shift = vec2( -.34, 1.62)+(cos(time*.003));
+	//vec2 shift = vec2( 0, .6+.1*iMouse.y);//2.+(cos(time*.003)));
+	vec2 shift = vec2( 0, .6+((+1.+cos(time*0.03))*.5)*.2);
 	float Z = 1.0 + mspt.y*6.0;
 	float ZZ = 1.0 + (mspt.y)*1.2;
 	float ZZZ = 1.0 + (mspt.y)*1.9;
 	
-	for ( int i = 0; i < 130; i++ ){
+	for ( int i = 0; i < 80; i++ ){
 		float r = dot(v,v);
 		if ( r > 1.0 )
 		{
@@ -98,10 +103,10 @@ void main(void){
 		R *= .99;
 		R += r;
 		if(i < 39){
-			RR *= .99*(1.+cos(time*.07))*.5;
+			RR *= .99;//*(1.+cos(time*.07))*.5;
 			RR += r;
 			if(i < 38){
-				RRR *= .99*(1.+sin(time*.01))*.5;
+				RRR *= .99;//*(1.+sin(time*.01))*.5;
 				RRR += r;
 			}
 		}
@@ -113,7 +118,7 @@ void main(void){
 	float ccc = ((mod(RRR,2.0)>1.0)?1.0-fract(RRR):fract(RRR));
 	vec4 newCol = vec4(ccc, cc, c, 1.0);
 	
-	newCol = vec4(drawText1(newCol.rgb,mouse.x),newCol.a);
+	newCol = vec4(drawText1(newCol.rgb,iMouse.x),newCol.a);
 	gl_FragColor = newCol;
 	
 }

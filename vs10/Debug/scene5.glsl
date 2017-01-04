@@ -6,9 +6,9 @@ precision highp float;
 // (The camera code and lightning was taken from an example by @mrdoob)
 
 uniform float lowFreq;
-uniform vec2 resolution;
+uniform vec2 iResolution;
 uniform float time;
-uniform vec2 mouse;
+uniform vec3 iMouse;
 float PI=3.14159265;
 #define Power 2.0
 #define Bailout 4.0
@@ -64,13 +64,13 @@ vec3 DEColor(vec3 pos) {
 
 
 void main(void){
-  vec2 vPos=-1.0+2.0*gl_FragCoord.xy/resolution.xy;
+  vec2 vPos=-1.0+2.0*gl_FragCoord.xy/iResolution.xy;
 
   //Camera animation
   vec3 vuv=vec3(0,1,0);//Change camere up vector here
   vec3 vrp=vec3(0,.5,0); //Change camere view here
-  float mx=mouse.x*PI*1.0;
-  float my=mouse.y*PI/1.01;
+  float mx=iMouse.x*PI*1.0;
+  float my=iMouse.y*PI/1.01;
   vec3 prp=vec3(cos(my)*cos(mx),sin(my),cos(my)*sin(mx))*2.0; //Trackball style camera pos
   
 
@@ -79,7 +79,7 @@ void main(void){
   vec3 u=normalize(cross(vuv,vpn));
   vec3 v=cross(vpn,u);
   vec3 vcv=(prp+vpn);
-  vec3 scrCoord=vcv+vPos.x*u*resolution.x/resolution.y+vPos.y*v;
+  vec3 scrCoord=vcv+vPos.x*u*iResolution.x/iResolution.y+vPos.y*v;
   vec3 scp=normalize(scrCoord-prp);
 
   //Raymarching

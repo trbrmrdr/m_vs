@@ -5,8 +5,8 @@ precision mediump float;
 #endif
 
 //varying vec2 surfacePosition;
-uniform vec2 resolution;
-uniform vec2 mouse;
+uniform vec2 iResolution;
+uniform vec3 iMouse;
 uniform float time;
 
 
@@ -21,14 +21,14 @@ float adnan (float scale) {
 
 void main()
 {
-  vec2 surfacePosition = gl_FragCoord.xy/resolution;
-  float speed  =mouse.x/resolution.x*100;
-  vec2 var2 = vec2(.1,.1);//time*0.1);//mouse;//vec2(0.5,0.5);
+  vec2 surfacePosition = gl_FragCoord.xy/iResolution;
+  float speed  =iMouse.x/iResolution.x*100;
+  vec2 var2 = vec2(.1,.1);//time*0.1);//iMouse;//vec2(0.5,0.5);
   float var0 = 0.5;
-  vec2 var1 = mouse;
+  vec2 var1 = iMouse;
   var1 = vec2(1.500,1.00)*.5;
 	//r1 = vec2(var1.x,var2.y);
-  //vec2 p=(mouse.x * 10. *surfacePosition);
+  //vec2 p=(iMouse.x * 10. *surfacePosition);
   vec2 p=(var1.x * 10. *surfacePosition);
   for(int i=1;i<300;i++)
   {

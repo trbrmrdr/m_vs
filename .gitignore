@@ -2,6 +2,7 @@
 *.db
 *.VC.db
 *.idb
+*.opendb
 *.tlog
 *.obj
 *.enc

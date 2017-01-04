@@ -8,8 +8,8 @@ precision mediump float;
 #define PI_180
 
 uniform float time;
-uniform vec2 mouse;
-uniform vec2 resolution;
+uniform vec3 iMouse;
+uniform vec2 iResolution;
 
 float DigitBin(const in int x)
 {
@@ -110,9 +110,9 @@ float serp(float v,float min,float max){if (v >= 1.)return max;else if (v <= .0)
 
 void main( void ) {
 
-	vec2 pos = ( gl_FragCoord.xy / resolution.xy );
+	vec2 pos = ( gl_FragCoord.xy / iResolution.xy );
 
-	vec2 it=1./resolution;
+	vec2 it=1./iResolution;
 	
 	float t = .0;
 	
@@ -122,7 +122,7 @@ void main( void ) {
 		float s =.0;// (1.+pow(sin(time*.025),2.))*.5;//((1.+sin(hash_i+time))*.5);
 		//s>=1.
 		
-		//#define time 1./(1000000.+mouse.x*1000000.)
+		//#define time 1./(1000000.+iMouse.x*1000000.)
 		//float dh = 1000.;
 		float di = 1000.;//hash_i*dh;
 		float ci = floor(time/di);
@@ -134,7 +134,7 @@ void main( void ) {
 		//TEXT3 = ti;
 		//t=ti;
 		//break;
-		//s=lerp(.5+mouse.x*(floor(hash_i/2.)==.0?-1.:+1.),-.5,+.5);
+		//s=lerp(.5+iMouse.x*(floor(hash_i/2.)==.0?-1.:+1.),-.5,+.5);
 		s=hash(i*2.)*.01*time;
 		float sig = fract(hash_i)/2.<=.25?-1.:+1.;
 		float offset = sig*hash_i+s;
@@ -148,7 +148,7 @@ void main( void ) {
 	//vec3 newCol = vec3(t,1.-t,sqrt(t*time*.05));
 	vec3 newCol = vec3(t,t,t);
 	
-	TEXT1 = fract(mouse.x*100.)/2.<=.01?+1.:-1.;
+	TEXT1 = fract(iMouse.x*100.)/2.<=.01?+1.:-1.;
 	//if(TEXT1!=.0)
 		newCol = drawText(vec2(505.,60.),newCol,TEXT1);
 	if(TEXT2!=.0)newCol = drawText(vec2(505.,36.),newCol,TEXT2);

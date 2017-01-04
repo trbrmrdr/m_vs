@@ -10,8 +10,8 @@ precision mediump float;
 //cribbed from this : https://www.shadertoy.com/view/ldlSzX
 
 uniform float time;
-uniform vec2 mouse;
-uniform vec2 resolution;
+uniform vec3 iMouse;
+uniform vec2 iResolution;
 
 #define EMITTERS 		32
 #define SCALE			32.
@@ -52,13 +52,13 @@ float wave(float x)
 void main( void ) 
 {
 	float scale		= SCALE;
-	vec2 aspect		= resolution/min(resolution.x, resolution.y);
-	vec2 uv			= gl_FragCoord.xy/resolution;
+	vec2 aspect		= iResolution/min(iResolution.x, iResolution.y);
+	vec2 uv			= gl_FragCoord.xy/iResolution;
 	vec2 position		= (uv * 2. - 1.) * aspect * scale;
-	vec2 mouse		= (mouse * 2. - 1.) * aspect * scale;
+	vec2 iMouse		= (iMouse * 2. - 1.) * aspect * scale;
 
 	
-	vec2 target		= mouse;
+	vec2 target		= iMouse;
 	
 	float wavelength 	= WAVELENGTH;
 	float velocity		= VELOCITY;

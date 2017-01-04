@@ -6,9 +6,9 @@ precision highp float;
 // (The camera code and lightning was taken from an example by @mrdoob)
 
 uniform float lowFreq;
-uniform vec2 resolution;
+uniform vec2 iResolution;
 uniform float time;
-uniform vec2 mouse;
+uniform vec3 iMouse;
 
 uniform sampler2D backbuffer;
 
@@ -19,17 +19,17 @@ uniform sampler2D backbuffer;
 #define IP 0.15915
 
 void main(void){
-    vec2 pos = ( gl_FragCoord.xy / resolution.xy );
+    vec2 pos = ( gl_FragCoord.xy / iResolution.xy );
     //pos = pos - vec2(.5);
-    //pos*=resolution;
-    if(mouse.x<=.1 && mouse.y<=.1)
+    //pos*=iResolution;
+    if(iMouse.x<=.1 && iMouse.y<=.1)
     {
         gl_FragColor = vec4(.0);
         return;
     }
     
-    vec2 it = 1./resolution;
-    vec2 uv = gl_FragCoord.xy/resolution;
+    vec2 it = 1./iResolution;
+    vec2 uv = gl_FragCoord.xy/iResolution;
     vec4 pcol = vec4(vec3(1.),.1);
     bool skip = uv.x <= it.x && uv.y<=it.y;
     if(!skip)
@@ -52,9 +52,9 @@ void main(void){
         float y = (pcol.g*4.)-2.;
         float id = pcol.b;
         
-        float var_x = mouse.x*0.1;
-        float var_y = mouse.y*0.1;
-        //var_y = var_x = mouse.x;
+        float var_x = iMouse.x*0.1;
+        float var_y = iMouse.y*0.1;
+        //var_y = var_x = iMouse.x;
         float A=-20.+40.;//*var_x;
         float B=-3.+9.*var_x;
         float C = -5.+10.;//*var_y;

@@ -6,8 +6,8 @@ precision highp float;
 #endif
 uniform float time;
 uniform float lowFreq;
-uniform vec2 mouse;
-uniform vec2 resolution;
+uniform vec3 iMouse;
+uniform vec2 iResolution;
 
 float makePoint(float x,float y,float fx,float fy,float sx,float sy,float t){
    float xx=x+sin(t*fx)*sx;
@@ -18,7 +18,7 @@ float makePoint(float x,float y,float fx,float fy,float sx,float sy,float t){
 
 void main( void ) {
    float weight = 1.1;//50.0 * lowFreq;// * lowFreq;
-   vec2 p=(gl_FragCoord.xy/resolution.x)*2.0-vec2(1.0,resolution.y/resolution.x);
+   vec2 p=(gl_FragCoord.xy/iResolution.x)*2.0-vec2(1.0,iResolution.y/iResolution.x);
 
    p=p*1.5;
    

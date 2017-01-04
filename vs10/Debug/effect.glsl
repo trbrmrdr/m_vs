@@ -3,14 +3,14 @@
 precision highp float;
 #endif
 uniform sampler2D texture0;
-uniform vec2 resolution;
+uniform vec2 iResolution;
 uniform float lowFreq;
 uniform float editorCursorY;
 uniform float time;
 
 void main( void ) {
   vec2 pos = gl_FragCoord.xy;
-  vec2 res = resolution;
+  vec2 res = iResolution;
   int i = 0;
   int cnt = 32;
   gl_FragColor = texture2D(texture0, vec2(pos.x/res.x, pos.y/res.y));

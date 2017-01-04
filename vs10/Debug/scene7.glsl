@@ -5,8 +5,8 @@ precision mediump float;
 #endif
 
 uniform float time;
-uniform vec2 mouse;
-uniform vec2 resolution;
+uniform vec3 iMouse;
+uniform vec2 iResolution;
 
 #define STEPS 16
 #define PRECISION 0.001
@@ -62,7 +62,7 @@ float line(vec2 p, vec2 s, vec2 e) {s*=scale;e*=scale;float l=length(s-e);vec2 d
 // Marching
 vec3 getNormal(vec3 p){vec2 e=vec2(PRECISION,0);return(normalize(vec3(scene(p+e.xyy)-scene(p-e.xyy),scene(p+e.yxy)-scene(p-e.yxy),scene(p+e.yyx)-scene(p-e.yyx))));}
 vec3 march(vec3 ro,vec3 rd){float t=0.0,d;for(int i=0;i<STEPS;i++){d=scene(ro+rd*t);if(d<PRECISION||t>DEPTH){break;}t+=d;}return(ro+rd*t);}
-vec3 lookAt(vec3 o,vec3 t){vec2 uv=(2.0*gl_FragCoord.xy-resolution.xy)/resolution.xx;vec3 d=normalize(t-o),u=vec3(0,1,0),r=cross(u,d);return(normalize(r*uv.x+cross(d,r)*uv.y+d));}
+vec3 lookAt(vec3 o,vec3 t){vec2 uv=(2.0*gl_FragCoord.xy-iResolution.xy)/iResolution.xx;vec3 d=normalize(t-o),u=vec3(0,1,0),r=cross(u,d);return(normalize(r*uv.x+cross(d,r)*uv.y+d));}
 
 vec3 processColor(vec3 p)
 {
@@ -91,7 +91,7 @@ float scene(vec3 p)
 
 void glow(float d) {
 	float br =10.601;
-    //float br =0.005 * resolution.y;
+    //float br =0.005 * iResolution.y;
     if(d>1.0)return;
     br=1.0;
 	gl_FragColor.rgb += vec3(0.3, 0.15, 0.45) * br / d;
@@ -135,14 +135,14 @@ void glow(float d,float br,vec3 color) {
 }
 
 void line( vec2 a, vec2 l ) {
-	l.x *= resolution.y/resolution.x;
+	l.x *= iResolution.y/iResolution.x;
 	l += 0.5;
-	l *= resolution;
+	l *= iResolution;
 	
 	vec2 P = gl_FragCoord.xy;
-	a.x *= resolution.y/resolution.x;
+	a.x *= iResolution.y/iResolution.x;
 	a += 0.5;
-	a *= resolution;
+	a *= iResolution;
 	
 	vec2 aP = P-a;
 	vec2 al = l-a;
@@ -162,9 +162,9 @@ void line( vec2 a, vec2 l ) {
 }
 
 void point(vec2 a) {
-	a.x *= resolution.y/resolution.x;
+	a.x *= iResolution.y/iResolution.x;
 	a += 0.5;
-	a *= resolution;
+	a *= iResolution;
 
 	vec2 P = gl_FragCoord.xy;
 	float d = distance(P, a);
@@ -172,9 +172,9 @@ void point(vec2 a) {
 }
 
 void point2(vec2 a) {
-	//a.x *= resolution.y/resolution.x;
+	//a.x *= iResolution.y/iResolution.x;
 	//a += 0.5;
-	//a *= resolution;
+	//a *= iResolution;
 	vec2 P = gl_FragCoord.xy;
 	float d = distance(P, a);
 	//glow(d);
@@ -191,14 +191,14 @@ void main()
 {	
 	gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
 
-    vec2 tm = mouse;
+    vec2 tm = iMouse;
 	eye *= rotY(tm.x - 0.5 );//+ 0.5*sin(time);
 	eye *= rotX(tm.y - 0.45);
 	light.x = sin(t);
 
-    eye = vec3(.0,mouse.y,mouse.x);
+    eye = vec3(.0,iMouse.y,iMouse.x);
 	vec3 p = march(eye,lookAt(eye,vec3(0)));
-    //p = vec3(1.,mouse.x,mouse.y);
+    //p = vec3(1.,iMouse.x,iMouse.y);
 	vec3 col = processColor(p);
 	// Horizontal grid lines
 	float y = 0.0;
@@ -215,17 +215,17 @@ void main()
 	
 	
 	// Starfield
-    float tmp = resolution.y/resolution.x;
+    float tmp = iResolution.y/iResolution.x;
 	for (int l=0; l<70; l++) {
 		float sx = (fract(rand(l+342) + time * (0.002 + 0.01*rand(l)))-0.5) * 3.0;
 		float sy = y + 0.4 * rand(l+324);
        
         sx = fract(rand(l+342) + time * (0.002 + 0.01*rand(l))) * 3000.0;
-		sy = rand(l)*resolution.y;
+		sy = rand(l)*iResolution.y;
        
         if(false){
-            sx = mouse.x*resolution.x;//*2. - 1.;
-            sy = mouse.y*resolution.y;//;gl_FragCoord.y*tmp;
+            sx = iMouse.x*iResolution.x;//*2. - 1.;
+            sy = iMouse.y*iResolution.y;//;gl_FragCoord.y*tmp;
         }       
         //sx = .5;
         //sy = .0;

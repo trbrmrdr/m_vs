@@ -7,8 +7,8 @@ precision highp float;
 uniform float time;
 //uniform float lowFreq;
 uniform float midFreq;
-uniform vec2 mouse;
-uniform vec2 resolution;
+uniform vec3 iMouse;
+uniform vec2 iResolution;
 
 uniform vec2 val_1;
 
@@ -44,15 +44,15 @@ void point(vec2 pos){
 
 void main( void ) {
     float weight = 10.1;//50.0 * lowFreq;// * lowFreq;
-    vec2 p=(gl_FragCoord.xy/resolution.x)*2.0-vec2(1.0,resolution.y/resolution.x);
+    vec2 p=(gl_FragCoord.xy/iResolution.x)*2.0-vec2(1.0,iResolution.y/iResolution.x);
 
     p=p*1.5;
 
 
-    float percent = mouse.x/resolution.x;
+    float percent = iMouse.x/iResolution.x;
     //percent = (1.+midFreq*.00000001);
-    //p = mouse.xy*2.-vec2(1.,resolution.y/resolution.x);
-    vec2 m = vec2(1.,10.001);//mouse/resolution;
+    //p = iMouse.xy*2.-vec2(1.,iResolution.y/iResolution.x);
+    vec2 m = vec2(1.,10.001);//iMouse/iResolution;
     p *= cos(time);
     float x=p.x;
     float y=p.y;
@@ -85,13 +85,13 @@ void main( void ) {
     vec3 d=vec3(a,0,0)*.032;
 
     gl_FragColor = weight * vec4(d.x,d.y,d.z,1.0);
-    //point(mouse*resolution);
+    //point(iMouse*iResolution);
     if(false){
-        float a=mouse.y*10.0;
-        float b= cos(mouse.y)*32.;
-        float c=sin(mouse.x)*13.0;
+        float a=iMouse.y*10.0;
+        float b= cos(iMouse.y)*32.;
+        float c=sin(iMouse.x)*13.0;
         float d= .23;
-        vec2 ttt = gl_FragCoord.xy/resolution.xy;
+        vec2 ttt = gl_FragCoord.xy/iResolution.xy;
         
         float Xn = ttt.x;
         float Yn = ttt.y;
@@ -100,5 +100,5 @@ void main( void ) {
         gl_FragColor = vec4(v1,v2,1.,1.);
     }
 
-    point(val_1*resolution);
+    point(val_1*iResolution);
 }

@@ -8,8 +8,8 @@ uniform sampler2D fft;//1024 1
 uniform sampler2D optTex;
 uniform sampler2D backbuffer;
 
-uniform vec2 resolution;
-uniform vec2 mouse;
+uniform vec2 iResolution;
+uniform vec3 iMouse;
 uniform float lowFreq;
 uniform float midFreq;
 uniform float highFreq;
@@ -18,7 +18,7 @@ uniform float time;
 //varying vec2 v_uv;
 /*
 void main() {
-  vec2 pos = vec2(0.5, 0.5) - gl_FragCoord.xy / resolution.y;
+  vec2 pos = vec2(0.5, 0.5) - gl_FragCoord.xy / iResolution.y;
   
   float d = length(pos);
   float a = atan(pos.y, pos.x);
@@ -36,8 +36,8 @@ void main() {
 void main( void ) {
 //return;
 //
-    float mouse_pos = mouse.x/resolution.x;
-    vec2 uv = .987 * gl_FragCoord.xy / resolution.y;
+    float iMouse_pos = iMouse.x/iResolution.x;
+    vec2 uv = .987 * gl_FragCoord.xy / iResolution.y;
     float t = time*.01;//.01125;
     float k = cos(t); 
     float l = sin(t);        

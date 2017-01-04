@@ -1,17 +1,17 @@
-// uninitialized variables... yuck
-
 #ifdef GL_ES
 precision mediump float;
 #endif
-
-uniform float time;
+ 
+uniform float iGlobalTime;
 uniform vec3 iMouse;
 uniform vec2 iResolution;
+uniform int iFrame;
+
+uniform sampler2D backbuffer;
+uniform sampler2D iChannel0;
 uniform sampler2D optTex;
+uniform int press;
 
-
-// print helper
-// https://www.shadertoy.com/view/4sBSWW
 
 float DigitBin(const in int x)
 {
@@ -43,29 +43,26 @@ float PrintValue(const in vec2 fragCoord, const in vec2 vPixelCoords, const in v
     return floor(mod((fCharBin / pow(2.0, floor(fract(vStringCharCoords.x) * 4.0) + (floor(vStringCharCoords.y * 5.0) * 4.0))), 2.0));
 }
 
-
-vec3 drawText1(vec3 color,const in float val)
+vec4 drawText(vec4 color,const in vec2 pos,const in float val)
 {
     vec2 fontsize = vec2(13.0, 15.0);
-    vec2 position = vec2(15.,10.);
-    float prn = PrintValue(gl_FragCoord, position , fontsize, val, 1.0, 6.0);
-    return mix( color, vec3(0.7, 0.0, 0.0), prn);
+    //vec2 pos = vec2(15.,10.);
+    float prn = PrintValue(gl_FragCoord, pos , fontsize, val, 1.0, 6.0);
+    return vec4(mix( color, vec3(0.7, 0.0, 0.0), prn),1.0);
 }
-//###########################################
 
-void main(void)
-{
-    vec2 pos = gl_FragCoord/iResolution;
-    vec2 pp = vec2(.5,.5);
-    
-    vec2 cc = length(gl_FragCoord-pp*iResolution)/iResolution;
-    float r = 10.*atan(cc.y*2,cc.x*2);
-    r = smoothstep(.0,.25,r);
-    //nPos*=length(pos - pp);
-    //nPos=smoothstep(.0,.4,length(gl_FragCoord-pp*iResolution)/iResolution);
-    vec3 color  = vec3(.4,.3,.7);
-    color *= r;
-    color = drawText1(color,123.333);
-    
-    gl_FragColor = vec4(color,1.);
+void main( void ) {
+  vec2 pos = gl_FragCoord.xy/iResolution.xy;
+  //gl_FragColor= vec4(iMouse.x,iMouse.y,1.,1.);
+  if(iMouse.z>0.){
+	  if(length(pos-iMouse.xy)>0.1)
+			gl_FragColor = vec4(.4);
+  }else{
+		//gl_FragColor = texture2D(backbuffer, pos);
+		gl_FragColor = texture2D(iChannel0, pos);
+		//gl_FragColor = texture2D(optTex, pos);
+  }
+  gl_FragColor = drawText(gl_FragColor,vec2(15.,10.),iGlobalTime);
+
 }
+ 

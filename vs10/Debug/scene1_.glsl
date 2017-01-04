@@ -8,8 +8,8 @@ uniform sampler2D fft;//1024 1
 uniform sampler2D optTex;
 uniform sampler2D backbuffer;
 
-uniform vec2 resolution;
-uniform vec2 mouse;
+uniform vec2 iResolution;
+uniform vec3 iMouse;
 uniform float lowFreq;
 uniform float midFreq;
 uniform float highFreq;
@@ -144,8 +144,8 @@ float f(vec3 p){
 void main( void ) {
 
 	//vec2 position = ( surfacePosition ) * 2.0;
-  //vec2 position = resolution*gl_FragCord;
-  vec2 position=(gl_FragCoord.xy/resolution.x)*2.0-vec2(1.0,resolution.y/resolution.x);
+  //vec2 position = iResolution*gl_FragCord;
+  vec2 position=(gl_FragCoord.xy/iResolution.x)*2.0-vec2(1.0,iResolution.y/iResolution.x);
   
 	float z = f(vec3(position, 0.0));
 	gl_FragColor = vec4(colo * z + (1.-z), 1.0);
