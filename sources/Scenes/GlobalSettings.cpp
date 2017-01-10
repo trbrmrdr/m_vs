@@ -1,5 +1,5 @@
 #include <stdafx.h>
-#include <GlobalSettings.h>
+#include "GlobalSettings.h"
 
 
 
@@ -73,7 +73,9 @@ bool GlobalSettings::read(bool force)
 	if (!settingsFile.checkIsEdit() && !force)
 		return false;
 	xmlFile xml;
-	while (!xml.loadFile(settingsFile.fileName)) {}
+	long tmp = Helper::GetLastDataEdit(settingsFile.fileName.c_str());
+	int counter = 100;
+	while (counter>0 && !xml.loadFile(settingsFile.fileName)) { counter--; }
 
 
 	if (xml.getNumTags(GLOBAL_SETTINGS) == 0)

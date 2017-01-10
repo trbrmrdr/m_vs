@@ -89,18 +89,43 @@ void Scenes::draw(float realSec)
 	glLoadIdentity();
 	//## Begin
 
-	for (auto it : scenes)
-	{
-		Scene scene = *it.second;
-		if (!scene.isValid())
-			continue;
-		ShaderGL* nowShader = scene.getSahder();
+	if (NULL == nowScene)
+		return;
 
-		vector<void*> data{ (void*) space_press,(void*) backTexture,(void*) backTexture };
-		scene.draw(data, realSec);
-	}
+	if (!nowScene->isValid())
+		return;
+	ShaderGL* nowShader = nowScene->getSahder();
 
-#if 1 //OLD
+	vector<void*> data{ (void*) space_press,(void*) backTexture,(void*) backTexture };
+
+
+	long time = Helper::GetCurrTime();
+
+	nowScene->draw(data, realSec);
+#if 1
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+	glBindTexture(GL_TEXTURE_2D, renderTexture);
+	glRecti(1, 1, -1, -1);
+	//glBindTexture(GL_TEXTURE_2D, 0);
+
+	nowShader->Unbind();
+
+	LOGF("%i", Helper::GetCurrTime() - time);
+	return;
+#endif
+	nowShader->Bind();
+
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	glBindTexture(GL_TEXTURE_2D, renderTexture);
+	glRecti(1, 1, -1, -1);
+	glBindTexture(GL_TEXTURE_2D, 0);
+
+	nowShader->Unbind();
+
+	LOGF("%i", Helper::GetCurrTime() - time);
+
+#if OLD
 	if (!isValid())
 		return;
 	shaderGL[nowEffect]->Bind();
@@ -190,7 +215,7 @@ void Scenes::draw(float realSec)
 #endif
 
 
-#endif
+
 	{
 
 		glBindTexture(GL_TEXTURE_2D, renderTexture);
@@ -199,7 +224,7 @@ void Scenes::draw(float realSec)
 		shaderGL[pEffectId]->Unbind();
 		//CHECK_GL_ERROR();
 	}
-
+#endif
 }
 
 void Scenes::drawScene(uint effectId)
@@ -222,7 +247,7 @@ void Scenes::load(uint effectId)
 	LOGF("curr Effect = %i - %s", effectId, globalSettings.sceneSettings[nowEffectId].file_vs.fileName.c_str());
 	//if (NULL != callback)
 	//	callback->loadEffectCallback(effectId);
-	}
+}
 
 int Scenes::changeKeys(const Uint8 *state, bool press)
 {
@@ -305,6 +330,7 @@ void Scenes::saveNeeded()
 void Scenes::free()
 {
 	isFree = true;
+	nowScene = NULL;
 	for (auto it : scenes)
 		delete it.second;
 	scenes.clear();

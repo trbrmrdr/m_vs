@@ -83,10 +83,31 @@ long Helper::GetLastDataEdit(const char* fileName)
 	struct tm* clock;
 	struct stat attrib;
 	stat(fileName, &attrib);
+#if 0
+	time_t rawtime;
+	time(&rawtime);
+	clock = gmtime(&rawtime);
+#endif
 	clock = gmtime(&(attrib.st_mtime));
 	return  clock->tm_hour * 10000
 		+ clock->tm_min * 100
 		+ clock->tm_sec;
+}
+
+#include <time.h>
+long Helper::GetCurrTime()
+{
+#if TARGET_WIN32
+	SYSTEMTIME st;
+	GetSystemTime(&st);
+	return st.wHour * 10000000
+		+ st.wMinute * 100000
+		+ st.wSecond * 1000
+		+ st.wMilliseconds;
+#else
+	timeval tv;
+	gettimeofday(&tv, 0);
+#endif
 }
 
 const char* Helper::GLErrString(int err)
@@ -149,12 +170,16 @@ GLuint Helper::LoadTexture(const string& fileName)
 
 }
 
-void Helper::SaveLastTexture(const string& fileName, const Size& sizeWindow, const Vec2& pos, const Size& size)
+void Helper::SaveTexture(GLuint texture, const string& fileName, const Size& sizeWindow, const Vec2& pos, const Size& size)
 {
+
+	GLint m_viewport[4];
+	glGetIntegerv(GL_VIEWPORT, m_viewport);
+	uint widthScreen = m_viewport[2]; // (uint) sizeWindow.width;
+	uint heightScreen = m_viewport[3]; //(uint) sizeWindow.height;
+
 	Vec2 p1 = Math::Clamp(pos, Vec2(), pos);
-	Vec2  p2 = Math::Clamp(p1 + size, Vec2(), sizeWindow);
-	uint widthScreen = (uint) sizeWindow.width;
-	uint heightScreen = (uint) sizeWindow.height;
+	Vec2  p2 = Math::Clamp(p1 + size, Vec2(), Vec2(widthScreen, heightScreen));
 
 	uint width = p2.x;
 	uint height = p2.y;
@@ -162,6 +187,26 @@ void Helper::SaveLastTexture(const string& fileName, const Size& sizeWindow, con
 	uint bitsPerPixel = 32;//24
 	uint bytesPerPixel = (uint) ceil(bitsPerPixel / 8.0);
 	uchar   *pixels = new uchar[width * height * bitsPerPixel / 8];
+
+
+	GLint m_viewport[4];
+	glGetIntegerv(GL_VIEWPORT, m_viewport);
+	*width = m_viewport[2];
+	*height = m_viewport[3];
+
+	GLuint texture;
+	glGenTextures(1, &amp; texture);
+	glBindTexture(GL_TEXTURE_2D, texture);
+
+	// rgb image
+	glCopyTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, m_viewport[0],
+					 m_viewport[1], m_viewport[2], m_viewport[3], 0);
+
+	glPixelStorei(GL_PACK_ALIGNMENT, 1);
+	BYTE *raw_img = (BYTE*) malloc(sizeof(BYTE) * *width * *height * 3);
+	glGetTexImage(GL_TEXTURE_2D, 0, GL_RGB, GL_UNSIGNED_BYTE, raw_img);
+
+	return raw_frame;
 
 	glPushClientAttrib(GL_CLIENT_PIXEL_STORE_BIT);
 	glPixelStorei(GL_PACK_ALIGNMENT, 1);                                                        // set read non block aligned...

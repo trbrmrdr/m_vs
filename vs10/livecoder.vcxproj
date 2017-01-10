@@ -79,10 +79,11 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\sources\Application.cpp" />
-    <ClCompile Include="..\sources\GlobalSettings.cpp" />
     <ClCompile Include="..\sources\KeyAnalyzer.cpp" />
     <ClCompile Include="..\sources\Core.cpp" />
-    <ClCompile Include="..\sources\Scenes.cpp" />
+    <ClCompile Include="..\sources\Scenes\GlobalSettings.cpp" />
+    <ClCompile Include="..\sources\Scenes\Scene.cpp" />
+    <ClCompile Include="..\sources\Scenes\Scenes.cpp" />
     <ClCompile Include="..\sources\ShaderGL.cpp" />
     <ClCompile Include="..\sources\sound_system.cpp" />
     <ClCompile Include="..\sources\stdafx.cpp">
@@ -110,8 +111,6 @@
   <ItemGroup>
     <ClInclude Include="..\sources\Application.h" />
     <ClInclude Include="..\sources\BitmapFontGL.h" />
-    <ClInclude Include="..\sources\file.h" />
-    <ClInclude Include="..\sources\GlobalSettings.h" />
     <ClInclude Include="..\sources\inconsolata_160x90.h" />
     <ClInclude Include="..\sources\inconsolata_224x123.h" />
     <ClInclude Include="..\sources\KeyAnalyzer.h" />
@@ -120,7 +119,10 @@
     <ClInclude Include="..\sources\Logger.h" />
     <ClInclude Include="..\sources\MouseBuffer.h" />
     <ClInclude Include="..\sources\Core.h" />
-    <ClInclude Include="..\sources\Scenes.h" />
+    <ClInclude Include="..\sources\Scenes\file.h" />
+    <ClInclude Include="..\sources\Scenes\GlobalSettings.h" />
+    <ClInclude Include="..\sources\Scenes\Scene.h" />
+    <ClInclude Include="..\sources\Scenes\Scenes.h" />
     <ClInclude Include="..\sources\ShaderGL.h" />
     <ClInclude Include="..\sources\soundVal.h" />
     <ClInclude Include="..\sources\sound_system.h" />

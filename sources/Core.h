@@ -1,6 +1,6 @@
 #pragma once
 #include "stdafx.h"
-#include "Scenes.h"
+#include "Scenes/Scenes.h"
 
 #define CORE() (Core::instance())
 

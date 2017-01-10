@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Core.h"
 #include "soundVal.h"
-#include "Scenes.h"
+#include "Scenes/Scenes.h"
 Core::Core() :
 	editMode(false),
 	nowCompiled(false),
@@ -144,7 +144,7 @@ void Core::render(float realSec)
 	const int fontHeight = 15;
 	//BitmapFontGL::Instance()->SetFontSize(fontWidth, fontHeight);
 
-	if (scenes.nowIsValid())
+	if (scenes.isValid())
 	{
 		//scenes.begin(realSec);
 #if 0 //todo

@@ -1,7 +1,7 @@
 #pragma once
 #include <stdafx.h>
 #include "file.h"
-#include "Scenes.h"
+#include "Scene.h"
 
 #define GLOBAL_SETTINGS "Settings"
 #define SCENE			"Scene"
