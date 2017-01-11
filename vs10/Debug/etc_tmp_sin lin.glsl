@@ -4,7 +4,8 @@ precision mediump float;
 
 #extension GL_OES_standard_derivatives : enable
 
-uniform float time;
+uniform float iGlobalTime;
+#define time iGlobalTime
 uniform vec3 iMouse;
 uniform vec2 iResolution;
 varying vec2 surfacePosition;
@@ -125,6 +126,7 @@ float fb(vec3 p){
 
 
 void main( void ) {
+    vec2 surfacePosition = gl_FragCoord/iResolution;
 	vec2 position = ( surfacePosition ) * 2.0 / hairiness;
 	float mixer = sin((position.x + cos(3.0*(0.5+0.5*sin(0.1*time))*position.y))*(hairiness*2.0) -1.);
 	vec3 col = vec3(fb(vec3(position,0.0)));

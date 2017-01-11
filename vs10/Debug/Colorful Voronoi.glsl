@@ -10,6 +10,8 @@ precision mediump float;
 uniform float time;
 uniform vec3 iMouse;
 uniform vec2 iResolution;
+uniform float iGlobalTime;
+#define time iGlobalTime
 
 vec2 hash(vec2 p)
 {

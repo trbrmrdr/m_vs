@@ -4,7 +4,8 @@
 precision mediump float;
 #endif
 
-uniform float time;
+uniform float iGlobalTime;
+#define time iGlobalTime
 uniform vec3 iMouse;
 uniform vec2 iResolution;
 

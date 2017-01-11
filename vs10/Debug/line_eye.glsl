@@ -7,7 +7,10 @@ precision mediump float;
 #define PI_2 1.57
 #define PI_180
 
-uniform float time;
+uniform float iGlobalTime;
+#define time iGlobalTime
+//#define time 10.*iMouse.x
+
 uniform vec3 iMouse;
 uniform vec2 iResolution;
 
@@ -108,51 +111,67 @@ float lerp(float v,float min,float max){return (min+v*(max-min));}
 
 float serp(float v,float min,float max){if (v >= 1.)return max;else if (v <= .0)return min;return min + sin(v * PI_2) * ( max - min );}
 
+float getOffset(in float i,in float vTime,float min=0.,float max=1.)
+{
+    float pos_i = hash(i);
+    float sig = fract(pos_i)<=.5?-1.:+1.;
+        
+    //float speed_i = hash(sin(i)*10.);
+    //float vTime = time*.05*speed_i;//iMouse.x*10.*hash2_i;
+	float offset = pos_i+vTime*sig;
+        
+    float len = abs(max-min);
+    offset = offset-floor(offset/len);
+    offset = min+len*offset;
+    //offset = offset < min ? max+offset : offset;
+    //offset = serp(min,max,offset);
+    //offset = smoothstep(min,max,offset);
+    return offset;
+}
 void main( void ) {
 
 	vec2 pos = ( gl_FragCoord.xy / iResolution.xy );
 
-	vec2 it=1./iResolution;
+	vec2 tx = 1./iResolution;
 	
-	float t = .0;
+	vec4 newCol = vec4(.0);
 	
-	for(float i=1.;i<=10.;++i)
+	for(float i=1.;i<=1.;++i)
 	{
-		float hash_i = hash(i);
-		float s =.0;// (1.+pow(sin(time*.025),2.))*.5;//((1.+sin(hash_i+time))*.5);
-		//s>=1.
-		
-		//#define time 1./(1000000.+iMouse.x*1000000.)
-		//float dh = 1000.;
-		float di = 1000.;//hash_i*dh;
-		float ci = floor(time/di);
-		float ti = time - ci*di;
-		//ti = ti/di;
-		
-		//TEXT1 = time;
-		//TEXT2 = ci*di;
-		//TEXT3 = ti;
-		//t=ti;
-		//break;
-		//s=lerp(.5+iMouse.x*(floor(hash_i/2.)==.0?-1.:+1.),-.5,+.5);
-		s=hash(i*2.)*.01*time;
-		float sig = fract(hash_i)/2.<=.25?-1.:+1.;
-		float offset = sig*hash_i+s;
-		float fof =  floor(offset);
-		offset=abs(fof)>1.?offset-fof:offset;
-		//if(offset>1. || offset<.0)continue;
-		if(abs(offset - pos.x)<it.x){t=1.;break;}
-		//if(abs(offset - pos.y)<it.x){t=1.;break;}
-		
+        float speed_l = .25*hash(10.+i);
+        speed_l *= time;//iMouse.x*10.*hash2_i;
+        float offset_l = getOffset(i,speed_l);
+        
+        {
+            float speed_P = hash(20.+i);
+            speed_P *= time;//iMouse.x*10.*hash2_i;
+            
+            float rd = max(tx.x,tx.y)*200.;
+            float offset_p = getOffset(30.+i,speed_P,-rd,rd);
+            
+            vec2 d = vec2(offset_l,offset_p) - pos;
+            float ld = length(d);
+            if( ld<=rd.x )
+            {
+                float sc=ld/rd.x;
+                float tv = 1.-sin(sc*200.*time)*.5;
+                newCol = vec4(tv,1.-tv,tv,
+                .0
+                );
+                newCol = mix(newCol,vec4(.0,.0,.0,.0),sc);
+                //break;
+            }
+        }
+        
+        if(abs(offset_l - pos.x)<tx.x){newCol=vec4(1.,.0,i,1.);}
+		//if(abs(offset - pos.y)<tx.y){t=vec3(t.x,1.,i);}
+        //if(t.z!=.0)break;
 	}
-	//vec3 newCol = vec3(t,1.-t,sqrt(t*time*.05));
-	vec3 newCol = vec3(t,t,t);
 	
-	TEXT1 = fract(iMouse.x*100.)/2.<=.01?+1.:-1.;
-	//if(TEXT1!=.0)
-		newCol = drawText(vec2(505.,60.),newCol,TEXT1);
-	if(TEXT2!=.0)newCol = drawText(vec2(505.,36.),newCol,TEXT2);
-	if(TEXT3!=.0)newCol = drawText(vec2(505.,10.),newCol,TEXT3);
-	gl_FragColor = vec4( newCol, 1.0 );
+	//TEXT1 = iMouse.x*1000.;
+	//if(TEXT1!=.0)newCol.rgb = drawText(vec2(505.,60.),newCol.rgb,TEXT1);
+	//if(TEXT2!=.0)newCol = drawText(vec2(505.,36.),newCol,TEXT2);
+	//if(TEXT3!=.0)newCol = drawText(vec2(505.,10.),newCol,TEXT3);
+	gl_FragColor = vec4( newCol );
 
 }

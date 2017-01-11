@@ -8,13 +8,19 @@
 #define MAX_ITER 35
 #define FAR 6.
 
+uniform vec3 iMouse;
+uniform vec2 iResolution;
+uniform float iGlobalTime;
+
 #define time iGlobalTime*1.1
 
 
 mat2 mm2(in float a){float c = cos(a), s = sin(a);return mat2(c,-s,s,c);}
-float noise( in float x ){return texture2D(iChannel0, vec2(x*.01,1.)).x;}
+//float noise( in float x ){return texture2D(iChannel0, vec2(x*.01,1.)).x;}
 
 float hash( float n ){return fract(sin(n)*43758.5453);}
+
+float noise( in float x ){return hash(x);}
 
 //iq's ubiquitous 3d noise
 float noise(in vec3 p)
@@ -24,7 +30,8 @@ float noise(in vec3 p)
 	f = f*f*(3.0-2.0*f);
 	
 	vec2 uv = (ip.xy+vec2(37.0,17.0)*ip.z) + f.xy;
-	vec2 rg = texture2D( iChannel0, (uv+ 0.5)/256.0, -100.0 ).yx;
+	//vec2 rg = texture2D( iChannel0, (uv+ 0.5)/256.0, -100.0 ).yx;
+    vec2 rg = vec2(hash(uv.x),hash(uv.y));
 	return mix(rg.x, rg.y, f.z);
 }
 
@@ -147,9 +154,9 @@ vec2 iSphere2(in vec3 ro, in vec3 rd)
     else return vec2((-b - sqrt(h)), (-b + sqrt(h)));
 }
 
-void mainImage( out vec4 fragColor, in vec2 fragCoord )
+void main()
 {	
-	vec2 p = fragCoord.xy/iResolution.xy-0.5;
+	vec2 p = gl_FragCoord.xy/iResolution.xy-0.5;
 	p.x*=iResolution.x/iResolution.y;
 	vec2 um = iMouse.xy / iResolution.xy-.5;
     
@@ -195,5 +202,5 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
         col += (0.1*nz*nz* vec3(0.12,0.12,.5) + 0.05*nz2*nz2*vec3(0.55,0.2,.55))*0.8;
     }
     
-	fragColor = vec4(col*1.3, 1.0);
+	gl_FragColor = vec4(col*1.3, 1.0);
 }

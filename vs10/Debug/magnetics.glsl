@@ -1,7 +1,7 @@
 //Magnetismic by nimitz (twitter: @stormoid)
 
 //Getting 60fps here at high quality
-#define HIGH_QUALITY
+//#define HIGH_QUALITY
 
 #ifdef HIGH_QUALITY
 #define STEPS 100
@@ -23,6 +23,7 @@ uniform float iGlobalTime;
 vec2 mo;
 vec2 rot(in vec2 p, in float a){float c = cos(a), s = sin(a);return p*mat2(c,s,-s,c);}
 float hash21(in vec2 n){ return fract(sin(dot(n, vec2(12.9898, 4.1414))) * 43758.5453); }
+
 float noise(in vec3 p) //iq's ubiquitous 3d noise
 {
 	vec3 ip = floor(p), f = fract(p);
@@ -33,7 +34,7 @@ float noise(in vec3 p) //iq's ubiquitous 3d noise
     #endif
 	vec2 uv = (ip.xy+vec2(37.0,17.0)*ip.z) + f.xy;
 	//vec2 rg = texture2D( iChannel0, (uv+ 0.5)/256.0, -100.0 ).yx;
-	vec2 rg = vec2(hash21(p),hash21(p*10.));//vec2((uv+ 0.5)/256.0, -100.0 );
+	//vec2 rg = vec2(hash21(p),hash21(p*2.));//vec2((uv+ 0.5)/256.0, -100.0 );
 	return mix(rg.x, rg.y, f.z);
 }
 

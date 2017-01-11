@@ -4,9 +4,10 @@
 precision mediump float;
 #endif
 
-uniform float time;
-uniform vec3 iMouse;
 uniform vec2 iResolution;
+uniform float iGlobalTime;
+#define time iGlobalTime
+uniform vec3 iMouse;
 
 #define STEPS 16
 #define PRECISION 0.001

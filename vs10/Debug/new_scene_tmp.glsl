@@ -1,10 +1,12 @@
+#if 0
 #ifdef GL_ES
 precision mediump float;
 #endif
 
 #extension GL_OES_standard_derivatives : enable
 
-uniform float time;
+uniform float iGlobalTime;
+#define time iGlobalTime
 uniform vec3 iMouse;
 uniform vec2 iResolution;
 
@@ -23,14 +25,16 @@ void main( void ) {
 
 
 //#########################
-μμμμμ
+#elif 1
+
 #ifdef GL_ES
 precision mediump float;
 #endif
 
 #extension GL_OES_standard_derivatives : enable
 
-uniform float time;
+uniform float iGlobalTime;
+#define time iGlobalTime
 uniform vec3 iMouse;
 uniform vec2 iResolution;
 
@@ -43,26 +47,33 @@ void main( void ) {
 	vec2 p = ( gl_FragCoord.xy - 0.5 * iResolution.xy ) / iResolution.y;
 	
 	float theta = 3.141592 / 4.0;
+    
+    //theta*=iMouse.x;
+    
 	float cn = cos(theta);
 	float sn = sin(theta);
-	vec2 o = p;
+	vec2 o = p;//*iMouse.x;
 	mat2 m = mat2(cn, -sn, sn, cn);
 	p = m * p;
 	p = p * 10.0;
-	p.x += 0.1 * sin(p.y * 3.14 * 1.0);
+    //p*=iMouse;
+	p.x += 0.1 * sin(p.y * 3.14 * 1.0) * sin(time*.25)*.5;
 	//p.x += 0.5 * sin(o.y * 3.14 * 10.0);
 	vec2 q = p;
-	float k = hash(floor(q));
-	p = mod(p, 1.0) - 0.5;
+	float k = hash(floor(q));// * cos(time*.5);
+	p = mod(p, 1.0) - 0.5;//*vec2(sin(time),cos(time));// * iMouse;
 	float d = length(p);
 	float c = 0.5 + 0.5 * sin(d * 3.14 * (5.0 + 10.0 * k) + time);
-	c = 0.8 * c + 0.6 * k;
+   
+    
+	c = 0.8 * c + 0.6 * k ;
 	vec3 ca = vec3(1.0, sin(time), 0.0);
 	vec3 cb = vec3(0.4, 0.0, 0.7);
 	vec3 cc = vec3(0.3, 0.8, 0.2);
 	vec3 cd = vec3(0.7, 0.74, 0.2);
 	vec3 ce = vec3(0.32, 0.0, 0.2);
 	
+    
 	vec3 col = mix(ca, cb, smoothstep(0.0, 0.25, c));
 	col = mix(col, cc, smoothstep(0.25, 0.5, k));
 	col = mix(col, cd, smoothstep(0.5, 0.75, c));
@@ -72,16 +83,17 @@ void main( void ) {
 
 }
 //###################################
+#elif 0
 
 
-smoothstep
 #ifdef GL_ES
 precision mediump float;
 #endif
 
 #extension GL_OES_standard_derivatives : enable
 
-uniform float time;
+uniform float iGlobalTime;
+#define time iGlobalTime
 uniform vec3 iMouse;
 uniform vec2 iResolution;
 
@@ -106,3 +118,4 @@ void main( void ) {
 
 }
 //########################
+#endif
