@@ -3,7 +3,7 @@
 using namespace std;
 
 #include "file.h"
-#include "GlobalSettings.h"
+//#include "GlobalSettings.h"
 
 
 class Scene
@@ -43,7 +43,9 @@ public:
 	void freeChannels()
 	{
 		for (auto it : iTextureChannels)
+		{
 			glDeleteTextures(1, &it.second);
+		}
 		iTextureChannels.clear();
 	}
 

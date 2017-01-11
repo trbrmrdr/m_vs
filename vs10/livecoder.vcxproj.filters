@@ -62,10 +62,13 @@
     <ClCompile Include="..\sources\Core.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
-    <ClCompile Include="..\sources\Scenes.cpp">
+    <ClCompile Include="..\sources\Scenes\Scenes.cpp">
       <Filter>Sources\Scenes</Filter>
     </ClCompile>
-    <ClCompile Include="..\sources\GlobalSettings.cpp">
+    <ClCompile Include="..\sources\Scenes\GlobalSettings.cpp">
+      <Filter>Sources\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sources\Scenes\Scene.cpp">
       <Filter>Sources\Scenes</Filter>
     </ClCompile>
   </ItemGroup>
@@ -136,13 +139,16 @@
     <ClInclude Include="..\sources\utils\Singleton.h">
       <Filter>Sources\utils</Filter>
     </ClInclude>
-    <ClInclude Include="..\sources\Scenes.h">
+    <ClInclude Include="..\sources\Scenes\Scene.h">
       <Filter>Sources\Scenes</Filter>
     </ClInclude>
-    <ClInclude Include="..\sources\GlobalSettings.h">
+    <ClInclude Include="..\sources\Scenes\Scenes.h">
       <Filter>Sources\Scenes</Filter>
     </ClInclude>
-    <ClInclude Include="..\sources\file.h">
+    <ClInclude Include="..\sources\Scenes\file.h">
+      <Filter>Sources\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\sources\Scenes\GlobalSettings.h">
       <Filter>Sources\Scenes</Filter>
     </ClInclude>
   </ItemGroup>

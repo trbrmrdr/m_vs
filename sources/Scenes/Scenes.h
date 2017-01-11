@@ -55,6 +55,7 @@ public:
 		nowScene(NULL)
 	{};
 
+	void free();
 	~Scenes() { free(); }
 
 	void init(bool force);
@@ -69,7 +70,6 @@ public:
 private:
 	bool parseSettings(bool force);
 
-	void free();
 	void load(uint effectId);
 	void drawScene(uint effectId);
 	void saveNeeded();
