@@ -11,6 +11,7 @@
     <Scene scene_id="3" glsl_name="./color_rain.glsl"></Scene>
     <Scene scene_id="4" glsl_name="./effect.glsl"></Scene>
     <Scene scene_id="5" glsl_name="./etc_tmp_sin lin.glsl"></Scene>
+
     <Scene scene_id="6" glsl_name="./new_scene_tmp.glsl"></Scene>
     <Scene scene_id="7" glsl_name="./night start simulation.glsl"></Scene>
     <Scene scene_id="8" glsl_name="./purpure circle pixel frac.glsl"></Scene>
@@ -27,4 +28,9 @@
     <Scene scene_id="19" glsl_name="./scene8.glsl"></Scene>
     <Scene scene_id="20" glsl_name="./scene9.glsl"></Scene>
     <Scene scene_id="21" glsl_name="./scene_last.glsl"></Scene>
+    <Scene scene_id="22" glsl_name="./simple.glsl"></Scene>
+    <Scene scene_id="23" glsl_name="./snow.glsl"></Scene>
+    <Scene scene_id="24" glsl_name="./suture_fluid_0.glsl"></Scene>
+    <Scene scene_id="25" glsl_name="./suture_fluid_1.glsl"></Scene>
+    <Scene scene_id="26" glsl_name="./начало линии и глаза.glsl"></Scene>
 </Settings>
