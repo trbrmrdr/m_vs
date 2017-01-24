@@ -10,7 +10,7 @@ namespace Helper {
 	vector<string> GetFilesInDirectory(const string &directory,const string& mask = "*");
 
 	GLuint LoadTexture(const string& fileName);
-	void SaveTexture(GLuint texture,const string& fileName, const Size& sizeWindow, const Vec2& pos, const Size& size);
+	void SaveTexture(GLuint texture,const string& fileName, const Vec2& pos, const Size& size);
 	const char* GLErrString(int err);
 	void CheckGLError();
 	long GetLastDataEdit(const char* fileName);

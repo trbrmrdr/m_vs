@@ -13,3 +13,5 @@ bin/
 gen/
 objs/
 obj/
+vs/Debug/
+vs/ipch

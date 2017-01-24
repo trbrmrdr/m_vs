@@ -6,9 +6,7 @@
 #define windowWidth			(float)CORE().getWindowSize().width
 #define windowHeight		(float)CORE().getWindowSize().height
 
-bool Scenes::parseSettings(bool force)
-{
-	bool reload = force;
+bool Scenes::processSettings(bool reload) {
 	if (globalSettings.settingsFile.isEditData == 0)
 	{
 		globalSettings.readEmptySetting();
@@ -22,11 +20,8 @@ bool Scenes::parseSettings(bool force)
 	return reload;
 }
 
-void Scenes::init(bool force)
-{
-	if (force)
-		// parse settings
-		parseSettings(true);
+void Scenes::init(bool force) {
+	if (force)processSettings(true);
 	if (!isFree)free();
 
 	int width = windowWidth;
@@ -79,8 +74,7 @@ void Scenes::init(bool force)
 	CHECK_GL_ERROR();
 }
 
-void Scenes::draw(float realSec)
-{
+void Scenes::draw(float realSec) {
 	//## Swap render target
 	glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
 	//## Clear
@@ -96,13 +90,13 @@ void Scenes::draw(float realSec)
 		return;
 	ShaderGL* nowShader = nowScene->getSahder();
 
-	vector<void*> data{ (void*) space_press,(void*) backTexture,(void*) backTexture };
+	vector<void*> data{(void*) space_press,(void*) backTexture,(void*) backTexture};
 
 
 	long time = Helper::GetCurrTime();
 
 	nowScene->draw(data, realSec);
-#if 1
+#if 0 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 	glBindTexture(GL_TEXTURE_2D, renderTexture);
@@ -123,7 +117,9 @@ void Scenes::draw(float realSec)
 
 	nowShader->Unbind();
 
-	LOGF("%i", Helper::GetCurrTime() - time);
+
+	saveNeeded();
+	//LOGF("%i", Helper::GetCurrTime() - time);
 
 #if OLD
 	if (!isValid())
@@ -223,15 +219,13 @@ void Scenes::draw(float realSec)
 		glBindTexture(GL_TEXTURE_2D, 0);
 		shaderGL[pEffectId]->Unbind();
 		//CHECK_GL_ERROR();
-	}
+}
 #endif
 }
 
-void Scenes::drawScene(uint effectId)
-{}
+void Scenes::drawScene(uint effectId) {}
 
-void Scenes::load(uint effectId)
-{
+void Scenes::load(uint effectId) {
 	if (NULL != nowScene)
 	{
 		nowScene->free();
@@ -249,8 +243,7 @@ void Scenes::load(uint effectId)
 	//	callback->loadEffectCallback(effectId);
 }
 
-int Scenes::changeKeys(const Uint8 *state, bool press)
-{
+int Scenes::changeKeys(const Uint8 *state, bool press) {
 	space_press = state[SDL_SCANCODE_SPACE];
 	bool alt = state[SDL_SCANCODE_LALT] || state[SDL_SCANCODE_RALT];
 	bool ctrl = state[SDL_SCANCODE_LCTRL] || state[SDL_SCANCODE_RCTRL];
@@ -304,16 +297,14 @@ int Scenes::changeKeys(const Uint8 *state, bool press)
 	return 1;
 }
 
-void Scenes::update()
-{
-	if (parseSettings(false))
+void Scenes::update() {
+	if (processSettings(false))
 	{
 		init(false);
 	}
 }
 
-void Scenes::saveNeeded()
-{
+void Scenes::saveNeeded() {
 	if (!needSaveFronBuf)
 		return;
 	needSaveFronBuf = false;
@@ -321,14 +312,13 @@ void Scenes::saveNeeded()
 	if (globalSettings.sizeSave.width <= -1.f && globalSettings.sizeSave.height <= -1.f)
 		sizeSave = CORE().getWindowSize();
 
-	Helper::SaveLastTexture(globalSettings.getNewNameSavesText(),
-							CORE().getWindowSize(),
-							globalSettings.posSave,
-							sizeSave);
+	Helper::SaveTexture(renderTexture,
+						globalSettings.getNewNameSavesText(),
+						globalSettings.posSave,
+						sizeSave);
 }
 
-void Scenes::free()
-{
+void Scenes::free() {
 	isFree = true;
 	nowScene = NULL;
 	for (auto it : scenes)

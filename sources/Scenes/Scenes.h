@@ -68,7 +68,7 @@ public:
 
 	int changeKeys(const Uint8 *state, bool press);
 private:
-	bool parseSettings(bool force);
+	bool processSettings(bool reload);
 
 	void load(uint effectId);
 	void drawScene(uint effectId);
