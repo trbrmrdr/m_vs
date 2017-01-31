@@ -1,0 +1,373 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Label="NsightTegraProject">
+    <NsightTegraProjectRevisionNumber>11</NsightTegraProjectRevisionNumber>
+  </PropertyGroup>
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Tegra-Android">
+      <Configuration>Debug</Configuration>
+      <Platform>Tegra-Android</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Tegra-Android">
+      <Configuration>Release</Configuration>
+      <Platform>Tegra-Android</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Profile|Tegra-Android">
+      <Configuration>Profile</Configuration>
+      <Platform>Tegra-Android</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{38C17C58-A218-4E64-9342-27A739E88F8E}</ProjectGuid>
+    <RootNamespace>FreeImage</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Debug|Tegra-Android'">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <AndroidTargetAPI>android-23</AndroidTargetAPI>
+    <AndroidNativeAPI>android-10</AndroidNativeAPI>
+    <AndroidMinAPI>android-9</AndroidMinAPI>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Release|Tegra-Android'">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <AndroidTargetAPI>android-19</AndroidTargetAPI>
+    <AndroidNativeAPI>android-9</AndroidNativeAPI>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Profile|Tegra-Android'">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <AndroidTargetAPI>android-15</AndroidTargetAPI>
+    <AndroidNativeAPI>UseTarget</AndroidNativeAPI>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Tegra-Android'">
+    <OutDir>$(SolutionDir)\libs\$(Configuration)\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Tegra-Android'">
+    <IntDir>$(ProjectDir)\objs\$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Tegra-Android'">
+    <OutDir>$(SolutionDir)libs\$(Configuration)\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Tegra-Android'">
+    <IntDir>$(ProjectDir)objs\$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Profile|Tegra-Android'">
+    <OutDir>$(SolutionDir)\libs\$(Configuration)\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Profile|Tegra-Android'">
+    <IntDir>$(ProjectDir)\objs\$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Tegra-Android'">
+    <ClCompile>
+      <PreprocessorDefinitions>ANDROID;FREEIMAGE_FORCE_COLORORDER_RGB;</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(ProjectDir)\..\..\FreeImage-3.15.4\Source\;$(ProjectDir)\..\..\FreeImage-3.15.4\Source\LibJPEG;$(ProjectDir)\..\..\FreeImage-3.15.4\Source\LibPNG;$(ProjectDir)\..\..\..\webp\src;$(ProjectDir)\..\..\..\webp\Android_lib\webp;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <GccExceptionHandling>true</GccExceptionHandling>
+      <Warnings>NormalWarnings</Warnings>
+      <FpuNeon>false</FpuNeon>
+      <AdditionalOptions>-Wunused-variable %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <Link>
+      <AdditionalOptions>-lGLESv1_CM %(AdditionalOptions)</AdditionalOptions>
+    </Link>
+    <Lib>
+      <AdditionalDependencies>
+      </AdditionalDependencies>
+      <ThinArchive>false</ThinArchive>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Tegra-Android'">
+    <ClCompile>
+      <PreprocessorDefinitions>ANDROID;FREEIMAGE_FORCE_COLORORDER_RGB;</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(ProjectDir)\..\..\FreeImage-3.15.4\Source\;$(ProjectDir)\..\..\FreeImage-3.15.4\Source\LibJPEG;$(ProjectDir)\..\..\FreeImage-3.15.4\Source\LibPNG;$(ProjectDir)\..\..\..\webp\src;$(ProjectDir)\..\..\..\webp\Android_lib\webp;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <GccExceptionHandling>true</GccExceptionHandling>
+    </ClCompile>
+    <Link>
+      <AdditionalOptions>-lGLESv1_CM %(AdditionalOptions)</AdditionalOptions>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Profile|Tegra-Android'">
+    <ClCompile>
+      <PreprocessorDefinitions>ANDROID;FREEIMAGE_FORCE_COLORORDER_RGB;</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(ProjectDir)\..\..\FreeImage-3.15.4\Source\;$(ProjectDir)\..\..\FreeImage-3.15.4\Source\LibJPEG;$(ProjectDir)\..\..\FreeImage-3.15.4\Source\LibPNG;$(ProjectDir)\..\..\..\webp\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <GccExceptionHandling>true</GccExceptionHandling>
+    </ClCompile>
+    <Link>
+      <AdditionalOptions>-lGLESv1_CM %(AdditionalOptions)</AdditionalOptions>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\webp\Android_lib\webp\cpu-features.c" />
+    <ClCompile Include="..\..\..\webp\src\dec\alpha.c" />
+    <ClCompile Include="..\..\..\webp\src\dec\buffer.c" />
+    <ClCompile Include="..\..\..\webp\src\dec\frame.c" />
+    <ClCompile Include="..\..\..\webp\src\dec\idec.c" />
+    <ClCompile Include="..\..\..\webp\src\dec\io.c" />
+    <ClCompile Include="..\..\..\webp\src\dec\layer.c" />
+    <ClCompile Include="..\..\..\webp\src\dec\quant.c" />
+    <ClCompile Include="..\..\..\webp\src\dec\tree.c" />
+    <ClCompile Include="..\..\..\webp\src\dec\vp8.c" />
+    <ClCompile Include="..\..\..\webp\src\dec\vp8l.c" />
+    <ClCompile Include="..\..\..\webp\src\dec\webp.c" />
+    <ClCompile Include="..\..\..\webp\src\dsp\cpu.c" />
+    <ClCompile Include="..\..\..\webp\src\dsp\dec.c" />
+    <ClCompile Include="..\..\..\webp\src\dsp\dec_neon.c" />
+    <ClCompile Include="..\..\..\webp\src\dsp\dec_sse2.c" />
+    <ClCompile Include="..\..\..\webp\src\dsp\enc.c" />
+    <ClCompile Include="..\..\..\webp\src\dsp\enc_sse2.c" />
+    <ClCompile Include="..\..\..\webp\src\dsp\lossless.c" />
+    <ClCompile Include="..\..\..\webp\src\dsp\upsampling.c" />
+    <ClCompile Include="..\..\..\webp\src\dsp\upsampling_sse2.c" />
+    <ClCompile Include="..\..\..\webp\src\dsp\yuv.c" />
+    <ClCompile Include="..\..\..\webp\src\mux\demux.c" />
+    <ClCompile Include="..\..\..\webp\src\mux\muxedit.c" />
+    <ClCompile Include="..\..\..\webp\src\mux\muxinternal.c" />
+    <ClCompile Include="..\..\..\webp\src\mux\muxread.c" />
+    <ClCompile Include="..\..\..\webp\src\utils\bit_reader.c" />
+    <ClCompile Include="..\..\..\webp\src\utils\bit_writer.c" />
+    <ClCompile Include="..\..\..\webp\src\utils\color_cache.c" />
+    <ClCompile Include="..\..\..\webp\src\utils\filters.c" />
+    <ClCompile Include="..\..\..\webp\src\utils\huffman.c" />
+    <ClCompile Include="..\..\..\webp\src\utils\huffman_encode.c" />
+    <ClCompile Include="..\..\..\webp\src\utils\quant_levels.c" />
+    <ClCompile Include="..\..\..\webp\src\utils\rescaler.c" />
+    <ClCompile Include="..\..\..\webp\src\utils\thread.c" />
+    <ClCompile Include="..\..\..\webp\src\utils\utils.c" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\FreeImageToolkit\Background.cpp" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\FreeImageToolkit\BSplineRotate.cpp" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\FreeImageToolkit\Channels.cpp" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\FreeImageToolkit\ClassicRotate.cpp" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\FreeImageToolkit\Colors.cpp" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\FreeImageToolkit\CopyPaste.cpp" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\FreeImageToolkit\Display.cpp" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\FreeImageToolkit\FlipFI.cpp" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\FreeImageToolkit\JPEGTransform.cpp" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\FreeImageToolkit\MultigridPoissonSolver.cpp" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\FreeImageToolkit\Rescale.cpp" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\FreeImageToolkit\Resize.cpp" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\FreeImage\BitmapAccess.cpp" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\FreeImage\CacheFile.cpp" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\FreeImage\ColorLookup.cpp" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\FreeImage\Conversion.cpp" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\FreeImage\Conversion16_555.cpp" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\FreeImage\Conversion16_565.cpp" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\FreeImage\Conversion24.cpp" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\FreeImage\Conversion32.cpp" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\FreeImage\Conversion4.cpp" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\FreeImage\Conversion8.cpp" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\FreeImage\ConversionFloat.cpp" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\FreeImage\ConversionRGB16.cpp" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\FreeImage\ConversionRGBF.cpp" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\FreeImage\ConversionType.cpp" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\FreeImage\ConversionUINT16.cpp" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\FreeImage\FreeImage.cpp" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\FreeImage\FreeImageC.c" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\FreeImage\FreeImageIO.cpp" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\FreeImage\GetType.cpp" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\FreeImage\Halftoning.cpp" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\FreeImage\J2KHelper.cpp" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\FreeImage\MemoryIO.cpp" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\FreeImage\MNGHelper.cpp" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\FreeImage\MultiPage.cpp" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\FreeImage\NNQuantizer.cpp" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\FreeImage\PixelAccess.cpp" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\FreeImage\Plugin.cpp" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\FreeImage\PluginBMP.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Tegra-Android'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\FreeImage\PluginCUT.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Tegra-Android'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\FreeImage\PluginDDS.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Tegra-Android'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\FreeImage\PluginGIF.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Tegra-Android'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\FreeImage\PluginHDR.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Tegra-Android'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\FreeImage\PluginICO.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Tegra-Android'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\FreeImage\PluginIFF.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Tegra-Android'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\FreeImage\PluginJ2K.cpp" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\FreeImage\PluginJNG.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Tegra-Android'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\FreeImage\PluginJP2.cpp" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\FreeImage\PluginJPEG.cpp" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\FreeImage\PluginKOALA.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Tegra-Android'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\FreeImage\PluginMNG.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Tegra-Android'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\FreeImage\PluginPCD.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Tegra-Android'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\FreeImage\PluginPCX.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Tegra-Android'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\FreeImage\PluginPFM.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Tegra-Android'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\FreeImage\PluginPICT.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Tegra-Android'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\FreeImage\PluginPNG.cpp" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\FreeImage\PluginPNM.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Tegra-Android'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\FreeImage\PluginPVR.cpp" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\FreeImage\PluginRAS.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Tegra-Android'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\FreeImage\PluginSGI.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Tegra-Android'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\FreeImage\PluginTARGA.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Tegra-Android'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\FreeImage\PluginWBMP.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Tegra-Android'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\FreeImage\PluginWEBP.cpp" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\FreeImage\PluginXBM.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Tegra-Android'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\FreeImage\PluginXPM.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Tegra-Android'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\FreeImage\TIFFLogLuv.cpp" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\FreeImage\tmoColorConvert.cpp" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\FreeImage\tmoDrago03.cpp" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\FreeImage\tmoFattal02.cpp" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\FreeImage\tmoReinhard05.cpp" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\FreeImage\ToneMapping.cpp" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\FreeImage\WuQuantizer.cpp" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\FreeImage\ZLibInterface.cpp" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\LibJPEG\cdjpeg.c" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\LibJPEG\jaricom.c" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\LibJPEG\jcapimin.c" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\LibJPEG\jcapistd.c" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\LibJPEG\jcarith.c" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\LibJPEG\jccoefct.c" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\LibJPEG\jccolor.c" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\LibJPEG\jcdctmgr.c" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\LibJPEG\jchuff.c" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\LibJPEG\jcinit.c" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\LibJPEG\jcmainct.c" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\LibJPEG\jcmarker.c" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\LibJPEG\jcmaster.c" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\LibJPEG\jcomapi.c" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\LibJPEG\jcparam.c" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\LibJPEG\jcprepct.c" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\LibJPEG\jcsample.c" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\LibJPEG\jctrans.c" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\LibJPEG\jdapimin.c" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\LibJPEG\jdapistd.c" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\LibJPEG\jdarith.c" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\LibJPEG\jdatadst.c" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\LibJPEG\jdatasrc.c" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\LibJPEG\jdcoefct.c" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\LibJPEG\jdcolor.c" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\LibJPEG\jddctmgr.c" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\LibJPEG\jdhuff.c" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\LibJPEG\jdinput.c" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\LibJPEG\jdmainct.c" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\LibJPEG\jdmarker.c" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\LibJPEG\jdmaster.c" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\LibJPEG\jdmerge.c" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\LibJPEG\jdpostct.c" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\LibJPEG\jdsample.c" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\LibJPEG\jdtrans.c" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\LibJPEG\jerror.c" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\LibJPEG\jfdctflt.c" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\LibJPEG\jfdctfst.c" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\LibJPEG\jfdctint.c" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\LibJPEG\jidctflt.c" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\LibJPEG\jidctfst.c" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\LibJPEG\jidctint.c" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\LibJPEG\jmemmgr.c" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\LibJPEG\jmemname.c" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\LibJPEG\jquant1.c" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\LibJPEG\jquant2.c" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\LibJPEG\jutils.c" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\LibJPEG\rdbmp.c" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\LibJPEG\rdcolmap.c" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\LibJPEG\rdgif.c" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\LibJPEG\rdppm.c" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\LibJPEG\rdrle.c" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\LibJPEG\rdswitch.c" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\LibJPEG\rdtarga.c" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\LibJPEG\transupp.c" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\LibJPEG\wrbmp.c" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\LibJPEG\wrgif.c" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\LibJPEG\wrjpgcom.c" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\LibJPEG\wrppm.c" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\LibJPEG\wrrle.c" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\LibJPEG\wrtarga.c" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\LibOpenJPEG\bio.c" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\LibOpenJPEG\cidx_manager.c" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\LibOpenJPEG\cio.c" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\LibOpenJPEG\dwt.c" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\LibOpenJPEG\event.c" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\LibOpenJPEG\image.c" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\LibOpenJPEG\j2k.c" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\LibOpenJPEG\j2k_lib.c" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\LibOpenJPEG\jp2.c" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\LibOpenJPEG\jpt.c" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\LibOpenJPEG\mct.c" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\LibOpenJPEG\mqc.c" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\LibOpenJPEG\openjpeg.c" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\LibOpenJPEG\phix_manager.c" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\LibOpenJPEG\pi.c" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\LibOpenJPEG\ppix_manager.c" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\LibOpenJPEG\raw.c" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\LibOpenJPEG\t1.c" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\LibOpenJPEG\t2.c" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\LibOpenJPEG\tcd.c" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\LibOpenJPEG\tgt.c" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\LibOpenJPEG\thix_manager.c" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\LibOpenJPEG\tpix_manager.c" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\LibPNG\png.c" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\LibPNG\pngerror.c" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\LibPNG\pngget.c" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\LibPNG\pngmem.c" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\LibPNG\pngpread.c" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\LibPNG\pngread.c" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\LibPNG\pngrio.c" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\LibPNG\pngrtran.c" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\LibPNG\pngrutil.c" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\LibPNG\pngset.c" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\LibPNG\pngtrans.c" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\LibPNG\pngwio.c" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\LibPNG\pngwrite.c" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\LibPNG\pngwtran.c" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\LibPNG\pngwutil.c" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\Metadata\Exif.cpp" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\Metadata\FIRational.cpp" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\Metadata\FreeImageTag.cpp" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\Metadata\IPTC.cpp" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\Metadata\TagConversion.cpp" />
+    <ClCompile Include="..\..\FreeImage-3.15.4\Source\Metadata\TagLib.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\webp\Android_lib\webp\cpu-features.h" />
+    <ClInclude Include="..\..\..\webp\src\dec\vp8i.h" />
+    <ClInclude Include="..\..\FreeImage-3.15.4\Source\Utilities.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\ZLib\Android_lib\Zlib\Zlib.vcxproj">
+      <Project>{da22a99b-4c19-4ff3-993f-25eac8a59df6}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

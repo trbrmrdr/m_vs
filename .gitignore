@@ -1,6 +1,17 @@
 *.iml
 *.db
+*.VC.db
+*.idb
+*.opendb
+*.tlog
+*.obj
+*.enc
+*.ipch
+*.sdf
+*.lasbuildstate
 bin/
 gen/
 objs/
 obj/
+vs/Debug/
+vs/ipch

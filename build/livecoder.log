@@ -1,0 +1,6 @@
+﻿  Scenes.cpp
+e:\staged\visual\m_vs\sources\scenes\scenes.cpp(27): warning C4244: инициализация: преобразование "float" в "int", возможна потеря данных
+e:\staged\visual\m_vs\sources\scenes\scenes.cpp(28): warning C4244: инициализация: преобразование "float" в "int", возможна потеря данных
+e:\staged\visual\m_vs\sources\scenes\scenes.cpp(247): warning C4800: const Uint8: принудительно задано логическое значение "true" или "false" (предупреждение о производительности)
+  livecoder.vcxproj -> E:\staged\visual\m_vs\vs10\Debug\livecoder.exe
+  livecoder.vcxproj -> E:\staged\visual\m_vs\vs10\Debug\livecoder.pdb (Full PDB)

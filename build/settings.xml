@@ -1,0 +1,38 @@
+<Settings posSave="0.00000 0.00000" sizeSave="-1.00000 -1.00000" optionTexture="save_text_4.png" maskSaveText="save_text_">
+    <Scene scene_id="-1" glsl_name="./suture_fluid_1.glsl" iChannel0="scene_id_0"></Scene>
+    <Scene scene_id="-1" glsl_name="./suture_fluid_0.glsl" iChannel0="./save_text_4.png"></Scene>
+    <Scene scene_id="-1" glsl_name="./3dfrac(simple).glsl"></Scene>
+    <Scene scene_id="-1" glsl_name="./plasma_globe.glsl"></Scene>
+    <Scene scene_id="-1" glsl_name="./magnetics.glsl"></Scene>
+    <Scene scene_id="-1" glsl_name="./simple.glsl" iChannel0="./save_text_4.png"></Scene>
+    <Scene scene_id="-1" glsl_name="./snow.glsl"></Scene>
+    
+    <Scene scene_id="1" glsl_name="./ColorfulDomainWarping_2.glsl"></Scene>
+    <Scene scene_id="-1" glsl_name="./line_eye.glsl"></Scene>
+    <Scene scene_id="2" glsl_name="./Colorful Voronoi.glsl"></Scene>
+    <Scene scene_id="3" glsl_name="./color_rain.glsl"></Scene>
+    <Scene scene_id="4" glsl_name="./effect.glsl"></Scene>
+    <Scene scene_id="5" glsl_name="./etc_tmp_sin lin.glsl"></Scene>
+
+    <Scene scene_id="6" glsl_name="./new_scene_tmp.glsl"></Scene>
+    <Scene scene_id="7" glsl_name="./night start simulation.glsl"></Scene>
+    <Scene scene_id="8" glsl_name="./purpure circle pixel frac.glsl"></Scene>
+    <Scene scene_id="9" glsl_name="./scene1.1.glsl"></Scene>
+    <Scene scene_id="10" glsl_name="./scene1.glsl"></Scene>
+    <Scene scene_id="11" glsl_name="./scene1_.glsl"></Scene>
+    <Scene scene_id="12" glsl_name="./scene2.glsl"></Scene>
+    <Scene scene_id="13" glsl_name="./scene3.glsl"></Scene>
+    <Scene scene_id="14" glsl_name="./scene3_points.glsl"></Scene>
+    <Scene scene_id="15" glsl_name="./scene4.glsl"></Scene>
+    <Scene scene_id="16" glsl_name="./scene5.glsl"></Scene>
+    <Scene scene_id="17" glsl_name="./scene6.glsl"></Scene>
+    <Scene scene_id="18" glsl_name="./scene7.glsl"></Scene>
+    <Scene scene_id="19" glsl_name="./scene8.glsl"></Scene>
+    <Scene scene_id="20" glsl_name="./scene9.glsl"></Scene>
+    <Scene scene_id="21" glsl_name="./scene_last.glsl"></Scene>
+    <Scene scene_id="22" glsl_name="./simple.glsl"></Scene>
+    <Scene scene_id="23" glsl_name="./snow.glsl"></Scene>
+    <Scene scene_id="24" glsl_name="./suture_fluid_0.glsl"></Scene>
+    <Scene scene_id="25" glsl_name="./suture_fluid_1.glsl"></Scene>
+    <Scene scene_id="26" glsl_name="./начало линии и глаза.glsl"></Scene>
+</Settings>
