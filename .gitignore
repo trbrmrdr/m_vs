@@ -8,6 +8,7 @@
 *.enc
 *.ipch
 *.sdf
+*.lib
 *.lasbuildstate
 bin/
 gen/

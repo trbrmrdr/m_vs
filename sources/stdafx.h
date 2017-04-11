@@ -67,4 +67,10 @@ typedef unsigned char uchar;
 #include "TextEditor.h"
 #include "KeyAnalyzer.h"
 //#include "AudioAnalyzer.h"
-#include "sound_system.h"
+
+//#include "sound_system.h"
+
+#define SAFE_DELETE(ref) {if (NULL != ref) delete ref; ref = NULL;}
+
+#define SET_CALLBACK_0(__selector__,__target__, ...) std::bind(&__selector__,__target__, ##__VA_ARGS__)
+#define SET_CALLBACK_1(__selector__,__target__, ...) std::bind(&__selector__,__target__, std::placeholders::_1, ##__VA_ARGS__)

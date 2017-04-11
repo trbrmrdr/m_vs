@@ -15,21 +15,21 @@ template<class Ty>
 class Singleton: public Noncopyable {
 protected:
 
-	static bool bIsInitialized;
+	static bool sInitialized;
 	static Ty* instance_;
 
 	Singleton() {
-		bIsInitialized = true;
+		sInitialized = true;
 	};
 
 	~Singleton() {
-		bIsInitialized = false;
+		sInitialized = false;
 	};
 
 public:
 
 	static bool isInitialized() {
-		return bIsInitialized;
+		return sInitialized;
 	};
 
 	static void destroyInstance() {
@@ -51,6 +51,6 @@ public:
 	}
 };
 
-template<class Ty> bool Singleton<Ty>::bIsInitialized = false;
+template<class Ty> bool Singleton<Ty>::sInitialized = false;
 template<class Ty> Ty* Singleton<Ty>::instance_ = NULL;
 

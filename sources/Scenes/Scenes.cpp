@@ -6,22 +6,28 @@
 #define windowWidth			(float)CORE().getWindowSize().width
 #define windowHeight		(float)CORE().getWindowSize().height
 
-bool Scenes::processSettings(bool reload) {
-	if (globalSettings.settingsFile.isEditData == 0)
-	{
+Scenes::Scenes(const string& fileName):
+	globalSettings(fileName),
+	needSaveFronBuf(false),
+	nowEffectId(1),
+	isFree(true),
+	space_press(false),
+	nowScene(NULL) {};
+
+bool Scenes::reloadSettings(bool forceReload /*= false*/) {
+	if (globalSettings.settingsFile.isEditData == 0) {
 		globalSettings.readEmptySetting();
 		globalSettings.save();
 	}
-	else
-	{
-		reload = globalSettings.read(reload);
+	else {
+		forceReload = globalSettings.read(forceReload);
 	}
-	globalSettings.load(scenes, reload);
-	return reload;
+	globalSettings.load(scenes, forceReload);
+	return forceReload;
 }
 
-void Scenes::init(bool force) {
-	if (force)processSettings(true);
+void Scenes::init(bool forceRead /*= false*/) {
+	if (forceRead)reloadSettings(true);
 	if (!isFree)free();
 
 	int width = windowWidth;
@@ -83,11 +89,9 @@ void Scenes::draw(float realSec) {
 	glLoadIdentity();
 	//## Begin
 
-	if (NULL == nowScene)
-		return;
+	if (NULL == nowScene) return;
+	if (!nowScene->isValid()) return;
 
-	if (!nowScene->isValid())
-		return;
 	ShaderGL* nowShader = nowScene->getSahder();
 
 	vector<void*> data{(void*) space_press,(void*) backTexture,(void*) backTexture};
@@ -148,8 +152,7 @@ void Scenes::draw(float realSec) {
 	//shaderGL[nowEffect]->SetUniform("iChannel0", 3);
 
 	int i = 0;
-	for (auto it : iTextureChannels)
-	{
+	for (auto it : iTextureChannels) {
 		i++;
 		glActiveTexture(GL_TEXTURE2 + i);
 		glBindTexture(GL_TEXTURE_2D, it.second);
@@ -183,8 +186,7 @@ void Scenes::draw(float realSec) {
 	uint POSTFxID = 1;
 	//return;
 	//if (shaderGL[POSTFxID]->Valid())
-	if (false)
-	{
+	if (false) {
 		CHECK_GL_ERROR();
 		shaderGL[POSTFxID]->Bind();
 
@@ -219,15 +221,14 @@ void Scenes::draw(float realSec) {
 		glBindTexture(GL_TEXTURE_2D, 0);
 		shaderGL[pEffectId]->Unbind();
 		//CHECK_GL_ERROR();
-}
+	}
 #endif
 }
 
 void Scenes::drawScene(uint effectId) {}
 
 void Scenes::load(uint effectId) {
-	if (NULL != nowScene)
-	{
+	if (NULL != nowScene) {
 		nowScene->free();
 		nowScene->freeChannels();
 		nowScene = NULL;
@@ -248,21 +249,17 @@ int Scenes::changeKeys(const Uint8 *state, bool press) {
 	bool alt = state[SDL_SCANCODE_LALT] || state[SDL_SCANCODE_RALT];
 	bool ctrl = state[SDL_SCANCODE_LCTRL] || state[SDL_SCANCODE_RCTRL];
 
-	for (int i = 0; i < SDL_SCANCODE_F12; ++i)
-	{
-		if (state[SDL_SCANCODE_F1 + i])
-		{
+	for (int i = 0; i < SDL_SCANCODE_F12; ++i) {
+		if (state[SDL_SCANCODE_F1 + i]) {
 			int nowEff = i + 1;
 			if (ctrl)
 				nowEff += 12;
 			else if (alt)
 				nowEff += 24;
 
-			if (nowEffectId != nowEff)
-			{
+			if (nowEffectId != nowEff) {
 				auto it = scenes.find(nowEff);
-				if (it == scenes.end())
-				{
+				if (it == scenes.end()) {
 					LOGF("scene %i not loaded", nowEff);
 					return 1;
 				}
@@ -289,8 +286,7 @@ int Scenes::changeKeys(const Uint8 *state, bool press) {
 		return 1;
 	}
 	*/
-	if (state[SDL_SCANCODE_Q])
-	{
+	if (state[SDL_SCANCODE_Q]) {
 		needSaveFronBuf = true;
 		return 1;
 	}
@@ -298,15 +294,13 @@ int Scenes::changeKeys(const Uint8 *state, bool press) {
 }
 
 void Scenes::update() {
-	if (processSettings(false))
-	{
+	if (reloadSettings(false)) {
 		init(false);
 	}
 }
 
 void Scenes::saveNeeded() {
-	if (!needSaveFronBuf)
-		return;
+	if (!needSaveFronBuf) return;
 	needSaveFronBuf = false;
 	Size sizeSave = globalSettings.sizeSave;
 	if (globalSettings.sizeSave.width <= -1.f && globalSettings.sizeSave.height <= -1.f)

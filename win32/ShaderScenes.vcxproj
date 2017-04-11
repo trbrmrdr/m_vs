@@ -1,0 +1,147 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{5D9D18C9-0EA5-4C0C-8DFD-EC75ABD07AB5}</ProjectGuid>
+    <RootNamespace>ShaderScenes</RootNamespace>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <OutDir>$(SolutionDir)..\build\</OutDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\libs\SDL2-2.0.5\include;$(ProjectDir)..\libs\glew-2.0.0\include;$(ProjectDIr)..\libs\FreeImage\Dist\x$(PlatformArchitecture);$(ProjectDir)..\sources</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>
+      </MultiProcessorCompilation>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PreprocessorDefinitions>NO_UNICODE;NOUNICODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Console</SubSystem>
+      <AdditionalDependencies>opengl32.lib;glu32.lib;$(ProjectDIr)..\libs\SDL2-2.0.5\lib\$(PlatformTarget)\SDL2main.lib;$(ProjectDIr)..\libs\SDL2-2.0.5\lib\$(PlatformTarget)\SDL2.lib;$(ProjectDIr)..\libs\glew-2.0.0\lib\Release\x$(PlatformArchitecture)\glew32.lib;$(ProjectDIr)..\libs\FreeImage\Dist\x$(PlatformArchitecture)\FreeImage.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <IgnoreSpecificDefaultLibraries>MSVCRT;LIBCMT;</IgnoreSpecificDefaultLibraries>
+      <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
+      <AdditionalLibraryDirectories>
+      </AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <AdditionalIncludeDirectories>$(SDL)\include;$(GLEW)\include;$(FMOD)\FMOD Studio API Windows\api\lowlevel\inc;$(ProjectDir)..\pngwriter\FreeImage3160\Source\LibPNG\;$(ProjectDir)..\pngwriter;$(ProjectDir)..\pngwriter\FreeImage3160\Source\ZLib;$(ProjectDir)..\pngwriter\freetype\include;$(ProjectDIr)..\FreeImage3160\Dist\;$(ProjectDir)..\sources</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>false</MultiProcessorCompilation>
+      <EnableParallelCodeGeneration>true</EnableParallelCodeGeneration>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <SubSystem>Console</SubSystem>
+      <AdditionalDependencies>opengl32.lib;glu32.lib;$(OPENAL)/build/Release/OpenAL32.lib;$(SDL)/lib/x86/SDLmain.lib;$(SDL)/lib/x86/SDL.lib;$(GLEW)/lib/glew32.lib;$(GLEW)/lib/glew32mx.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\sources\Application.cpp" />
+    <ClCompile Include="..\sources\KeyAnalyzer.cpp" />
+    <ClCompile Include="..\sources\Core.cpp" />
+    <ClCompile Include="..\sources\Scenes\GlobalSettings.cpp" />
+    <ClCompile Include="..\sources\Scenes\Scene.cpp" />
+    <ClCompile Include="..\sources\Scenes\Scenes.cpp" />
+    <ClCompile Include="..\sources\ShaderGL.cpp" />
+    <ClCompile Include="..\sources\sound_system.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\sources\stdafx.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">StdAfx.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <ClCompile Include="..\sources\TextEditor.cpp" />
+    <ClCompile Include="..\sources\utils\Helper.cpp" />
+    <ClCompile Include="..\sources\utils\Math.cpp" />
+    <ClCompile Include="..\sources\utils\Strings.cpp" />
+    <ClCompile Include="..\sources\utils\xml\tinyxml.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\sources\utils\xml\tinyxmlerror.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\sources\utils\xml\tinyxmlparser.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\sources\utils\xml\xmlFile.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="main.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\sources\Application.h" />
+    <ClInclude Include="..\sources\BitmapFontGL.h" />
+    <ClInclude Include="..\sources\inconsolata_160x90.h" />
+    <ClInclude Include="..\sources\inconsolata_224x123.h" />
+    <ClInclude Include="..\sources\KeyAnalyzer.h" />
+    <ClInclude Include="..\sources\KeyBuffer.h" />
+    <ClInclude Include="..\sources\lcfont_bw112x66.h" />
+    <ClInclude Include="..\sources\Logger.h" />
+    <ClInclude Include="..\sources\MouseBuffer.h" />
+    <ClInclude Include="..\sources\Core.h" />
+    <ClInclude Include="..\sources\Scenes\file.h" />
+    <ClInclude Include="..\sources\Scenes\GlobalSettings.h" />
+    <ClInclude Include="..\sources\Scenes\Scene.h" />
+    <ClInclude Include="..\sources\Scenes\Scenes.h" />
+    <ClInclude Include="..\sources\ShaderGL.h" />
+    <ClInclude Include="..\sources\soundVal.h" />
+    <ClInclude Include="..\sources\sound_system.h" />
+    <ClInclude Include="..\sources\stdafx.h" />
+    <ClInclude Include="..\sources\TextEditor.h" />
+    <ClInclude Include="..\sources\utils\Helper.h" />
+    <ClInclude Include="..\sources\utils\Math.h" />
+    <ClInclude Include="..\sources\utils\Singleton.h" />
+    <ClInclude Include="..\sources\utils\Strings.h" />
+    <ClInclude Include="..\sources\utils\Geom.h" />
+    <ClInclude Include="..\sources\utils\xml\tinyxml.h" />
+    <ClInclude Include="..\sources\utils\xml\xmlFile.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

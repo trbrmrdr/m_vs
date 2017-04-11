@@ -2,112 +2,77 @@
 #include "Core.h"
 #include "soundVal.h"
 #include "Scenes/Scenes.h"
-Core::Core() :
-	editMode(false),
-	nowCompiled(false),
-	FPS(0),
-	baseTime(-1),
-	sound_system("Anuch-Metro.mp3"),
-	scenes("settings.xml")
-{
+Core::Core():
+	m_editMode(false),
+	m_nowCompiled(false),
+	m_frame(0),
+	m_fps(0),
+	m_baseTime(-1),
+	//sound_system("Anuch-Metro.mp3"),
+	m_scenes("settings.xml") {
 
-	scenes.setEffectLoadCallback(this);
+	m_scenes.setEffectLoadCallback(SET_CALLBACK_1(Core::loadEffectCallback, this));
 }
 
-int Core::init(const Size& windows)
-{
-	windowSize = windows;
+int Core::init(const Size& windows) {
+	m_windowSize = windows;
 	//Sound
 	//sound_system.play_music();
 
-	//if (NULL == audio_spectr_l)
-	if (false)
-	{
-		audio_spectr_l = new float[SPECTRUMSIZE];
-		audio_spectr_r = new float[SPECTRUMSIZE];
-	}
+#if 0
+	audio_spectr_l = new float[SPECTRUMSIZE];
+	audio_spectr_r = new float[SPECTRUMSIZE];
+#endif
 
 	//glew
-	if (glewInit() != GLEW_OK)
-	{
+	if (glewInit() != GLEW_OK) {
 		LOG("Error: glewInit()");
 		return -1;
 	}
 	//Textures
-	scenes.init(true);
-	errorHighlight = true;
+	m_scenes.init(true);
 
 	//BitmapFontGL::Instance()->CreateTexture();
 	//glGenTextures(1, &audioTexture);
-
-#if ENABLE_POST_FX
-	shaderGL[POSTFxID].CompileFromFile(EffectFileTable[POSTFxID]);
-	textEditor.Load(EffectFileTable[nowEffect]);
-#endif
 	//baseTime = -1;
-	nowSource.clear();
-	errorHighlight = true;
+	m_nowSource.clear();
 	return 0;
 }
 
-void Core::free()
-{
-	scenes.free();
+void Core::free() {
+	m_scenes.free();
 
-	BitmapFontGL::Instance()->Free();
-
-	if (audioTexture != 0)
-		glDeleteTextures(1, &audioTexture);
-	audioTexture = 0;
+	if (NULL != m_audioTexture)
+		glDeleteTextures(1, &m_audioTexture);
+	m_audioTexture = NULL;
 	//delete audioAnalyzer;
-	if (NULL != audio_spectr_l)
-		delete audio_spectr_l; audio_spectr_l = NULL;
-	if (NULL != audio_spectr_r)
-		delete audio_spectr_r; audio_spectr_r = NULL;
-
+	SAFE_DELETE(m_audioSpectrL);
+	SAFE_DELETE(m_audioSpectrR);
 }
 
-void Core::changeMouseKeys(bool left, bool right)
-{
-	MOUSE().SetKeys(left, right);
-}
-
-void Core::changeMouse(const Vec2& pos)
-{
-	MOUSE().SetPosition(pos);
-}
-
-int Core::changeKeys(const Uint8 *state, bool press)
-{
-	//keyBuffer.Clear();
-	//if (editMode)
-	//	keyAnalyzer.KeyHit(&textEditor, keysym, EffectFileTable[nowEffect]);
-	if (scenes.changeKeys(state, press))
+int Core::changeKeys(const Uint8 *state, bool press) {
+	if (m_scenes.changeKeys(state, press))
 		return 1;
 	return 0;
 }
 
-void Core::loadEffectCallback(uint effectId)
-{
+void Core::loadEffectCallback(uint effectId) {
 	//LOGF("curr Effect = %i", effectId);
 	//textEditor.Load(EffectFileTable[effectId]);
 }
 
-int Core::update(Uint32 nowTime)
-{
-	if (-1 == baseTime)
-		baseTime = nowTime;
-	float realSec = (nowTime - baseTime) / 1000.0f;
-	float delay = (nowTime - prevTime) / 1000.0f;
-	FPS++;
-	if (delay >= .5f)
-	{
-		prevTime = nowTime;
-		fps = (int) ((float) FPS / delay);
-		FPS = 0;
+int Core::update(Uint32 nowTime) {
+	if (-1 == m_baseTime) m_baseTime = nowTime;
+	float realSec = ( nowTime - m_baseTime ) / 1000.0f;
+	float delay = ( nowTime - m_baseTime ) / 1000.0f;
+	m_frame++;
+	if (delay >= .5f) {
+		m_prevTime = nowTime;
+		m_fps = (int) ( (float) m_frame / delay );
+		m_frame = 0;
 	}
 	//prevTime = nowTime;
-	scenes.update();
+	m_scenes.update();
 
 	//sound_system.update();
 	//sound_system.get_spectrum(audio_spectr_l, audio_spectr_r);
@@ -116,9 +81,8 @@ int Core::update(Uint32 nowTime)
 	return 0;
 }
 
-void Core::render(float realSec)
-{
-	scenes.draw(realSec);
+void Core::render(float realSec) {
+	m_scenes.draw(realSec);
 	return;
 	//scenes.swapRenderTarget();
 	//scenes.clear();
@@ -144,8 +108,7 @@ void Core::render(float realSec)
 	const int fontHeight = 15;
 	//BitmapFontGL::Instance()->SetFontSize(fontWidth, fontHeight);
 
-	if (scenes.isValid())
-	{
+	if (m_scenes.isValid()) {
 		//scenes.begin(realSec);
 #if 0 //todo
 		// Calculate low, mid, high freq.
@@ -154,7 +117,7 @@ void Core::render(float realSec)
 		{
 			if (lastSec == -1)
 				lastSec = realSec;
-			isAudioCalc = (realSec - lastSec) >= delAudioCalc;
+			isAudioCalc = ( realSec - lastSec ) >= delAudioCalc;
 
 			//if (isAudioCalc)
 			{
@@ -162,17 +125,16 @@ void Core::render(float realSec)
 
 				const unsigned int image_width = SPECTRUMSIZE;
 				const unsigned int image_height = 2;
-				int scanLineWidh = ((3 * image_width) % 4 == 0) ? 3 * image_width : ((3 * image_width) / 4) * 4 + 4;
+				int scanLineWidh = ( ( 3 * image_width ) % 4 == 0 ) ? 3 * image_width : ( ( 3 * image_width ) / 4 ) * 4 + 4;
 
 				GLfloat* texture = (GLfloat*) calloc(image_height*scanLineWidh, sizeof(GLfloat));
 
 				for (int x = 0; x < image_width; x++)
-					for (int y = 0; y < image_height; y++)
-					{
+					for (int y = 0; y < image_height; y++) {
 						float left = audio_spectr_l[x];
 						float right = audio_spectr_r[x];
-						texture[(y*scanLineWidh + 3 * x)] = left;
-						texture[(y*scanLineWidh + 3 * x) + 1] = right;
+						texture[( y*scanLineWidh + 3 * x )] = left;
+						texture[( y*scanLineWidh + 3 * x ) + 1] = right;
 						//texture[(y*scanLineWidh + 3 * x) + 2] = var;
 					}
 
@@ -218,8 +180,8 @@ void Core::render(float realSec)
 				// 5000 - high
 
 				low /= lowband;
-				mid /= (midband - lowband);
-				high /= (SPECTRUMSIZE - midband);
+				mid /= ( midband - lowband );
+				high /= ( SPECTRUMSIZE - midband );
 
 
 				/*
@@ -233,7 +195,7 @@ void Core::render(float realSec)
 				mHigh.setVar(high, realSec);
 
 
-				float randVal = ((float) rand() / (float) RAND_MAX)*.5;
+				float randVal = ( (float) rand() / (float) RAND_MAX )*.5;
 				mX.setVar(randVal, realSec);
 				mY.setVar(randVal, realSec);
 			}
@@ -251,11 +213,10 @@ void Core::render(float realSec)
 				float tY = mY.getp(realSec);
 				shaderGL[nowEffect].SetUniform("val_1", tX, tY);
 			}
-	}
+		}
 #endif
 		//#####
-		if (false)
-		{
+		if (false) {
 			glPushMatrix();
 			glPushAttrib(GL_ENABLE_BIT);
 
@@ -277,19 +238,18 @@ void Core::render(float realSec)
 		}
 		//#####
 		//scenes.end();
-}
+	}
 
 #if 0
-	if (editMode)
-	{
+	if (editMode) {
 		//keyAnalyzer.Input(&textEditor, EffectFileTable[nowEffect]);
 		glPushMatrix();
 		// TextEditor Background
-		const float aspect = width / static_cast<float>(height);
-		const float textEditorHeight = textEditor.GetMaxLineNum() * fontHeight * (0.25f * 8.0f / width * aspect);
+		const float aspect = width / static_cast<float>( height );
+		const float textEditorHeight = textEditor.GetMaxLineNum() * fontHeight * ( 0.25f * 8.0f / width * aspect );
 		const float textEditorBGHeight = textEditorHeight * 1.2f;
-		const float editorOffsetY = -(2.0f - textEditorHeight) / 2.0f;
-		const float editorBGOffsetY = -(2.0f - textEditorBGHeight) / 2.0f;
+		const float editorOffsetY = -( 2.0f - textEditorHeight ) / 2.0f;
+		const float editorBGOffsetY = -( 2.0f - textEditorBGHeight ) / 2.0f;
 		glPushMatrix();
 		glTranslatef(-1.0f, 1.0f + editorBGOffsetY, 0.f);
 		glPushAttrib(GL_ENABLE_BIT);
@@ -334,44 +294,36 @@ void Core::render(float realSec)
 		bool upAlpha = true;
 		bool downAlpha = true;
 
-		if (textEditor.GetLineOffset() == 0)
-		{
+		if (textEditor.GetLineOffset() == 0) {
 			upAlpha = false;
 		}
 
-		if (textEditor.GetLineOffset() + textEditor.GetMaxLineNum() >= textEditor.GetLineNum())
-		{
+		if (textEditor.GetLineOffset() + textEditor.GetMaxLineNum() >= textEditor.GetLineNum()) {
 			downAlpha = false;
 		}
 
 		const int transRange = 5;
 		BitmapFontGL::Instance()->Reset();
-		for (int i = 0; i < textEditor.GetLineOffset(); i++)
-		{
+		for (int i = 0; i < textEditor.GetLineOffset(); i++) {
 			BitmapFontGL::Instance()->ProcessComment(*textbuf[i]);
 		}
 
 		std::set<int> errorLinesFS = shaderGL[nowEffect].GetErrorLinesFS();
 
-		for (int i = 0; i < ptrbuf.size(); i++)
-		{
+		for (int i = 0; i < ptrbuf.size(); i++) {
 			float up = 1.0f;
 			float down = 1.0f;
 
-			if (upAlpha)
-			{
-				if (i < transRange)
-				{
+			if (upAlpha) {
+				if (i < transRange) {
 					up = (float) i / transRange;
-					down = (float) (i + 1) / transRange;
+					down = (float) ( i + 1 ) / transRange;
 				}
 			}
-			if (downAlpha)
-			{
-				if (i >= ptrbuf.size() - transRange)
-				{
-					up = 1.0f - (float) (i - ptrbuf.size() + transRange) / transRange;
-					down = 1.0f - (float) (i + 1 - ptrbuf.size() + transRange) / transRange;
+			if (downAlpha) {
+				if (i >= ptrbuf.size() - transRange) {
+					up = 1.0f - (float) ( i - ptrbuf.size() + transRange ) / transRange;
+					down = 1.0f - (float) ( i + 1 - ptrbuf.size() + transRange ) / transRange;
 				}
 			}
 
@@ -402,37 +354,30 @@ void Core::render(float realSec)
 		EditorCursor cursor = textEditor.GetCursorPosition();
 		BitmapFontGL::Instance()->DrawCursor(cursor.col, cursor.row, aspect, width);
 
-		if (textEditor.IsSelectMode())
-		{
+		if (textEditor.IsSelectMode()) {
 			EditorCursor selectStart = textEditor.GetSelectStart();
 			if (selectStart.col > cursor.col)
 				std::swap(selectStart, cursor);
 
-			if (selectStart.col == cursor.col)
-			{
+			if (selectStart.col == cursor.col) {
 				int start = selectStart.row;
 				int end = cursor.row;
 
 
 				BitmapFontGL::Instance()->DrawSelect(aspect, width, selectStart.col, start, end, 0.5f, 0.5f, 0.5f);
 			}
-			else
-			{
-				for (int i = selectStart.col; i <= cursor.col; i++)
-				{
+			else {
+				for (int i = selectStart.col; i <= cursor.col; i++) {
 					if (i < 0 || i >= textEditor.GetMaxLineNum())
 						continue;
 
-					if (i == selectStart.col)
-					{
+					if (i == selectStart.col) {
 						BitmapFontGL::Instance()->DrawSelect(aspect, width, i, selectStart.row, textEditor.GetLineLength(i));
 					}
-					else if (i < cursor.col)
-					{
+					else if (i < cursor.col) {
 						BitmapFontGL::Instance()->DrawSelect(aspect, width, i, 0, textEditor.GetLineLength(i));
 					}
-					else if (i == cursor.col)
-					{
+					else if (i == cursor.col) {
 						BitmapFontGL::Instance()->DrawSelect(aspect, width, i, 0, cursor.row);
 					}
 				}
@@ -448,8 +393,7 @@ void Core::render(float realSec)
 	//glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 #if ENABLE_POST_FX
-	if (shaderGL[POSTFxID].Valid())
-	{
+	if (shaderGL[POSTFxID].Valid()) {
 		shaderGL[POSTFxID].Bind();
 
 		glBindTexture(GL_TEXTURE_2D, renderTexture);

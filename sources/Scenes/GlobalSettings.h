@@ -65,7 +65,7 @@ struct GlobalSettings
 
 	void save();
 	void readEmptySetting();
-	bool read(bool force = false);
+	bool read(bool forceRead = false);
 	void load(map<int, Scene*>& scenes, bool force = false);
 	string getNewNameSavesText();
 };

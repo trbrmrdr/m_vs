@@ -7,7 +7,8 @@
     <Scene scene_id="-1" glsl_name="./simple.glsl" iChannel0="./save_text_4.png"></Scene>
     <Scene scene_id="-1" glsl_name="./snow.glsl"></Scene>
     
-    <Scene scene_id="1" glsl_name="./ColorfulDomainWarping_2.glsl"></Scene>
+    <Scene scene_id="1" glsl_name="./eye_fly_stage2.frag"></Scene>
+    <Scene scene_id="0" glsl_name="./ColorfulDomainWarping_2.glsl"></Scene>
     <Scene scene_id="-1" glsl_name="./line_eye.glsl"></Scene>
     <Scene scene_id="2" glsl_name="./Colorful Voronoi.glsl"></Scene>
     <Scene scene_id="3" glsl_name="./color_rain.glsl"></Scene>

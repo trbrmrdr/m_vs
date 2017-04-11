@@ -27,7 +27,7 @@ float mod2( float x, float y ){
 void main( void)
 {
     vec2 q = gl_FragCoord.xy;
-    
+       
     //float light = mod2( iGlobalTime / 5000. + sin( q.y*q.y*q.y / 1e10 ) + cos( q.x * 3. ), iResolution.y );
     float light = mod2( iGlobalTime / 50000. + 
                     //sin( q.y*q.y*q.y / 1e10 ) + 

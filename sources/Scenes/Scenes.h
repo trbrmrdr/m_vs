@@ -1,20 +1,15 @@
 #pragma once
 #include "stdafx.h"
+#include <functional>
 using namespace std;
 
 #include "file.h"
 #include "GlobalSettings.h"
 #include "Scene.h"
 
-struct EffectLoadCallback
-{
-	EffectLoadCallback() {};
-	~EffectLoadCallback() {};
-	virtual void loadEffectCallback(uint effectId) {};
-};
+typedef std::function<void(uint effectId)> EffectLoadCallback;
 
-class Scenes
-{
+class Scenes {
 	GlobalSettings globalSettings;
 
 	bool isFree;
@@ -39,28 +34,18 @@ class Scenes
 	bool space_press;
 	bool mouse_left_press;
 
-	EffectLoadCallback* callback;
+	EffectLoadCallback callback;
 public:
-	void setEffectLoadCallback(EffectLoadCallback* _callback)
-	{
-		callback = _callback;
-	}
+	void setEffectLoadCallback(const EffectLoadCallback& _callback) { callback = _callback; }
 
-	Scenes(const string& fileName) :
-		globalSettings(fileName),
-		needSaveFronBuf(false),
-		nowEffectId(1),
-		isFree(true),
-		space_press(false),
-		nowScene(NULL)
-	{};
+	Scenes(const string& fileName);
 
 	void free();
 	~Scenes() { free(); }
 
 	void init(bool force);
 
-	bool isValid() { return NULL != nowScene&& nowScene->isValid(); }
+	bool isValid() { return NULL != nowScene && nowScene->isValid(); }
 
 	void draw(float realSec);
 
@@ -68,7 +53,7 @@ public:
 
 	int changeKeys(const Uint8 *state, bool press);
 private:
-	bool processSettings(bool reload);
+	bool reloadSettings(bool forceReload = false);
 
 	void load(uint effectId);
 	void drawScene(uint effectId);

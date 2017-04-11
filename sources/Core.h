@@ -4,50 +4,51 @@
 
 #define CORE() (Core::instance())
 
-class Core: public EffectLoadCallback, public Singleton<Core> {
+class Core: public Singleton<Core> {
 private:
-	Scenes scenes;
-	int FPS;
+	Scenes m_scenes;
 
-	Size windowSize;
+	Size m_windowSize;
 
+	bool m_editMode;
+	bool m_nowCompiled;
 
-	bool editMode;
-	bool nowCompiled;
-	bool errorHighlight;
-
-
-	KeyBuffer keyBuffer;
+	//KeyBuffer keyBuffer;
 	//	ShaderGL postEffect;
-	TextEditor textEditor;
-	KeyAnalyzer keyAnalyzer;
+	//TextEditor textEditor;
+	//KeyAnalyzer keyAnalyzer;
 
-	sound_system_c sound_system;
+	//sound_system_c sound_system;
 
-	std::string nowSource;
+	std::string m_nowSource;
 
-	Uint32 baseTime;
-	Uint32 prevTime;
-	int fps;
+	Uint32 m_baseTime;
+	Uint32 m_prevTime;
 
-	float* audio_spectr_l = NULL;
-	float* audio_spectr_r = NULL;
-	GLuint audioTexture;
+	uint m_frame;
+	uint m_fps;
+
+	float* m_audioSpectrL = NULL;
+	float* m_audioSpectrR = NULL;
+	GLuint m_audioTexture;
 
 public:
 
-	const Size& getWindowSize(uint window = 0) { return windowSize; }
+	const Size& getWindowSize(uint window = 0) { return m_windowSize; }
 	int init(const Size& windows);
 	void free();
 
 	int update(Uint32 nowTime);
 	void render(float realSec);
 
-	void changeMouseKeys(bool left, bool right);
-	void changeMouse(const Vec2& pos);
-	int changeKeys(const Uint8 *state,bool press);
+	void changeMouseKeys(bool left, bool right) { MOUSE().SetKeys(left, right); }
 
-	virtual void loadEffectCallback(uint effectId);
+	void changeMouse(const Vec2& pos) { MOUSE().SetPosition(pos); }
+
+
+	int changeKeys(const Uint8 *state, bool press);
+
+	void loadEffectCallback(uint effectId);
 
 	Core();
 	~Core() { free(); }
