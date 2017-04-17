@@ -159,7 +159,8 @@ ShaderGL::ShaderGL()
 std::string readFile(const std::string& filename)
 {
 	std::string ret;
-	FILE* fp = fopen(filename.c_str(), "rt");
+	std::string t_pathToFile = Helper::getDataDir() + filename;
+	FILE* fp = fopen(t_pathToFile.c_str(), "rt");
 	if (fp != NULL)
 	{
 		char buf[1024];

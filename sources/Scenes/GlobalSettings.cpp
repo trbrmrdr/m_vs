@@ -73,9 +73,10 @@ bool GlobalSettings::read(bool force)
 	if (!settingsFile.checkIsEdit() && !force)
 		return false;
 	xmlFile xml;
-	long tmp = Helper::GetLastDataEdit(settingsFile.fileName.c_str());
+	std::string pathToFile = Helper::getDataDir() + settingsFile.fileName;
+	//long tmp = Helper::GetLastDataEdit(pathToFile.c_str());
 	int counter = 100;
-	while (counter>0 && !xml.loadFile(settingsFile.fileName)) { counter--; }
+	while (counter>0 && !xml.loadFile(pathToFile)) { counter--; }
 
 
 	if (xml.getNumTags(GLOBAL_SETTINGS) == 0)
@@ -181,7 +182,7 @@ void GlobalSettings::load(map<int, Scene*>& scenes, bool force)
 string GlobalSettings::getNewNameSavesText()
 {
 	string mask = Strings::FormatToString("%s*.png", maskSaveText.c_str());
-	vector<string> files = Helper::GetFilesInDirectory(".", mask);
+	vector<string> files = Helper::GetFilesInDirectory(Helper::getDataDir(), mask);
 	int id = 0;
 	int new_id = 0;
 	for (vector<string>::iterator it = files.begin(), it_e = files.end(); it != it_e; ++it)
@@ -200,9 +201,11 @@ string GlobalSettings::getNewNameSavesText()
 	}
 	do
 	{
-		string ret = Strings::FormatToString("%s%i.png", maskSaveText.c_str(), new_id);
-		if (Helper::GetLastDataEdit(ret.c_str()) == 0)
-			return ret;
+		string new_filename = Strings::FormatToString("%s%i.png", maskSaveText.c_str(), new_id);
+		string path_to_file = Helper::getDataDir() + new_filename;
+
+		if (Helper::GetLastDataEdit(path_to_file.c_str()) == 0)
+			return new_filename;
 		new_id++;
 	}
 	while (true);

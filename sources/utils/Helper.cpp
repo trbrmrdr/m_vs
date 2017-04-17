@@ -5,6 +5,18 @@ using namespace Helper;
 using namespace Xml;
 using namespace Strings;
 
+std::string mDataDir;
+std::string Helper::getDataDir() {
+	if (!mDataDir.empty()) return mDataDir;
+
+	char buffer[MAX_PATH];
+	GetModuleFileName(NULL, buffer, MAX_PATH);
+	string::size_type pos = string(buffer).find_last_of("\\/");
+	mDataDir = string(buffer).substr(0, pos);
+	mDataDir += "\\..\\data\\";
+	return mDataDir;
+}
+
 vector<string> Helper::GetFilesInDirectory(const string &directory, const string& mask) {
 	vector<string> ret;
 #if TARGET_WIN32
@@ -14,8 +26,7 @@ vector<string> Helper::GetFilesInDirectory(const string &directory, const string
 	if (( dir = FindFirstFile(( directory + "/" + mask ).c_str(), &file_data) ) == INVALID_HANDLE_VALUE)
 		return ret; /* No files found */
 
-	do
-	{
+	do {
 		const string file_name = file_data.cFileName;
 		const string full_file_name = directory + "/" + file_name;
 		const bool is_directory = ( file_data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY ) != 0;
@@ -37,8 +48,7 @@ vector<string> Helper::GetFilesInDirectory(const string &directory, const string
 	class stat st;
 
 	dir = opendir(directory);
-	while (( ent = readdir(dir) ) != NULL)
-	{
+	while (( ent = readdir(dir) ) != NULL) {
 		const string file_name = ent->d_name;
 		const string full_file_name = directory + "/" + file_name;
 
@@ -54,7 +64,7 @@ vector<string> Helper::GetFilesInDirectory(const string &directory, const string
 			continue;
 
 		ret.push_back(full_file_name);
-	}
+}
 	closedir(dir);
 #endif
 	return ret;
@@ -65,8 +75,7 @@ Vec2* Helper::getSplinePoint(const Vec2& origin, const Vec2& control1, const Vec
 	Vec2* vertices = new ( nothrow ) Vec2[segments + 1];
 
 	float t = 0;
-	for (unsigned int i = 0; i < segments; i++)
-	{
+	for (unsigned int i = 0; i < segments; i++) {
 		vertices[i].x = powf(1 - t, 3) * origin.x + 3.0f * powf(1 - t, 2) * t * control1.x + 3.0f * ( 1 - t ) * t * t * control2.x + t * t * t * destination.x;
 		vertices[i].y = powf(1 - t, 3) * origin.y + 3.0f * powf(1 - t, 2) * t * control1.y + 3.0f * ( 1 - t ) * t * t * control2.y + t * t * t * destination.y;
 		t += 1.0f / segments;
@@ -76,10 +85,10 @@ Vec2* Helper::getSplinePoint(const Vec2& origin, const Vec2& control1, const Vec
 	return vertices;
 }
 
-long Helper::GetLastDataEdit(const char* fileName) {
+long Helper::GetLastDataEdit(const char* path_to_file) {
 	struct tm* clock;
 	struct stat attrib;
-	stat(fileName, &attrib);
+	stat(path_to_file, &attrib);
 #if 0
 	time_t rawtime;
 	time(&rawtime);
@@ -107,8 +116,7 @@ long Helper::GetCurrTime() {
 }
 
 const char* Helper::GLErrString(int err) {
-	switch (err)
-	{
+	switch (err) {
 		case GL_INVALID_ENUM:
 			return "Invalid Enum";
 		case GL_INVALID_VALUE:
@@ -128,23 +136,20 @@ const char* Helper::GLErrString(int err) {
 }
 
 void Helper::CheckGLError() {
-	for (GLenum err; ( err = glGetError() ) != GL_NO_ERROR;)
-	{
+	for (GLenum err; ( err = glGetError() ) != GL_NO_ERROR;) {
 		cout << "GL_ERROR: " << err << " " << GLErrString(err) << endl;
 	}
 }
 
-GLuint Helper::LoadTexture(const string& fileName) {
+GLuint Helper::LoadTexture(const string& path_to_file) {
 	GLuint texture = 0;
-	const char *filename = fileName.c_str();
+	const char *filename = path_to_file.c_str();
 	FREE_IMAGE_FORMAT format = FreeImage_GetFileType(filename, 0);
 	FIBITMAP* bitmap = FreeImage_Load(format, filename);
-	if (NULL == bitmap)
-	{
+	if (NULL == bitmap) {
 		Logger::Instance()->OutputString("Error: LoadFreeImage");
 	}
-	else
-	{
+	else {
 		FIBITMAP *pImage = FreeImage_ConvertTo32Bits(bitmap);
 		int nWidth = FreeImage_GetWidth(pImage);
 		int nHeight = FreeImage_GetHeight(pImage);
@@ -163,7 +168,7 @@ GLuint Helper::LoadTexture(const string& fileName) {
 
 }
 
-void Helper::SaveTexture(GLuint texture, const string& fileName, const Vec2& pos, const Size& size) {
+void Helper::SaveTexture(GLuint texture, const string& path_to_file, const Vec2& pos, const Size& size) {
 
 	GLint m_viewport[4];
 	glGetIntegerv(GL_VIEWPORT, m_viewport);
@@ -209,8 +214,7 @@ void Helper::SaveTexture(GLuint texture, const string& fileName, const Vec2& pos
 	uchar * tempLineOfPix = new uchar[sizeOfOneLineOfPixels];
 	uchar * linea;
 	uchar * lineb;
-	for (uint i = 0; i < height / 2; i++)
-	{
+	for (uint i = 0; i < height / 2; i++) {
 		linea = pixels + i * sizeOfOneLineOfPixels;
 		lineb = pixels + ( height - i - 1 ) * sizeOfOneLineOfPixels;
 		memcpy(tempLineOfPix, linea, sizeOfOneLineOfPixels);
@@ -221,20 +225,20 @@ void Helper::SaveTexture(GLuint texture, const string& fileName, const Vec2& pos
 	//#############################
 	FIBITMAP *bmp = FreeImage_ConvertFromRawBits(pixels, width, height, width*bytesPerPixel, bitsPerPixel, 0, 0, 0, true);
 	FREE_IMAGE_FORMAT fif = FIF_UNKNOWN;
-	fif = FreeImage_GetFileType(fileName.c_str(), 0);
+	fif = FreeImage_GetFileType(path_to_file.c_str(), 0);
 	if (fif == FIF_UNKNOWN)
-		fif = FreeImage_GetFIFFromFilename(fileName.c_str());
+		fif = FreeImage_GetFIFFromFilename(path_to_file.c_str());
 	if (( fif != FIF_UNKNOWN ) && FreeImage_FIFSupportsWriting(fif))
-		FreeImage_Save(fif, bmp, fileName.c_str(), 0);
+		FreeImage_Save(fif, bmp, path_to_file.c_str(), 0);
 	if (bmp != NULL)
 		FreeImage_Unload(bmp);
 }
 
-long Helper::getFileDataHash(const char* fileName) {
-	FILE* fp = fopen(fileName, "rt");
+long Helper::getFileDataHash(const char* path_to_file) {
+	FILE* fp = fopen(path_to_file, "rt");
 	if (fp == NULL)
 		return -1;
-	long ret = Helper::GetLastDataEdit(fileName);
+	long ret = Helper::GetLastDataEdit(path_to_file);
 	fclose(fp);
 	return ret;
 }
@@ -334,13 +338,11 @@ Vec2 Xml::XmlToVec2(TiXmlElement* node, Vec2 def) {
 
 	vector<string> parse;
 	parse = SplitString(val, " ,");
-	if (!parse.empty())
-	{
+	if (!parse.empty()) {
 		def.x = StrToFloat(parse[0]);
 	}
 
-	if (parse.size() >= 2)
-	{
+	if (parse.size() >= 2) {
 		def.y = StrToFloat(parse[1]);
 	}
 

@@ -9,16 +9,18 @@ namespace Helper {
 
 	vector<string> GetFilesInDirectory(const string &directory,const string& mask = "*");
 
-	GLuint LoadTexture(const string& fileName);
-	void SaveTexture(GLuint texture,const string& fileName, const Vec2& pos, const Size& size);
+	std::string getDataDir();
+
+	GLuint LoadTexture(const string& path_to_file);
+	void SaveTexture(GLuint texture,const string& path_to_file, const Vec2& pos, const Size& size);
 	const char* GLErrString(int err);
 	void CheckGLError();
-	long GetLastDataEdit(const char* fileName);
+	long GetLastDataEdit(const char* path_to_file);
 	long GetCurrTime();
 
 	Vec2* getSplinePoint(const Vec2& origin, const Vec2& control1, const Vec2& control2, const Vec2& destination, unsigned int segments);
 
-	long getFileDataHash(const char* fileName);
+	long getFileDataHash(const char* path_to_file);
 
 	namespace Xml {
 

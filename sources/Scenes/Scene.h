@@ -44,10 +44,11 @@ public:
 	{
 		for (auto it : iTextureChannels)
 		{
-			glDeleteTextures(1, &it.second);
+			glDeleteTextures(1, &it.second);	
 		}
 		iTextureChannels.clear();
 	}
+
 
 	void loadChannels()
 	{
@@ -55,7 +56,8 @@ public:
 		{
 			//if (iTextureChannels.find(it.second) == iTextureChannels.end())
 			{
-				GLuint newTetxture = Helper::LoadTexture(it.second);
+				string path_to_file = Helper::getDataDir() + it.second;
+				GLuint newTetxture = Helper::LoadTexture(path_to_file);
 				iTextureChannels.insert(pair<string, GLuint>(it.first, newTetxture));
 			}
 		}

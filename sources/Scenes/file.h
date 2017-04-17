@@ -8,7 +8,8 @@ struct file
 
 	bool checkIsEdit()
 	{
-		long new_data = Helper::GetLastDataEdit(fileName.c_str());
+		std::string t_filePath = Helper::getDataDir() + fileName;
+		long new_data = Helper::GetLastDataEdit(t_filePath.c_str());
 		bool ret = new_data != isEditData && new_data != 0;
 		isEditData = new_data;
 		return ret;

@@ -35,8 +35,10 @@ void Scenes::init(bool forceRead /*= false*/) {
 
 	glViewport(0, 0, width, height);
 
-	optionTexture = Helper::LoadTexture(globalSettings.optionTexture.fileName);
-	texture3 = Helper::LoadTexture("./save_text_4.png");
+	//todo
+	//optionTexture = Helper::LoadTexture(globalSettings.optionTexture.fileName);
+	//texture3 = Helper::LoadTexture("./save_text_4.png");
+
 	// Initialize back buffer
 	backTexture = 0;
 	glGenTextures(1, &backTexture);
@@ -307,7 +309,7 @@ void Scenes::saveNeeded() {
 		sizeSave = CORE().getWindowSize();
 
 	Helper::SaveTexture(renderTexture,
-						globalSettings.getNewNameSavesText(),
+						Helper::getDataDir()+ globalSettings.getNewNameSavesText(),
 						globalSettings.posSave,
 						sizeSave);
 }
