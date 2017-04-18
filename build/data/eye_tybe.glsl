@@ -131,7 +131,8 @@ void main(void){
     uv +=vec2(-.7,.15);
 	//fragColor = vec4(uv,0.5+0.5*sin(iGlobalTime),1.0);
     float t = time * .5;
-    /// uv.x += cos(t) * .5;
+    //uv.x += cos(t) * .5;
+	//uv.y += cos(t) * .5;
     float a = atan(uv.x,uv.y)/1.57;
     //float d = max(max(abs(uv.x),abs(uv.y)), min(abs(uv.x)+uv.y, length(uv)));
 	float d =  length(uv);

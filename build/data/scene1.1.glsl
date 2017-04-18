@@ -13,7 +13,8 @@ uniform vec3 iMouse;
 uniform float lowFreq;
 uniform float midFreq;
 uniform float highFreq;
-uniform float time;
+uniform float iGlobalTime;
+#define time iGlobalTime
 
 //varying vec2 v_uv;
 /*

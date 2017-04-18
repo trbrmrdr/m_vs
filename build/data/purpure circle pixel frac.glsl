@@ -9,7 +9,9 @@ precision mediump float;
 
 //cribbed from this : https://www.shadertoy.com/view/ldlSzX
 
-uniform float time;
+uniform float iGlobalTime;
+#define time iGlobalTime
+
 uniform vec3 iMouse;
 uniform vec2 iResolution;
 

@@ -19,13 +19,13 @@ precision mediump float;
 
 // try not to vomit
 
-uniform float time;
+uniform float iGlobalTime;
 
 uniform vec2 iResolution;
 
 uniform vec3 iMouse;
 
-#define time (time + 60.0)
+#define time (iGlobalTime + 60.0)
 
 void main(void)
 {
