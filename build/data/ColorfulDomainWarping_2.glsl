@@ -19,6 +19,8 @@ float random (in vec2 st) {
                43758.5453123);
 }
 
+//todo
+#if 1
 // Based on Morgan McGuire @morgan3d
 // https://www.shadertoy.com/view/4dS3Wd
 float noise (in vec2 st) {
@@ -43,7 +45,7 @@ float noise (in vec2 st) {
 
 // See http://www.iquilezles.org/www/articles/warp/warp.htm for details
 
-/*
+#else
 float noise( in vec2 x )
 {
     vec2 p = floor(x);
@@ -55,7 +57,7 @@ float noise( in vec2 x )
 	float d = texture2D(iChannel0,(p+vec2(1.5,1.5))/256.0).x;
     return mix(mix( a, b,f.x), mix( c, d,f.x),f.y);
 }
-*/
+#endif
 
 const mat2 mtx = mat2( 0.80,  0.60, -0.60,  0.80 );
 
@@ -141,7 +143,8 @@ void main( void)
 
     col = mix( col, vec3(0.0,0.2,0.4), 0.5*smoothstep(1.2,1.3,abs(n.y)+abs(n.x)) );
 
-    col *= f*2.0;
+    //col *= f*2.0* (1.5+(.5+.5*sin(iGlobalTime))*2.*length(p));
+	col *= f*2.0;
 #if 1
     vec2 ex = vec2( 1.0 / iResolution.x, 0.0 );
     vec2 ey = vec2( 0.0, 1.0 / iResolution.y );

@@ -4,7 +4,8 @@
 #ifdef GL_ES
 precision highp float;
 #endif
-uniform float time;
+uniform float iGlobalTime;
+#define time iGlobalTime
 uniform float lowFreq;
 uniform vec3 iMouse;
 uniform vec2 iResolution;
@@ -25,7 +26,7 @@ void main( void ) {
    float x=p.x;
    float y=p.y;
 
-   time = 1.0;
+   //time = 1.0;
    float a=makePoint(x,y,3.3,2.9,0.3,0.3,time);
    a=a+makePoint(x,y,1.9,2.0,0.4,0.4,time);
    a=a+makePoint(x,y,0.8,0.7,0.4,0.5,time);

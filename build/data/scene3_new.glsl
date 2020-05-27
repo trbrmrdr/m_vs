@@ -8,9 +8,19 @@ uniform float lowFreq;
 uniform float midFreq;
 uniform float highFreq;
 
+#if 1
+uniform float iGlobalTime;
+uniform vec3 iMouse;
+uniform vec2 iResolution;
+
+#define time iGlobalTime
+#define mouse iMouse
+#define resolution iResolution
+#else
 uniform float time;
 uniform vec2 mouse;
 uniform vec2 resolution;
+#endif
  
 void main(void){
 	vec2 v = (gl_FragCoord.xy - resolution/2.0) / min(resolution.y,resolution.x) * 20.0;

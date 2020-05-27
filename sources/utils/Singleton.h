@@ -1,38 +1,44 @@
 #pragma once
 #include "stdafx.h"
 
-class Noncopyable {
+class Noncopyable
+{
 protected:
 	Noncopyable() {}
 	~Noncopyable() {}
 
 private:
-	Noncopyable(const Noncopyable&);
-	const Noncopyable& operator=(const Noncopyable&);
+	Noncopyable( const Noncopyable& );
+	const Noncopyable& operator=( const Noncopyable& );
 };
 
 template<class Ty>
-class Singleton: public Noncopyable {
+class Singleton : public Noncopyable
+{
 protected:
 
 	static bool sInitialized;
 	static Ty* instance_;
 
-	Singleton() {
+	Singleton()
+	{
 		sInitialized = true;
 	};
 
-	~Singleton() {
+	~Singleton()
+	{
 		sInitialized = false;
 	};
 
 public:
 
-	static bool isInitialized() {
+	static bool isInitialized()
+	{
 		return sInitialized;
 	};
 
-	static void destroyInstance() {
+	static void destroyInstance()
+	{
 		if (instance_)
 		{
 			delete instance_;
@@ -40,7 +46,8 @@ public:
 		}
 	}
 
-	static Ty& instance() {
+	static Ty& instance()
+	{
 
 		if (!instance_)
 		{

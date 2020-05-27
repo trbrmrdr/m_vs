@@ -11,7 +11,6 @@ precision mediump float;
 
 uniform float iGlobalTime;
 #define time iGlobalTime
-
 uniform vec3 iMouse;
 uniform vec2 iResolution;
 
@@ -59,7 +58,6 @@ void main( void )
 	vec2 position		= (uv * 2. - 1.) * aspect * scale;
 	vec2 iMouse		= (iMouse * 2. - 1.) * aspect * scale;
 
-	
 	vec2 target		= iMouse;
 	
 	float wavelength 	= WAVELENGTH;

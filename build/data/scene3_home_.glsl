@@ -13,10 +13,15 @@ uniform float lowFreq;
 //uniform float midFreq;
 uniform float highFreq;
 
-uniform float time;
-uniform vec2 mouse;
-uniform vec2 resolution;
- 
+   
+uniform float iGlobalTime;
+uniform vec3 iMouse;
+uniform vec2 iResolution;
+
+#define time iGlobalTime
+#define mouse iMouse
+#define resolution iResolution
+
 float DigitBin(const in int x)
 {
     return x==0?480599.0:x==1?139810.0:x==2?476951.0:x==3?476999.0:x==4?350020.0:x==5?464711.0:x==6?464727.0:x==7?476228.0:x==8?481111.0:x==9?481095.0:0.0;

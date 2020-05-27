@@ -2,8 +2,10 @@
 precision highp float;
 #endif
 
+uniform float iGlobalTime;
+
 uniform vec2 iResolution;
-uniform float time;
+#define time iGlobalTime
 uniform vec3 iMouse;
 
 bool isphere( in vec4 sph, in vec3 ro, in vec3 rd, out vec2 t )

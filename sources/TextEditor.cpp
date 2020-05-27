@@ -16,7 +16,6 @@ void TextEditor::UpdateLog() {
 	}
 }
 void TextEditor::ScrollDown() {
-	// 下方向にスクロール
 	if (nowCursor.col > lineOffset + maxLineNum - 1)
 	{
 		lineOffset++;
@@ -24,7 +23,6 @@ void TextEditor::ScrollDown() {
 }
 
 void TextEditor::ScrollUp() {
-	// 上方向にスクロール
 	if (nowCursor.col < lineOffset)
 	{
 		lineOffset--;

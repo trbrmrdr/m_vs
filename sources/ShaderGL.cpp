@@ -22,7 +22,6 @@ void getErrorLog(GLuint shader, std::set<int>* errorLines = NULL)
 		glGetShaderInfoLog(shader, bufSize, &length, infoLog);
 		LOGGER()->OutputString("Compile Status: " + std::string(infoLog));
 
-		// 適当な解析
 		if (errorLines != NULL)
 		{
 			std::string tmpStr;
@@ -46,7 +45,6 @@ void getErrorLog(GLuint shader, std::set<int>* errorLines = NULL)
 								inNum = false;
 								numcnt++;
 
-								// 二番目の数字
 								if (numcnt == 2)
 								{
 									errorLines->insert(num);
@@ -124,7 +122,7 @@ GLuint LinkShader(GLuint vsh, GLuint fsh)
 		program = glCreateProgram();
 		glAttachShader(program, vsh);
 		glAttachShader(program, fsh);
-		// リンク
+		
 		glLinkProgram(program);
 		GLint status;
 		glGetProgramiv(program, GL_LINK_STATUS, &status);
@@ -187,7 +185,6 @@ GLuint ShaderGL::CompileFromFile(const string& filename)
 
 GLuint ShaderGL::Compile(const string& fsshader)
 {
-	// 頂点シェーダー（固定）
 	std::string vsshader = "\
 			attribute vec2 pos;\
 			\
@@ -236,7 +233,6 @@ GLuint ShaderGL::Compile(const string& fsshader)
 		return 0;
 	//Bind();
 	CHECK_GL_ERROR();
-	// 新しくシェーダープログラムセットされたらここにくる
 	return shaderProgram;
 }
 
